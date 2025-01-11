@@ -14,42 +14,42 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.prototype.P2025PrototypeIO;
 import frc.robot.subsystems.prototype.Prototype;
+
 @Logged
 public class RobotContainer {
-  private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0), new TalonFX(1)));
-  private final CommandXboxController driverController = new CommandXboxController(0);
-  private final SlewRateLimiter limit = new SlewRateLimiter(Units.rotationsPerMinuteToRadiansPerSecond(100.0));
+    private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0), new TalonFX(1)));
+    private final CommandXboxController driverController = new CommandXboxController(0);
+    private final SlewRateLimiter limit = new SlewRateLimiter(Units.rotationsPerMinuteToRadiansPerSecond(100.0));
 
-  public RobotContainer() {
+    public RobotContainer() {
 
-    configureBindings();
-  }
+        configureBindings();
+    }
 
-  private double modifyAxis(double value){
-    double clippedValue = MathUtil.applyDeadband(value, 0.08);
-    return -Math.copySign((clippedValue * clippedValue) * 12, value);
+    private double modifyAxis(double value) {
+        double clippedValue = MathUtil.applyDeadband(value, 0.08);
+        return -Math.copySign((clippedValue * clippedValue) * 12, value);
 
-  }
+    }
 
-  private void configureBindings() {
+    private void configureBindings() {
 
-    prototype.setDefaultCommand(prototype.followVoltage(
-            ()-> modifyAxis(driverController.getRawAxis(1)),
-            ()-> modifyAxis(driverController.getRawAxis(5))));
+        prototype.setDefaultCommand(prototype.followVoltage(
+                () -> modifyAxis(driverController.getRawAxis(1)),
+                () -> modifyAxis(driverController.getRawAxis(5))));
 
-  driverController.a().onTrue(prototype.stopMotors());
+        driverController.a().onTrue(prototype.stopMotors());
 
-  driverController.b().onTrue(prototype.followVoltage(()->6,()->6));
+        driverController.b().onTrue(prototype.followVoltage(() -> 6, () -> 6));
 
-  driverController.x().onTrue(prototype.followVoltage(()->4,()->4));
+        driverController.x().onTrue(prototype.followVoltage(() -> 4, () -> 4));
 
-  driverController.y().onTrue(prototype.followVoltage(()->2, ()->2));
+        driverController.y().onTrue(prototype.followVoltage(() -> 2, () -> 2));
 
-}
+    }
 
 
-
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
 }

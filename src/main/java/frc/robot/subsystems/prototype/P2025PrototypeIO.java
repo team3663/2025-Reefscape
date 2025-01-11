@@ -16,18 +16,24 @@ public class P2025PrototypeIO implements PrototypeIO {
     private final TalonFX motor1;
     private final TalonFX motor2;
 
-    private final DCMotorSim sim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2),
+    private final DCMotorSim simMotor1 = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
                     0.001, 1.0),
-            DCMotor.getKrakenX60(2).withReduction(1.0)
-    );;
+            DCMotor.getKrakenX60(1).withReduction(1.0)
+    );
+
+    private final DCMotorSim simMotor2 = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
+                    0.001, 1.0),
+            DCMotor.getKrakenX60(1).withReduction(1.0)
+    );
 
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0).withSlot(0);
     private final NeutralOut stopRequest = new NeutralOut();
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withSlot(1);
 
-    public P2025PrototypeIO(TalonFX motor1, TalonFX motor2){
+    public P2025PrototypeIO(TalonFX motor1, TalonFX motor2) {
         this.motor1 = motor1;
         this.motor2 = motor2;
 
@@ -57,21 +63,21 @@ public class P2025PrototypeIO implements PrototypeIO {
     public void updateInputs(PrototypeInputs inputs) {
         // Sims for Motor 1
         var simStateMotor1 = motor1.getSimState();
-        sim.setInputVoltage(simStateMotor1.getMotorVoltage());
+        simMotor1.setInputVoltage(simStateMotor1.getMotorVoltage());
         //Updates the sim information every 20 ms
-        sim.update(Robot.kDefaultPeriod);
-        simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
-        simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
-        simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
+        simMotor1.update(Robot.kDefaultPeriod);
+        simStateMotor1.setRotorAcceleration(simMotor1.getAngularAcceleration());
+        simStateMotor1.setRotorVelocity(simMotor1.getAngularVelocity());
+        simStateMotor1.setRawRotorPosition(simMotor1.getAngularPosition());
 
         // Sims for Motor 2
         var simStateMotor2 = motor2.getSimState();
-        sim.setInputVoltage(simStateMotor1.getMotorVoltage());
+        simMotor2.setInputVoltage(simStateMotor1.getMotorVoltage());
         //Updates the sim information every 20 ms
-        sim.update(Robot.kDefaultPeriod);
-        simStateMotor2.setRotorAcceleration(sim.getAngularAcceleration());
-        simStateMotor2.setRotorVelocity(sim.getAngularVelocity());
-        simStateMotor2.setRawRotorPosition(sim.getAngularPosition());
+        simMotor2.update(Robot.kDefaultPeriod);
+        simStateMotor2.setRotorAcceleration(simMotor2.getAngularAcceleration());
+        simStateMotor2.setRotorVelocity(simMotor2.getAngularVelocity());
+        simStateMotor2.setRawRotorPosition(simMotor2.getAngularPosition());
 
 
         // updating the Prototype inputs for motor 1
@@ -90,17 +96,20 @@ public class P2025PrototypeIO implements PrototypeIO {
     }
 
     @Override
-    public void resetRotationsMotor1(){
+    public void resetRotationsMotor1() {
         motor1.setPosition(0);
     }
 
     @Override
     public void stopMotor1() {
+        setTargetVoltageMotor1(0.0);
+        setTargetRotationsMotor1(0.0);
+        setTargetVoltageMotor1(0.0);
         motor1.setControl(stopRequest);
     }
 
     @Override
-    public void setTargetRotationsMotor1(double radians){
+    public void setTargetRotationsMotor1(double radians) {
         motor1.setControl(positionRequest.withPosition(Units.radiansToRotations(radians)));
     }
 
@@ -115,23 +124,32 @@ public class P2025PrototypeIO implements PrototypeIO {
     }
 
     @Override
-    public void resetRotationsMotor2(){
+    public void resetRotationsMotor2() {
         motor2.setPosition(0);
     }
 
     @Override
     public void stopMotor2() {
+        setTargetVoltageMotor2(0.0);
+        setTargetRotationsMotor2(0.0);
+        setTargetVoltageMotor2(0.0);
         motor2.setControl(stopRequest);
     }
 
     @Override
-    public void stopMotors(){
+    public void stopMotors() {
+        setTargetVoltageMotor1(0.0);
+        setTargetRotationsMotor1(0.0);
+        setTargetVoltageMotor1(0.0);
+        setTargetVoltageMotor2(0.0);
+        setTargetRotationsMotor2(0.0);
+        setTargetVoltageMotor2(0.0);
         motor1.setControl(stopRequest);
         motor2.setControl(stopRequest);
     }
 
     @Override
-    public void setTargetRotationsMotor2(double radians){
+    public void setTargetRotationsMotor2(double radians) {
         motor2.setControl(positionRequest.withPosition(Units.radiansToRotations(radians)));
     }
 

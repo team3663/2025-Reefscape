@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
 @Logged
-public class Prototype extends SubsystemBase{
+public class Prototype extends SubsystemBase {
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     private static final double ROTATIONS_THRESHOLD = 0.1;
 
@@ -23,12 +23,12 @@ public class Prototype extends SubsystemBase{
     double targetRotationsMotor2 = 0.0;
     double targetVoltageMotor2 = 0.0;
 
-    public Prototype(PrototypeIO io){
+    public Prototype(PrototypeIO io) {
         this.io = io;
     }
 
     @Override
-    public void periodic(){
+    public void periodic() {
         io.updateInputs(inputs);
     }
 
@@ -36,7 +36,7 @@ public class Prototype extends SubsystemBase{
         return inputs.currentVelocityMotor1;
     }
 
-    public double getRotationsMotor1(){
+    public double getRotationsMotor1() {
         return inputs.currentRotationsMotor1;
     }
 
@@ -44,15 +44,15 @@ public class Prototype extends SubsystemBase{
         return Math.abs(inputs.currentVelocityMotor1 - targetVelocityMotor1) < VELOCITY_THRESHOLD;
     }
 
-    public boolean atTargetRotationsMotor1(){
+    public boolean atTargetRotationsMotor1() {
         return Math.abs(inputs.currentRotationsMotor1 - targetRotationsMotor1) < ROTATIONS_THRESHOLD;
     }
 
-    public double getVoltageMotor1(){
+    public double getVoltageMotor1() {
         return inputs.currentAppliedVoltageMotor1;
     }
 
-    public double getVoltageMotor2(){
+    public double getVoltageMotor2() {
         return inputs.currentAppliedVoltageMotor2;
     }
 
@@ -60,7 +60,7 @@ public class Prototype extends SubsystemBase{
         return inputs.currentVelocityMotor2;
     }
 
-    public double getRotationsMotor2(){
+    public double getRotationsMotor2() {
         return inputs.currentRotationsMotor2;
     }
 
@@ -68,14 +68,14 @@ public class Prototype extends SubsystemBase{
         return Math.abs(inputs.currentVelocityMotor2 - targetVelocityMotor2) < VELOCITY_THRESHOLD;
     }
 
-    public boolean atTargetRotationsMotor2(){
+    public boolean atTargetRotationsMotor2() {
         return Math.abs(inputs.currentRotationsMotor2 - targetRotationsMotor1) < ROTATIONS_THRESHOLD;
     }
 
     /**
      * Reset the amount of rotations on the 1st motor to 0
      */
-    public Command resetRotationsMotor1(){
+    public Command resetRotationsMotor1() {
         return runOnce(
                 io::resetRotationsMotor1
         );
@@ -84,7 +84,7 @@ public class Prototype extends SubsystemBase{
     /**
      * Reset the amount of rotations on the 2nd motor to 0
      */
-    public Command resetRotationsMotor2(){
+    public Command resetRotationsMotor2() {
         return runOnce(
                 io::resetRotationsMotor2
         );
@@ -93,7 +93,7 @@ public class Prototype extends SubsystemBase{
     /**
      * Stops the 1st motor by running at 0 voltage
      */
-    public Command stopMotor1(){
+    public Command stopMotor1() {
         return runOnce(
                 io::stopMotor1
         );
@@ -102,7 +102,7 @@ public class Prototype extends SubsystemBase{
     /**
      * Stops both motors by running at 0 voltage
      */
-    public Command stopMotors(){
+    public Command stopMotors() {
         return runOnce(
                 io::stopMotors
         );
@@ -111,7 +111,7 @@ public class Prototype extends SubsystemBase{
     /**
      * Stops the 2nd motor by running at 0 voltage
      */
-    public Command stopMotor2(){
+    public Command stopMotor2() {
         return runOnce(
                 io::stopMotor2
         );
@@ -120,11 +120,11 @@ public class Prototype extends SubsystemBase{
     /**
      * Tells the 1st motor to move a certain amount of rotations and does not end
      */
-    public Command followRotationsMotor1(DoubleSupplier rotations){
+    public Command followRotationsMotor1(DoubleSupplier rotations) {
         return runEnd(
                 () -> {
                     targetRotationsMotor1 = rotations.getAsDouble();
-                    io.setTargetRotationsMotor1(rotations.getAsDouble());
+                    io.setTargetRotationsMotor1(targetRotationsMotor1);
                 },
                 io::stopMotor1
         );
@@ -133,28 +133,28 @@ public class Prototype extends SubsystemBase{
     /**
      * Tells the 2nd motor to move a certain amount of rotations and does not end
      */
-    public Command followRotationsMotor2(DoubleSupplier rotations){
+    public Command followRotationsMotor2(DoubleSupplier rotations) {
         return runEnd(
                 () -> {
                     targetRotationsMotor1 = rotations.getAsDouble();
-                    io.setTargetRotationsMotor2(rotations.getAsDouble());
+                    io.setTargetRotationsMotor2(targetRotationsMotor1);
                 },
                 io::stopMotor2
         );
     }
 
-    /** Tells the 1st motor to move a certain amount of rotations and then ends
-     *
+    /**
+     * Tells the 1st motor to move a certain amount of rotations and then ends
      */
     public Command toRotationsMotor1(double radians) {
-        return followRotationsMotor1(()-> radians).until(this::atTargetRotationsMotor1);
+        return followRotationsMotor1(() -> radians).until(this::atTargetRotationsMotor1);
     }
 
-    /** Tells the 2nd motor to move a certain amount of rotations and then ends
-     *
+    /**
+     * Tells the 2nd motor to move a certain amount of rotations and then ends
      */
     public Command toRotationsMotor2(double radians) {
-        return followRotationsMotor2(()-> radians).until(this::atTargetRotationsMotor2);
+        return followRotationsMotor2(() -> radians).until(this::atTargetRotationsMotor2);
     }
 
     /**
@@ -164,7 +164,7 @@ public class Prototype extends SubsystemBase{
         return runEnd(
                 () -> {
                     targetVelocityMotor1 = velocity.getAsDouble();
-                    io.setTargetVelocityMotor1(velocity.getAsDouble());
+                    io.setTargetVelocityMotor1(targetVelocityMotor1);
                 },
                 io::stopMotor1
         );
@@ -177,52 +177,51 @@ public class Prototype extends SubsystemBase{
         return runEnd(
                 () -> {
                     targetVelocityMotor2 = velocity.getAsDouble();
-                    io.setTargetVelocityMotor2(velocity.getAsDouble());
+                    io.setTargetVelocityMotor2(targetVelocityMotor2);
                 },
                 io::stopMotor2
         );
     }
 
-    /** Tells the 1st motor to move with a certain velocity and then ends
-     *
+    /**
+     * Tells the 1st motor to move with a certain velocity and then ends
      */
     public Command withVelocityMotor1(double velocity) {
         return runEnd(
                 () -> {
-                    io.setTargetVelocityMotor1(velocity);
                     targetVelocityMotor1 = velocity;
+                    io.setTargetVelocityMotor1(targetVelocityMotor1);
                 },
                 io::stopMotor1
         );
     }
 
-    /** Tells the 1st motor to move with a certain velocity and then ends
-     *
+    /**
+     * Tells the 1st motor to move with a certain velocity and then ends
      */
     public Command withVelocityMotor2(double velocity) {
         return runEnd(
                 () -> {
-                    io.setTargetVelocityMotor2(velocity);
                     targetVelocityMotor2 = velocity;
+                    io.setTargetVelocityMotor2(targetVelocityMotor2);
                 },
                 io::stopMotor2
         );
     }
 
 
-    public Command followVoltage(DoubleSupplier voltageMotor1, DoubleSupplier voltageMotor2){
+    public Command followVoltage(DoubleSupplier voltageMotor1, DoubleSupplier voltageMotor2) {
         return runEnd(
                 () -> {
                     targetVoltageMotor1 = voltageMotor1.getAsDouble();
-                    io.setTargetVoltageMotor1(voltageMotor1.getAsDouble());
+                    io.setTargetVoltageMotor1(targetVoltageMotor1);
                     targetVoltageMotor2 = voltageMotor2.getAsDouble();
-                    io.setTargetVoltageMotor2(voltageMotor2.getAsDouble());
+                    io.setTargetVoltageMotor2(targetVoltageMotor2);
                 },
                 io::stopMotors
         );
-   }
-
-
-
     }
+
+
+}
 
