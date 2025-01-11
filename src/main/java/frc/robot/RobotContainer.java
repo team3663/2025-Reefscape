@@ -4,15 +4,50 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.prototype.P2025PrototypeIO;
+import frc.robot.subsystems.prototype.Prototype;
+@Logged
 public class RobotContainer {
+  private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0), new TalonFX(1)));
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final SlewRateLimiter limit = new SlewRateLimiter(Units.rotationsPerMinuteToRadiansPerSecond(100.0));
+
   public RobotContainer() {
+
     configureBindings();
   }
 
-  private void configureBindings() {}
+  private double modifyAxis(double value){
+    double clippedValue = MathUtil.applyDeadband(value, 0.08);
+    return -Math.copySign((clippedValue * clippedValue) * 12, value);
+
+  }
+
+  private void configureBindings() {
+
+    prototype.setDefaultCommand(prototype.followVoltage(
+            ()-> modifyAxis(driverController.getRawAxis(1)),
+            ()-> modifyAxis(driverController.getRawAxis(5))));
+
+  driverController.a().onTrue(prototype.stopMotors());
+
+  driverController.b().onTrue(prototype.followVoltage(()->6,()->6));
+
+  driverController.x().onTrue(prototype.followVoltage(()->4,()->4));
+
+  driverController.y().onTrue(prototype.followVoltage(()->2, ()->2));
+
+}
+
+
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
