@@ -72,7 +72,7 @@ public class P2025PrototypeIO implements PrototypeIO {
 
         // Sims for Motor 2
         var simStateMotor2 = motor2.getSimState();
-        simMotor2.setInputVoltage(simStateMotor1.getMotorVoltage());
+        simMotor2.setInputVoltage(simStateMotor2.getMotorVoltage());
         //Updates the sim information every 20 ms
         simMotor2.update(Robot.kDefaultPeriod);
         simStateMotor2.setRotorAcceleration(simMotor2.getAngularAcceleration());

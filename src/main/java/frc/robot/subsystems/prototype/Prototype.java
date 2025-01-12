@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 public class Prototype extends SubsystemBase {
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     private static final double ROTATIONS_THRESHOLD = 0.1;
+    private static final double VOLTAGE_THRESHOLD = 12.0;
 
     final PrototypeIO io;
     final PrototypeInputs inputs = new PrototypeInputs();
@@ -48,6 +49,10 @@ public class Prototype extends SubsystemBase {
         return Math.abs(inputs.currentRotationsMotor1 - targetRotationsMotor1) < ROTATIONS_THRESHOLD;
     }
 
+    public boolean atTargetVoltageMotor1() {
+        return Math.abs(inputs.currentAppliedVoltageMotor1 - targetVoltageMotor1) < VOLTAGE_THRESHOLD;
+    }
+
     public double getVoltageMotor1() {
         return inputs.currentAppliedVoltageMotor1;
     }
@@ -70,6 +75,10 @@ public class Prototype extends SubsystemBase {
 
     public boolean atTargetRotationsMotor2() {
         return Math.abs(inputs.currentRotationsMotor2 - targetRotationsMotor1) < ROTATIONS_THRESHOLD;
+    }
+
+    public boolean atTargetVoltageMotor2() {
+        return Math.abs(inputs.currentAppliedVoltageMotor2 - targetVoltageMotor2) < VOLTAGE_THRESHOLD;
     }
 
     /**

@@ -19,7 +19,6 @@ import frc.robot.subsystems.prototype.Prototype;
 public class RobotContainer {
     private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0), new TalonFX(1)));
     private final CommandXboxController driverController = new CommandXboxController(0);
-    private final SlewRateLimiter limit = new SlewRateLimiter(Units.rotationsPerMinuteToRadiansPerSecond(100.0));
 
     public RobotContainer() {
 
@@ -28,15 +27,15 @@ public class RobotContainer {
 
     private double modifyAxis(double value) {
         double clippedValue = MathUtil.applyDeadband(value, 0.08);
-        return -Math.copySign((clippedValue * clippedValue) * 12, value);
+        return -Math.copySign(clippedValue * clippedValue, value);
 
     }
 
     private void configureBindings() {
 
         prototype.setDefaultCommand(prototype.followVoltage(
-                () -> modifyAxis(driverController.getRawAxis(1)),
-                () -> modifyAxis(driverController.getRawAxis(5))));
+                () -> 12 * (modifyAxis(driverController.getLeftY())),
+                () -> 12 * (modifyAxis(driverController.getRightY()))));
 
         driverController.a().onTrue(prototype.stopMotors());
 

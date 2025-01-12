@@ -33,7 +33,6 @@ public interface PrototypeIO {
         setTargetVoltageMotor2(0.0);
     }
 
-    ;
 
     default void setTargetRotationsMotor2(double rotations) {
     }
