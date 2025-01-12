@@ -11,7 +11,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
 public class ControllerHelper {
 
-    private static final double deadbandWidth = 0.08;
+    private static final double DEADBAND_WIDTH = 0.08;
 
     /**
      * Modifies the axis directly from a controller so that it is correct, with a deadband, scaled, inverted, and clipped.
@@ -20,7 +20,7 @@ public class ControllerHelper {
      * @return clipped, scaled, and inverted axis value to use.
      */
     private double modifyAxis(double value, double scale) {
-        double clippedValue = MathUtil.applyDeadband(value, deadbandWidth);
+        double clippedValue = MathUtil.applyDeadband(value, DEADBAND_WIDTH);
 
         // Square the clipped value (preserving and inverting the sign) and return it.
         return -Math.copySign((clippedValue * clippedValue) * scale, value);
