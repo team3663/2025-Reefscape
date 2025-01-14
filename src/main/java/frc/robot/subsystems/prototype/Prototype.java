@@ -11,7 +11,7 @@ import java.util.function.DoubleSupplier;
 public class Prototype extends SubsystemBase {
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     private static final double ROTATIONS_THRESHOLD = 0.1;
-    private static final double VOLTAGE_THRESHOLD = 12.0;
+    private static final double VOLTAGE_THRESHOLD = 1.0;
 
     final PrototypeIO io;
     final PrototypeInputs inputs = new PrototypeInputs();
