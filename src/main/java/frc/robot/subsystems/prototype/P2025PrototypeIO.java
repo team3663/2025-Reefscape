@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -57,10 +58,11 @@ public class P2025PrototypeIO implements PrototypeIO {
         config.MotionMagic.MotionMagicAcceleration = (1000.0 / 60.0);
         config.MotionMagic.MotionMagicCruiseVelocity = (5500.0 / 60.0);
 
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        //config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        motor1.getConfigurator().apply(config);
         motor2.getConfigurator().apply(config);
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        motor1.getConfigurator().apply(config);
     }
 
     @Override

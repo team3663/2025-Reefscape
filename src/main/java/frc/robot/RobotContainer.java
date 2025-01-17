@@ -17,7 +17,7 @@ import frc.robot.subsystems.prototype.Prototype;
 
 @Logged
 public class RobotContainer {
-    private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0), new TalonFX(1)));
+    private final Prototype prototype = new Prototype(new P2025PrototypeIO(new TalonFX(0, "3663"), new TalonFX(1, "3663")));
     private final CommandXboxController driverController = new CommandXboxController(0);
 
     public RobotContainer() {
