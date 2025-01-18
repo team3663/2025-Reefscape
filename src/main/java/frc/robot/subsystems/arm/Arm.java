@@ -8,17 +8,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 @Logged
 public class Arm extends SubsystemBase {
-    private final ArmIO io;
-    private ArmInputs inputs;
     public static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
+    private final ArmIO io;
+    private ArmInputs inputs;
+    private double targetPosition = 0.0;
 
     public Arm(ArmIO io) {
         this.io = io;
     }
-    private double targetPosition = 0.0;
+
     @Override
-    public void periodic(){
+    public void periodic() {
         io.updateInputs(inputs);
     }
 
@@ -26,6 +27,9 @@ public class Arm extends SubsystemBase {
         return inputs.currentVelocity;
     }
 
+    public double getPosition() {
+        return inputs.currentPosition;
+    }
 
     public boolean atTargetPosition() {
         return Math.abs(inputs.currentPosition - targetPosition) < POSITION_THRESHOLD;
@@ -36,11 +40,13 @@ public class Arm extends SubsystemBase {
                 io::stop
         );
     }
+
     public Command resetPosition() {
         return runOnce(
                 () -> io.resetPosition()
         );
     }
+
     public Command goToPosition(double position) {
         return run(
                 () -> {
@@ -49,6 +55,7 @@ public class Arm extends SubsystemBase {
                 }
         ).until(this::atTargetPosition);
     }
+
     public Command followPosition(DoubleSupplier position) {
         return runEnd(
                 () -> {
