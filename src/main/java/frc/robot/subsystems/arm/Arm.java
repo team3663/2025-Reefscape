@@ -5,7 +5,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 @Logged
@@ -38,8 +37,10 @@ public class Arm extends SubsystemBase {
     }
 
     public Command stop() {
-        return runOnce(
-                io::stop
+        return runOnce(() -> {
+                    targetPosition = 0.0;
+                    io.stop();
+                }
         );
     }
 
@@ -60,8 +61,8 @@ public class Arm extends SubsystemBase {
 
     public Command followPosition(DoubleSupplier position) {
         return runEnd(() -> {
-                targetPosition = position.getAsDouble();
-                io.setTargetPosition(targetPosition);
+            targetPosition = position.getAsDouble();
+            io.setTargetPosition(targetPosition);
         }, io::stop);
     }
 }
