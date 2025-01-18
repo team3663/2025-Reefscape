@@ -18,12 +18,12 @@ public class SuperStructure extends SubsystemBase {
         this.arm = arm;
     }
 
-    private boolean armCollide(double elevatorCurrentPos, double armCurrentPos, double elevatorTargetPos, double armTargetPos) {
-        return false;
+    private boolean armNotCollide(double elevatorCurrentPos, double armCurrentPos, double elevatorTargetPos, double armTargetPos) {
+        return true;
     }
 
-    private boolean armCollide(double elevatorTargetPos, double armTargetPos) {
-        return armCollide(elevator.getPosition(), arm.getPosition(), elevatorTargetPos, armTargetPos);
+    private boolean armNotCollide(double elevatorTargetPos, double armTargetPos) {
+        return armNotCollide(elevator.getPosition(), arm.getPosition(), elevatorTargetPos, armTargetPos);
     }
 
     public Command stop() {
@@ -36,12 +36,12 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier armPosition) {
-        BooleanSupplier go = () -> !armCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
+        BooleanSupplier go = () -> armNotCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
         return Commands.parallel(
                 elevator.followPosition(elevatorPosition, go),
                 arm.followPosition(armPosition, go));
 
-        
+
 //        return runOnce(
 //                () -> {
 //                    BooleanSupplier go = () -> !armCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
@@ -50,13 +50,12 @@ public class SuperStructure extends SubsystemBase {
 //                }
 //        );
 
-
     }
 
     public Command goToPositions(double elevatorPosition, double armPosition) {
         return runEnd(
                 () -> {
-                    if (!armCollide(elevatorPosition, armPosition)) {
+                    if (armNotCollide(elevatorPosition, armPosition)) {
                         elevator.goToPosition(elevatorPosition);
                         arm.goToPosition(armPosition);
                     }

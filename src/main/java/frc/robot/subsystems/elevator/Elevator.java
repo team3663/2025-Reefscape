@@ -60,10 +60,11 @@ public class Elevator extends SubsystemBase {
 
     public Command followPosition(DoubleSupplier position, BooleanSupplier go) {
         return runEnd(() -> {
+            // TODO uncomment and get rid of sout
 //            if (go.getAsBoolean()) {
-                System.out.println("elev active");
-                targetPosition = position.getAsDouble();
-                io.setTargetPosition(targetPosition);
+            System.out.println("elev active");
+            targetPosition = position.getAsDouble();
+            io.setTargetPosition(targetPosition);
 //            }
         }, io::stop);
     }
