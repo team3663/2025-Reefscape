@@ -18,7 +18,7 @@ public class P2025ArmIO implements ArmIO {
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0));
 
-    private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withSlot(1);
+    private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
     public P2025ArmIO(TalonFX motor) {
