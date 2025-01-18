@@ -13,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.P2025ArmIO;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.P2025ElevatorIO;
+import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.utility.ControllerHelper;
 
 @Logged
 public class RobotContainer {
-    private final Elevator elevator = new Elevator(new P2025ElevatorIO(
+    private final Elevator elevator = new Elevator(new C2025ElevatorIO(
             new TalonFX(0), new TalonFX(1), 0));
     private final Arm arm = new Arm(new P2025ArmIO(new TalonFX(3)));
 
@@ -32,9 +32,9 @@ public class RobotContainer {
 
     private void configureBindings() {
         elevator.setDefaultCommand(elevator.followPosition(
-                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.rotationsToRadians(2))));
+                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.feetToMeters(2.0))));
         arm.setDefaultCommand(arm.followPosition(
-                () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.rotationsToRadians(2))));
+                () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.feetToMeters(2.0))));
 
         controller.a().onTrue(superStructure.stop());
     }
