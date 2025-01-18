@@ -10,6 +10,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.config.C2025RobotFactory;
 
 @Logged
 public class Robot extends TimedRobot {
@@ -19,7 +20,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer robotContainer;
 
     public Robot() {
-        robotContainer = new RobotContainer();
+        robotContainer = new RobotContainer(new C2025RobotFactory());
 
         Epilogue.configure(config -> {
         });
