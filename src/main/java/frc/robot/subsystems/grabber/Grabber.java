@@ -1,4 +1,4 @@
-package frc.robot.subsystem.grabber;
+package frc.robot.subsystems.grabber;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;

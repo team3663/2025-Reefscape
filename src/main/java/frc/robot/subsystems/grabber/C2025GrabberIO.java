@@ -1,4 +1,4 @@
-package frc.robot.subsystem.grabber;
+package frc.robot.subsystems.grabber;
 
 import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;

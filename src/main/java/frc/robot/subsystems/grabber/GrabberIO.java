@@ -1,4 +1,4 @@
-package frc.robot.subsystem.grabber;
+package frc.robot.subsystems.grabber;
 
 public interface GrabberIO {
     default void updateInputs(GrabberInputs inputs) {
