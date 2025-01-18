@@ -1,40 +1,38 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 
 public class Vision extends SubsystemBase {
 
-    // With eager singleton initialization, any static variables/fields used in the 
-    // constructor must appear before the "INSTANCE" variable so that they are initialized 
-    // before the constructor is called when the "INSTANCE" variable initializes.
+    VisionMeasurement currentMeasurement = new VisionMeasurement(Pose2d.kZero, 0, VecBuilder.fill(0,0,0));
 
-    /**
-     * The Singleton instance of this Vision. Code should use
-     * the {@link #getInstance()} method to get the single instance (rather
-     * than trying to construct an instance of this class.)
-     */
-    private final static Vision INSTANCE = new Vision();
-
-    /**
-     * Returns the Singleton instance of this Vision. This static method
-     * should be used, rather than the constructor, to get the single instance
-     * of this class. For example: {@code Vision.getInstance();}
-     */
-    @SuppressWarnings("WeakerAccess")
-    public static Vision getInstance() {
-        return INSTANCE;
+    private Vision() {
     }
 
-    /**
-     * Creates a new instance of this Vision. This constructor
-     * is private since this class is a Singleton. Code should use
-     * the {@link #getInstance()} method to get the singleton instance.
-     */
-    private Vision() {
-        // TODO: Set the default command, if any, for this subsystem by calling setDefaultCommand(command)
-        //       in the constructor or in the robot coordination class, such as RobotContainer.
-        //       Also, you can call addChild(name, sendableChild) to associate sendables with the subsystem
-        //       such as SpeedControllers, Encoders, DigitalInputs, etc.
+    @Override
+    public void periodic() {
+
+        //  Need the robot's current yaw as an input to vision calculations
+        double yawDegrees = 0;
+
+        LimelightHelpers.SetRobotOrientation("limelight", yawDegrees, 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        boolean doRejectUpdate = false;
+        if (mt2.tagCount == 0)
+        {
+            doRejectUpdate = true;
+        }
+
+        if(!doRejectUpdate)
+        {
+            currentMeasurement.estimatedPose = mt2.pose;
+            currentMeasurement.timestamp = mt2.timestampSeconds;
+            currentMeasurement.stdDevs = VecBuilder.fill(0,0,0);
+        }
     }
 }
 
