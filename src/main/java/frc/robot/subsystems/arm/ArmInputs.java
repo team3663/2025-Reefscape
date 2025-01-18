@@ -1,5 +1,8 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.epilogue.Logged;
+
+@Logged
 public class ArmInputs {
     public double currentVelocity;
     public double currentAppliedVoltage;

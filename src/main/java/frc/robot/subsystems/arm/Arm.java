@@ -1,11 +1,12 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.DoubleSupplier;
-
+@Logged
 public class Arm extends SubsystemBase {
     private final ArmIO io;
     private ArmInputs inputs;
