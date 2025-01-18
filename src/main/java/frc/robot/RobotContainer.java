@@ -34,7 +34,7 @@ public class RobotContainer {
         elevator.setDefaultCommand(elevator.followPosition(
                 () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.feetToMeters(2.0))));
         arm.setDefaultCommand(arm.followPosition(
-                () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.feetToMeters(2.0))));
+                () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.rotationsToRadians(1.0))));
 
         controller.a().onTrue(superStructure.stop());
     }
