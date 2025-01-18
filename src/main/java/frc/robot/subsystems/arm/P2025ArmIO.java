@@ -42,14 +42,17 @@ public class P2025ArmIO implements ArmIO {
     @Override
     public void updateInputs(ArmInputs inputs) {
         //SimStates
-        var simStateMotor = motor.getSimState();
-        sim.setInputVoltage(simStateMotor.getMotorVoltage());
-        //Updates sim every 20 milliseconds
-        sim.update(Robot.kDefaultPeriod);
-        simStateMotor.setRotorAcceleration(sim.getAngularAcceleration());
-        simStateMotor.setRotorVelocity(sim.getAngularVelocity());
-        simStateMotor.setRawRotorPosition(sim.getAngularPosition());
-
+        if (Robot.isSimulation()) {
+            var simStateMotor = motor.getSimState();
+            sim.setInputVoltage(simStateMotor.getMotorVoltage());
+            //Updates sim every 20 milliseconds
+            sim.update(Robot.kDefaultPeriod);
+            simStateMotor.setRotorAcceleration(sim.getAngularAcceleration());
+            simStateMotor.setRotorVelocity(sim.getAngularVelocity());
+            simStateMotor.setRawRotorPosition(sim.getAngularPosition());
+        }
+        inputs.currentAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
+        inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
