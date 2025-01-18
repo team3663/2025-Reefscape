@@ -10,28 +10,29 @@ import java.util.function.BooleanSupplier;
 import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
 public class ControllerHelper {
-
     private static final double DEADBAND_WIDTH = 0.08;
 
     /**
      * Modifies the axis directly from a controller so that it is correct, with a deadband, scaled, inverted, and clipped.
-     * @param value - Raw value read from controller axis to be modified.
-     * @param scale - The amount you want to scale the axis by.
+     *
+     * @param value Raw value read from controller axis to be modified.
+     * @param scale The amount you want to scale the axis by.
      * @return clipped, scaled, and inverted axis value to use.
      */
     public static double modifyAxis(double value, double scale) {
         double clippedValue = MathUtil.applyDeadband(value, DEADBAND_WIDTH);
 
         // Square the clipped value (preserving and inverting the sign) and return it.
-        return -Math.copySign((clippedValue * clippedValue) * scale, value);
+        return Math.copySign((clippedValue * clippedValue) * scale, value);
     }
 
     /**
      * Create command to enable rumble feedback on XBox controller when a condition is true with the given rumble type and value.
-     * @param controller - XBox controller to rumble.
-     * @param condition - Condition that triggers rumble.
-     * @param rumbleType - The type of rumble to do.
-     * @param value - The strength of the rumble.
+     *
+     * @param controller XBox controller to rumble.
+     * @param condition  Condition that triggers rumble.
+     * @param rumbleType The type of rumble to do.
+     * @param value      The strength of the rumble.
      * @return Command that triggers rumble feedback on controller when condition is true with the given rumble type and value.
      */
     public static Command rumble(CommandXboxController controller, BooleanSupplier condition, GenericHID.RumbleType rumbleType, double value) {
@@ -43,9 +44,10 @@ public class ControllerHelper {
 
     /**
      * Create command to enable rumble feedback on XBox controller with the given rumble type and value.
-     * @param controller - XBox controller to rumble.
-     * @param rumbleType - The type of rumble to do.
-     * @param value - The strength of the rumble.
+     *
+     * @param controller XBox controller to rumble.
+     * @param rumbleType The type of rumble to do.
+     * @param value      The strength of the rumble.
      * @return Command that triggers rumble feedback on controller with the given rumble type and value.
      */
     public static Command rumble(CommandXboxController controller, GenericHID.RumbleType rumbleType, double value) {
@@ -54,8 +56,9 @@ public class ControllerHelper {
 
     /**
      * Create command to enable rumble feedback on XBox controller when a condition is true.
-     * @param controller - XBox controller to rumble.
-     * @param condition - Condition that triggers rumble.
+     *
+     * @param controller XBox controller to rumble.
+     * @param condition  Condition that triggers rumble.
      * @return Command that triggers rumble feedback on controller when condition is true.
      */
     public static Command rumble(CommandXboxController controller, BooleanSupplier condition) {
@@ -64,7 +67,8 @@ public class ControllerHelper {
 
     /**
      * Create command to enable rumble feedback on XBox controller.
-     * @param controller - XBox controller to rumble
+     *
+     * @param controller XBox controller to rumble
      * @return Command that triggers rumble feedback on controller.
      */
     public static Command rumble(CommandXboxController controller) {
