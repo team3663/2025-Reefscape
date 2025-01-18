@@ -36,29 +36,16 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier armPosition) {
-        BooleanSupplier go = () -> armNotCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
         return Commands.parallel(
-                elevator.followPosition(elevatorPosition, go),
-                arm.followPosition(armPosition, go));
-
-
-//        return runOnce(
-//                () -> {
-//                    BooleanSupplier go = () -> armNotCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
-//                    elevator.followPosition(elevatorPosition, go);
-//                    arm.followPosition(armPosition, go);
-//                }
-//        );
-
+                elevator.followPosition(elevatorPosition),
+                arm.followPosition(armPosition));
     }
 
     public Command goToPositions(double elevatorPosition, double armPosition) {
         return runEnd(
                 () -> {
-                    if (armNotCollide(elevatorPosition, armPosition)) {
                         elevator.goToPosition(elevatorPosition);
                         arm.goToPosition(armPosition);
-                    }
                 }, this::stop
         );
     }

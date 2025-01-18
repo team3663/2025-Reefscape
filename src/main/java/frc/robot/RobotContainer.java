@@ -31,8 +31,9 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        superStructure.setDefaultCommand(superStructure.followPositions(
-                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.rotationsToRadians(2)),
+        elevator.setDefaultCommand(elevator.followPosition(
+                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.rotationsToRadians(2))));
+        arm.setDefaultCommand(arm.followPosition(
                 () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.rotationsToRadians(2))));
 
         controller.a().onTrue(superStructure.stop());

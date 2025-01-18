@@ -58,16 +58,10 @@ public class Arm extends SubsystemBase {
         ).until(this::atTargetPosition);
     }
 
-    public Command followPosition(DoubleSupplier position, BooleanSupplier go) {
+    public Command followPosition(DoubleSupplier position) {
         return runEnd(() -> {
-            if (go.getAsBoolean()) {
                 targetPosition = position.getAsDouble();
                 io.setTargetPosition(targetPosition);
-            }
         }, io::stop);
-    }
-
-    public Command followPosition(DoubleSupplier position) {
-        return followPosition(position, () -> true);
     }
 }
