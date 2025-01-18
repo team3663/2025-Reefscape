@@ -11,7 +11,7 @@ import java.util.function.DoubleSupplier;
 @Logged
 public class Elevator extends SubsystemBase {
 
-    private static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
+    private static final double POSITION_THRESHOLD = Units.inchesToMeters(1);
 
     private final ElevatorIO io;
     private final ElevatorInputs inputs = new ElevatorInputs();
@@ -27,13 +27,10 @@ public class Elevator extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public double getVelocityMotor1() {
+    public double getVelocityMotor() {
         return inputs.currentVelocityMotor1;
     }
 
-    public double getVelocityMotor2() {
-        return inputs.currentVelocityMotor2;
-    }
 
     public double getPosition() {
         return inputs.currentPositionMotor1;

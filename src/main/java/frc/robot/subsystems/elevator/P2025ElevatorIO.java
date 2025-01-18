@@ -19,14 +19,8 @@ public class P2025ElevatorIO implements ElevatorIO {
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    private final DCMotorSim simMotor1 = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
-                    0.001, 1.0),
-            DCMotor.getKrakenX60(1).withReduction(1.0)
-    );
-
-    private final DCMotorSim simMotor2 = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
+    private final DCMotorSim sim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2),
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0)
     );
@@ -56,23 +50,16 @@ public class P2025ElevatorIO implements ElevatorIO {
 
     @Override
     public void updateInputs(ElevatorInputs inputs) {
-        // Sims for Motor 1
-        var simStateMotor1 = motor.getSimState();
-        simMotor1.setInputVoltage(simStateMotor1.getMotorVoltage());
-        //Updates the sim information every 20 ms
-        simMotor1.update(Robot.kDefaultPeriod);
-        simStateMotor1.setRotorAcceleration(simMotor1.getAngularAcceleration());
-        simStateMotor1.setRotorVelocity(simMotor1.getAngularVelocity());
-        simStateMotor1.setRawRotorPosition(simMotor1.getAngularPosition());
-
-        // Sims for Motor 2
-        var simStateMotor2 = motor2.getSimState();
-        simMotor2.setInputVoltage(simStateMotor2.getMotorVoltage());
-        //Updates the sim information every 20 ms
-        simMotor2.update(Robot.kDefaultPeriod);
-        simStateMotor2.setRotorAcceleration(simMotor2.getAngularAcceleration());
-        simStateMotor2.setRotorVelocity(simMotor2.getAngularVelocity());
-        simStateMotor2.setRawRotorPosition(simMotor2.getAngularPosition());
+        if (Robot.isSimulation()) {
+            // Sims for Motor 1
+            var simStateMotor1 = motor.getSimState();
+            sim.setInputVoltage(simStateMotor1.getMotorVoltage());
+            //Updates the sim information every 20 ms
+            sim.update(Robot.kDefaultPeriod);
+            simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
+            simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
+            simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
+        }
 
         // Inputs for Motor 1
         inputs.currentVelocityMotor1 = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
