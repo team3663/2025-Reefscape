@@ -13,20 +13,20 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 public class C2025ElevatorIO implements ElevatorIO {
+    private static final double GEAR_RATIO = 1.0;
+    private static final double PULLEY_RADIUS = Units.inchesToMeters(1.0);
+    private static final double PULLEY_CIRCUMFERENCE = (2 * Math.PI * PULLEY_RADIUS);
+
     private final TalonFX motor;
     private final TalonFX motor2;
 
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    private static final double GEAR_RATIO = 1.0;
-    private static final double PULLEY_RADIUS = Units.inchesToMeters(1.0);
-    private static final double PULLEY_CIRCUMFERENCE = (2 * Math.PI * PULLEY_RADIUS);
-
     private final DCMotorSim sim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2),
                     0.001, GEAR_RATIO),
-            DCMotor.getKrakenX60(1).withReduction(1.0)
+            DCMotor.getKrakenX60(2).withReduction(1.0)
     );
 
     public C2025ElevatorIO(TalonFX motor, TalonFX motor2, int motor1Id) {
@@ -57,14 +57,18 @@ public class C2025ElevatorIO implements ElevatorIO {
     @Override
     public void updateInputs(ElevatorInputs inputs) {
         if (Robot.isSimulation()) {
-            // Sims for Motor 1
+            // Sims for Motor 1 and 2
             var simStateMotor1 = motor.getSimState();
+            var simStateMotor2 = motor2.getSimState();
             sim.setInputVoltage(simStateMotor1.getMotorVoltage());
             //Updates the sim information every 20 ms
             sim.update(Robot.kDefaultPeriod);
             simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
             simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
             simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
+            simStateMotor2.setRotorAcceleration(sim.getAngularAcceleration());
+            simStateMotor2.setRotorVelocity(sim.getAngularVelocity());
+            simStateMotor2.setRawRotorPosition(sim.getAngularPosition());
         }
 
         // Inputs for Motor 1
@@ -74,10 +78,10 @@ public class C2025ElevatorIO implements ElevatorIO {
         inputs.motorTemperatureMotor1 = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDrawMotor1 = motor.getSupplyCurrent().getValueAsDouble();
 
-        // Inputs for Motor 1
+        // Inputs for Motor 2
         inputs.currentVelocityMotor2 = Units.rotationsToRadians(motor2.getVelocity().getValueAsDouble());
         inputs.currentAppliedVoltageMotor2 = motor2.getMotorVoltage().getValueAsDouble();
-        inputs.currentPositionMotor2 = motor.getPosition().getValueAsDouble() / (2 * Math.PI * PULLEY_RADIUS);
+        inputs.currentPositionMotor2 = motor.getPosition().getValueAsDouble() * PULLEY_CIRCUMFERENCE;
         inputs.motorTemperatureMotor2 = motor2.getDeviceTemp().getValueAsDouble();
         inputs.currentDrawMotor2 = motor2.getSupplyCurrent().getValueAsDouble();
     }

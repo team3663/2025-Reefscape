@@ -32,7 +32,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         elevator.setDefaultCommand(elevator.followPosition(
-                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.feetToMeters(2.0))));
+                () -> ControllerHelper.modifyAxis(controller.getLeftY(), Units.feetToMeters(1.0)) + Units.feetToMeters(1.0)));
         arm.setDefaultCommand(arm.followPosition(
                 () -> ControllerHelper.modifyAxis(controller.getRightY(), Units.rotationsToRadians(1.0))));
 
