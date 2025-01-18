@@ -11,9 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
-import static com.ctre.phoenix6.signals.NeutralModeValue.*;
-
-public class P2025ArmIO implements ArmIO{
+public class P2025ArmIO implements ArmIO {
     private final TalonFX motor;
     private final DCMotorSim sim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
@@ -21,6 +19,7 @@ public class P2025ArmIO implements ArmIO{
             DCMotor.getKrakenX60(1).withReduction(1.0));
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withSlot(1);
     private final NeutralOut stopRequest = new NeutralOut();
+
     public P2025ArmIO(TalonFX motor) {
         this.motor = motor;
 
@@ -34,13 +33,14 @@ public class P2025ArmIO implements ArmIO{
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
 
-        config.MotionMagic.MotionMagicAcceleration = 2500.0/60.0;
-        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0/60.0;
+        config.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
+        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
 
         motor.getConfigurator().apply(config);
     }
+
     @Override
-    public void updateInputs(ArmInputs inputs){
+    public void updateInputs(ArmInputs inputs) {
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
@@ -54,14 +54,17 @@ public class P2025ArmIO implements ArmIO{
         simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
         simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
     }
+
     @Override
-    public void resetPosition(){
+    public void resetPosition() {
         motor.setPosition(0);
     }
+
     @Override
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+
     @Override
     public void stop() {
         motor.setControl(stopRequest);
