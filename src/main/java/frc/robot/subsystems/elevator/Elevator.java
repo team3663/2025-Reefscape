@@ -26,12 +26,16 @@ public class Elevator extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public double getVelocity() {
-        return inputs.currentVelocity;
+    public double getVelocityMotor1() {
+        return inputs.currentVelocityMotor1;
+    }
+
+    public double getVelocityMotor2() {
+        return inputs.currentVelocityMotor2;
     }
 
     public boolean atTargetPosition() {
-        return Math.abs(inputs.currentPosition - targetPosition) < POSITION_THRESHOLD;
+        return Math.abs(inputs.currentPositionMotor1 - targetPosition) < POSITION_THRESHOLD;
     }
 
     public Command stop() {
