@@ -17,12 +17,12 @@ public class P2025ArmIO implements ArmIO {
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0));
+
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0).withSlot(1);
     private final NeutralOut stopRequest = new NeutralOut();
 
     public P2025ArmIO(TalonFX motor) {
         this.motor = motor;
-
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -41,18 +41,18 @@ public class P2025ArmIO implements ArmIO {
 
     @Override
     public void updateInputs(ArmInputs inputs) {
+        //SimStates
+        var simStateMotor = motor.getSimState();
+        sim.setInputVoltage(simStateMotor.getMotorVoltage());
+        //Updates sim every 20 milliseconds
+        sim.update(Robot.kDefaultPeriod);
+        simStateMotor.setRotorAcceleration(sim.getAngularAcceleration());
+        simStateMotor.setRotorVelocity(sim.getAngularVelocity());
+        simStateMotor.setRawRotorPosition(sim.getAngularPosition());
+
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
-        //SimStates
-        var simStateMotor1 = motor.getSimState();
-        sim.setInputVoltage(simStateMotor1.getMotorVoltage());
-        //Updates sim every 20 milliseconds
-        sim.update(Robot.kDefaultPeriod);
-
-        simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
-        simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
-        simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
     }
 
     @Override

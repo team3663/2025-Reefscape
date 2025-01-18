@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 @Logged
@@ -57,10 +58,17 @@ public class Elevator extends SubsystemBase {
         }).until(this::atTargetPosition);
     }
 
-    public Command followPosition(DoubleSupplier position) {
+    public Command followPosition(DoubleSupplier position, BooleanSupplier go) {
         return runEnd(() -> {
-            io.setTargetPosition(position.getAsDouble());
-            targetPosition = position.getAsDouble();
+//            if (go.getAsBoolean()) {
+                System.out.println("elev active");
+                targetPosition = position.getAsDouble();
+                io.setTargetPosition(targetPosition);
+//            }
         }, io::stop);
+    }
+
+    public Command followPosition(DoubleSupplier position) {
+        return followPosition(position, () -> true);
     }
 }

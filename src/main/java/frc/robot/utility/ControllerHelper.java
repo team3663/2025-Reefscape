@@ -19,7 +19,7 @@ public class ControllerHelper {
      * @param scale - The amount you want to scale the axis by.
      * @return clipped, scaled, and inverted axis value to use.
      */
-    private double modifyAxis(double value, double scale) {
+    public static double modifyAxis(double value, double scale) {
         double clippedValue = MathUtil.applyDeadband(value, DEADBAND_WIDTH);
 
         // Square the clipped value (preserving and inverting the sign) and return it.
