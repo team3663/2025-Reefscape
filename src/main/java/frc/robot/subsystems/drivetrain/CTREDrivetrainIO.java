@@ -19,6 +19,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     private volatile SwerveDrivetrain.SwerveDriveState lastState = new SwerveDrivetrain.SwerveDriveState();
 
+    @SafeVarargs
     public CTREDrivetrainIO(
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants
@@ -33,9 +34,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     @Override
     public void updateInputs(DrivetrainInputs inputs) {
         if (Robot.isSimulation()) {
-            for (int i = 0; i < 20; i++) {
-                drivetrain.updateSimState(Robot.kDefaultPeriod / 20, RobotController.getBatteryVoltage());
-            }
+            drivetrain.updateSimState(Robot.kDefaultPeriod, RobotController.getBatteryVoltage());
         }
 
         var state = lastState;

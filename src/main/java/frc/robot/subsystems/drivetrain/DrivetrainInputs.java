@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public class DrivetrainInputs {
     public int successfulDaqs = 0;
     public int failedDaqs = 0;
-    public double odometryPeriod = 0;
+    public double odometryPeriod = 0.0;
 
     public Pose2d pose = new Pose2d();
     public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();

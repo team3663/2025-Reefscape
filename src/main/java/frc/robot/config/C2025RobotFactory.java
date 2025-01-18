@@ -21,7 +21,7 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double MK4N_STEER_FRICTION_VOLTAGE = 0.25;
     private static final Slot0Configs MK4N_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(100.0);
-    private static final double MK4N_WHEEL_RADIUS = Units.inchesToMeters(4);
+    private static final double MK4N_WHEEL_RADIUS = Units.inchesToMeters(4.0);
 
     private static final double MODULE_WHEEL_INSET = Units.inchesToMeters(2.625);
     private static final double FRAME_X_LENGTH = Units.inchesToMeters(28.0);
@@ -63,22 +63,22 @@ public class C2025RobotFactory implements RobotFactory {
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 1;
-    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0);
+    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 3;
     private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 4;
     private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 2;
-    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0);
+    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 5;
     private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 6;
     private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 3;
-    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0);
+    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 7;
     private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 8;
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
-    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0);
+    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
 
     @Override
@@ -118,7 +118,6 @@ public class C2025RobotFactory implements RobotFactory {
                 -MODULE_X_OFFSET, -MODULE_Y_OFFSET,
                 false, false, false
         );
-
 
         return new CTREDrivetrainIO(DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
