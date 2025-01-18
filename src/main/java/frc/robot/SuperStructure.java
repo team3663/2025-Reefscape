@@ -44,7 +44,7 @@ public class SuperStructure extends SubsystemBase {
 
 //        return runOnce(
 //                () -> {
-//                    BooleanSupplier go = () -> !armCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
+//                    BooleanSupplier go = () -> armNotCollide(elevatorPosition.getAsDouble(), armPosition.getAsDouble());
 //                    elevator.followPosition(elevatorPosition, go);
 //                    arm.followPosition(armPosition, go);
 //                }
