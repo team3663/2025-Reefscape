@@ -8,7 +8,6 @@ import java.util.function.DoubleSupplier;
 
 @Logged
 public class Grabber extends SubsystemBase {
-    private final double VOLTAGE_THRESHOLD = 1.0;
 
     private final GrabberIO io;
     private final GrabberInputs inputs = new GrabberInputs();
@@ -32,13 +31,6 @@ public class Grabber extends SubsystemBase {
         return inputs.currentAppliedVoltage;
     }
 
-    public double getCurrentPosition() {
-        return inputs.currentPosition;
-    }
-
-    public boolean atTargetVoltage() {
-        return Math.abs(inputs.currentAppliedVoltage - targetVoltage) < VOLTAGE_THRESHOLD;
-    }
 
     public Command stop() {
         return runOnce(() -> {
@@ -46,10 +38,6 @@ public class Grabber extends SubsystemBase {
                     io.stop();
                 }
         );
-    }
-
-    public boolean getBeamBreakState() {
-        return io.getBeamBreakState();
     }
 
     public Command withVoltage(double voltage) {
@@ -66,11 +54,11 @@ public class Grabber extends SubsystemBase {
         }, io::stop);
     }
 
-    public Command withVoltageUntilBeam(double voltage) {
+    public Command withVoltageUntilDetected(double voltage) {
         return runEnd(() -> {
                     targetVoltage = voltage;
                     io.setTargetVoltage(targetVoltage);
                 }, io::stop
-        ).until(() -> inputs.beamBreakState);
+        ).until(() -> inputs.gamePieceDetected);
     }
 }

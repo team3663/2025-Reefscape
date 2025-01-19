@@ -56,11 +56,10 @@ public class C2025GrabberIO implements GrabberIO {
 
         inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
         inputs.currentAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
-        inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
 
-        inputs.beamBreakState = beamBreak.getS1State().getValue() == S1StateValue.High;
+        inputs.gamePieceDetected = beamBreak.getS1State().getValue() == S1StateValue.High;
     }
 
     @Override

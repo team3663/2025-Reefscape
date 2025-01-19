@@ -10,8 +10,4 @@ public interface GrabberIO {
 
     default void setTargetVoltage(double voltage) {
     }
-
-    default boolean getBeamBreakState() {
-        return true;
-    }
 }

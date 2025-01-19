@@ -6,10 +6,9 @@ import edu.wpi.first.epilogue.Logged;
 public class GrabberInputs {
     public double currentVelocity;
     public double currentAppliedVoltage;
-    public double currentPosition;
 
     public double motorTemperature;
     public double currentDraw;
 
-    public boolean beamBreakState;
+    public boolean gamePieceDetected;
 }

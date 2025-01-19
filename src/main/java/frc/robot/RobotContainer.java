@@ -44,7 +44,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.a().onTrue(superStructure.stop());
-        driverController.x().onTrue(grabber.withVoltageUntilBeam(12));
+        driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
         driverController.b().onTrue(grabber.stop());
     }
 
