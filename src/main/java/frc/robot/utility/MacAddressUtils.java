@@ -40,6 +40,7 @@ public final class MacAddressUtils {
                                 if (i != 0) {
                                     builder.append('-');
                                 }
+                                // Turn each byte of the MAC address into a 2-digit hex number
                                 builder.append(String.format("%02x", address[i]));
                             }
 
