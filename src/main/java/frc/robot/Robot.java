@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.C2025RobotFactory;
+import frc.robot.config.RobotFactory;
 import frc.robot.utility.MacAddressUtils;
 import frc.robot.utility.RobotId;
 
@@ -52,7 +53,12 @@ public class Robot extends TimedRobot {
             runtimeId = detectedId != null ? detectedId : RobotId.C2025;
         }
 
-        robotContainer = new RobotContainer(new C2025RobotFactory());
+        RobotFactory robotFactory = switch (runtimeId) {
+            case C2025 -> new C2025RobotFactory();
+            default -> new RobotFactory() {};
+        };
+
+        robotContainer = new RobotContainer(robotFactory);
 
         Epilogue.configure(config -> {
         });
