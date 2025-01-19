@@ -1,5 +1,5 @@
 package frc.robot.subsystems.vision;
 
-public interface VisionIo {
+public interface VisionIO {
     default void updateInputs(VisionInputs inputs) {}
 }
