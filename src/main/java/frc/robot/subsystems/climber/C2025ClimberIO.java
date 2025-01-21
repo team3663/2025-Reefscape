@@ -1,10 +1,12 @@
 package frc.robot.subsystems.climber;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.S1StateValue;
@@ -14,9 +16,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
-//TODO add second CANdi
+
 public class C2025ClimberIO implements ClimberIO{
     private final TalonFX motor;
+    private final CANcoder coder;
     private final CANdi beamBrake1;
     private final CANdi beamBrake2;
     private final NeutralOut stopRequest = new NeutralOut();
@@ -28,10 +31,11 @@ public class C2025ClimberIO implements ClimberIO{
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0));
 
-    public C2025ClimberIO(TalonFX motor, CANdi beamBrake1, CANdi beamBrake2) {
+    public C2025ClimberIO(TalonFX motor, CANdi beamBrake1, CANdi beamBrake2, CANcoder coder) {
         this.motor = motor;
         this.beamBrake1 = beamBrake1;
         this.beamBrake2 = beamBrake2;
+        this.coder = coder;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         //PID for position
@@ -49,6 +53,9 @@ public class C2025ClimberIO implements ClimberIO{
         CANdiConfiguration CANdiConfig = new CANdiConfiguration();
         beamBrake1.getConfigurator().apply(CANdiConfig);
         beamBrake2.getConfigurator().apply(CANdiConfig);
+
+        CANcoderConfiguration CANcoderConfig = new CANcoderConfiguration();
+        coder.getConfigurator().apply(CANcoderConfig);
     }
     @Override
     public void updateInputs(ClimberInputs inputs){
