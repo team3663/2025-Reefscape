@@ -19,12 +19,27 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // Updates every 20 milliseconds
         io.updateInputs(inputs);
     }
 
+    /**
+     * Drives field Oriented with the ability to specify X, Y, and Angular Velocities
+     *
+     * @param xVelocity
+     * @param yVelocity
+     * @param angularVelocity
+     */
     public Command drive(DoubleSupplier xVelocity, DoubleSupplier yVelocity, DoubleSupplier angularVelocity) {
-        return runEnd(() -> {
-            io.driveFieldOriented(xVelocity.getAsDouble(), yVelocity.getAsDouble(), angularVelocity.getAsDouble());
-        }, io::stop);
+        return runEnd(
+                // execute()
+                () -> {
+                    io.driveFieldOriented(
+                            xVelocity.getAsDouble(),
+                            yVelocity.getAsDouble(),
+                            angularVelocity.getAsDouble());
+                },
+                // end()
+                io::stop);
     }
 }

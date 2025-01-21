@@ -40,6 +40,7 @@ public class C2025RobotFactory implements RobotFactory {
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
 
+    // Creating a constants factory for the drive and steer motors of the drivetrain
     private static final SwerveModuleConstantsFactory<
             TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> MODULE_CONSTANTS_FACTORY
             = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
@@ -60,21 +61,25 @@ public class C2025RobotFactory implements RobotFactory {
             .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
             .withWheelRadius(MK4N_WHEEL_RADIUS);
 
+    // Front Left
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 1;
     private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
+    // Front Right
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 3;
     private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 4;
     private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 2;
     private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
+    // Back Left
     private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 5;
     private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 6;
     private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 3;
     private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
+    // Back Right
     private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 7;
     private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 8;
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
@@ -83,6 +88,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public DrivetrainIO createDrivetrainIo() {
+        // Configuring front left motor
         var frontLeftConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_FRONT_LEFT_STEER_ID,
                 DRIVETRAIN_FRONT_LEFT_DRIVE_ID,
@@ -92,6 +98,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
+        // Configuring front right motor
         var frontRightConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_FRONT_RIGHT_STEER_ID,
                 DRIVETRAIN_FRONT_RIGHT_DRIVE_ID,
@@ -101,6 +108,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
+        // Configuring back left motor
         var backLeftConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_BACK_LEFT_STEER_ID,
                 DRIVETRAIN_BACK_LEFT_DRIVE_ID,
@@ -110,6 +118,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
+        // Configuring back right motor
         var backRightConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_BACK_RIGHT_STEER_ID,
                 DRIVETRAIN_BACK_RIGHT_DRIVE_ID,
