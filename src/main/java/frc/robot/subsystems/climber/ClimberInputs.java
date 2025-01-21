@@ -1,5 +1,8 @@
-package frc.robot.subsystem.climber;
+package frc.robot.subsystems.climber;
 
+import edu.wpi.first.epilogue.Logged;
+
+@Logged
 public class ClimberInputs {
     public double currentPosition;
     public double targetPosition;
@@ -7,5 +10,6 @@ public class ClimberInputs {
     public double currentAppliedVoltage;
     public double motorTemperature;
     public double currentDraw;
-    public boolean beamBrakeState;
+    public boolean gamePieceDetected1;
+    public boolean gamePieceDetected2;
 }

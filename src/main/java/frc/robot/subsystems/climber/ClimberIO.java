@@ -1,4 +1,4 @@
-package frc.robot.subsystem.climber;
+package frc.robot.subsystems.climber;
 
 public interface ClimberIO {
     default void updateInputs(ClimberInputs inputs){}
