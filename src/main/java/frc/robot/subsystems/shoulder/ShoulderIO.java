@@ -1,7 +1,7 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.shoulder;
 
-public interface ArmIO {
-    default void updateInputs(ArmInputs inputs) {
+public interface ShoulderIO {
+    default void updateInputs(ShoulderInputs inputs) {
     }
 
     default void stop() {
@@ -16,5 +16,4 @@ public interface ArmIO {
 
     default void resetPosition() {
     }
-
 }

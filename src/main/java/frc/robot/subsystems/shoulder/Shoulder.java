@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.shoulder;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
@@ -8,14 +8,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
 
 @Logged
-public class Arm extends SubsystemBase {
+public class Shoulder extends SubsystemBase {
     public static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
-    private final ArmIO io;
-    private ArmInputs inputs = new ArmInputs();
+    private final ShoulderIO io;
+    private ShoulderInputs inputs = new ShoulderInputs();
     private double targetPosition = 0.0;
 
-    public Arm(ArmIO io) {
+    public Shoulder(ShoulderIO io) {
         this.io = io;
     }
 

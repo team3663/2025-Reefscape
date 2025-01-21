@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.wrist;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
-public class P2025ArmIO implements ArmIO {
+public class C2025WristIO implements WristIO {
     private final TalonFX motor;
     private final DCMotorSim sim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
@@ -21,7 +21,7 @@ public class P2025ArmIO implements ArmIO {
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    public P2025ArmIO(TalonFX motor) {
+    public C2025WristIO(TalonFX motor) {
         this.motor = motor;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -40,12 +40,12 @@ public class P2025ArmIO implements ArmIO {
     }
 
     @Override
-    public void updateInputs(ArmInputs inputs) {
-        //SimStates
+    public void updateInputs(WristInputs inputs) {
+        // SimStates
         if (Robot.isSimulation()) {
             var simStateMotor = motor.getSimState();
             sim.setInputVoltage(simStateMotor.getMotorVoltage());
-            //Updates sim every 20 milliseconds
+            // Updates sim every 20 milliseconds
             sim.update(Robot.kDefaultPeriod);
             simStateMotor.setRotorAcceleration(sim.getAngularAcceleration());
             simStateMotor.setRotorVelocity(sim.getAngularVelocity());

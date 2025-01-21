@@ -1,9 +1,9 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.shoulder;
 
 import edu.wpi.first.epilogue.Logged;
 
 @Logged
-public class ArmInputs {
+public class ShoulderInputs {
     public double currentVelocity;
     public double currentAppliedVoltage;
     public double currentPosition;
