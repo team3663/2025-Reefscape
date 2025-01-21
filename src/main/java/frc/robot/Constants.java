@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-    public static final CANBus DRIVETRAIN_CAN_BUS = new CANBus("3663");
 
     public static final double MK4_2PLUS_REDUCTION = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double MK4N_STEER_REDUCTION = 18.75;
@@ -22,12 +21,5 @@ public class Constants {
     public static final double MK4I_WHEEL_RADIUS = Units.inchesToMeters(2.0);
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(100.0);
-
-
-    public static final double MODULE_WHEEL_INSET_2025 = Units.inchesToMeters(2.625);
-    public static final double FRAME_X_LENGTH_2025 = Units.inchesToMeters(28.287024);
-    public static final double FRAME_Y_LENGTH_2025 = Units.inchesToMeters(27.5625);
-    public static final double MODULE_X_OFFSET_2025 = FRAME_X_LENGTH_2025 / 2.0 - MODULE_WHEEL_INSET_2025;
-    public static final double MODULE_Y_OFFSET_2025 = FRAME_Y_LENGTH_2025 / 2.0 - MODULE_WHEEL_INSET_2025;
 
 }
