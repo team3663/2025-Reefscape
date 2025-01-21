@@ -25,8 +25,8 @@ public class Constants {
 
 
     public static final double MODULE_WHEEL_INSET = Units.inchesToMeters(2.625);
-    public static final double FRAME_X_LENGTH = Units.inchesToMeters(28.0);
-    public static final double FRAME_Y_LENGTH = Units.inchesToMeters(28.0);
+    public static final double FRAME_X_LENGTH = Units.inchesToMeters(28.287024);
+    public static final double FRAME_Y_LENGTH = Units.inchesToMeters(27.5625);
     public static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     public static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
 

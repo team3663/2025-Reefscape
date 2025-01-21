@@ -50,25 +50,25 @@ public class C2024RobotFactory implements RobotFactory{
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 1;
-    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(19.16015625);
 
     // Front Right
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 3;
     private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 4;
     private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 2;
-    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(-130.078125);
 
     // Back Left
     private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 5;
     private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 6;
     private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 3;
-    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(111.26953125);
 
     // Back Right
     private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 7;
     private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 8;
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
-    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(125.5078125);
 
 
     @Override
