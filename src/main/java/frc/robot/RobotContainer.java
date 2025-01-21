@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.CANdi;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +20,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.wrist.C2025WristIO;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.utility.ControllerHelper;
+import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.grabber.C2025GrabberIO;
 
 @Logged
 public class RobotContainer {
@@ -27,6 +30,7 @@ public class RobotContainer {
             new TalonFX(0), new TalonFX(1), 0));
     private final Shoulder shoulder = new Shoulder(new C2025ShoulderIO(new TalonFX(3)));
     private final Wrist wrist = new Wrist(new C2025WristIO(new TalonFX(2)));
+    private final Grabber grabber = new Grabber(new C2025GrabberIO(new TalonFX(0), new CANdi(0)));
 
     private final SuperStructure superStructure = new SuperStructure(elevator, shoulder);
 
@@ -43,7 +47,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        wrist.setDefaultCommand(wrist.followPosition(() -> ControllerHelper.modifyAxis(driverController.getLeftX(), Units.rotationsToRadians(1.0))));
     }
 
     public Command getAutonomousCommand() {
