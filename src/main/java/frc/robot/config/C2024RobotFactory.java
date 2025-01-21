@@ -1,6 +1,5 @@
 package frc.robot.config;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -13,13 +12,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 
-public class C2025RobotFactory implements RobotFactory {
+public class C2024RobotFactory implements RobotFactory{
+
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(Constants.DRIVETRAIN_CAN_BUS.getName())
-            .withPigeon2Id(1)
+            .withPigeon2Id(0)
             .withPigeon2Configs(new Pigeon2Configuration());
 
-    private static final double DRIVE_INERTIA = 0.01;
+    private static final double DRIVE_INERTIA = 0.001;
     private static final double DRIVE_FRICTION_VOLTAGE = 0.25;
     private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
@@ -30,21 +30,21 @@ public class C2025RobotFactory implements RobotFactory {
             TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> MODULE_CONSTANTS_FACTORY
             = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
             .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
-            .withDriveMotorGearRatio(Constants.MK4_2PLUS_REDUCTION)
+            .withDriveMotorGearRatio(Constants.MK4I_2PLUS_REDUCTION)
             .withDriveInertia(DRIVE_INERTIA)
             .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE)
             .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withDriveMotorInitialConfigs(DRIVE_CONFIG)
             .withDriveMotorGains(DRIVE_PID_CONSTANTS)
             .withSteerMotorType(SwerveModuleConstants.SteerMotorArrangement.TalonFX_Integrated)
-            .withSteerMotorGearRatio(Constants.MK4N_STEER_REDUCTION)
-            .withSteerInertia(Constants.MK4N_STEER_INERTIA)
-            .withSteerFrictionVoltage(Constants.MK4N_STEER_FRICTION_VOLTAGE)
+            .withSteerMotorGearRatio(Constants.MK4I_STEER_REDUCTION)
+            .withSteerInertia(Constants.MK4I_STEER_INERTIA)
+            .withSteerFrictionVoltage(Constants.MK4I_STEER_FRICTION_VOLTAGE)
             .withSteerMotorInitialConfigs(STEER_CONFIG)
             .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
-            .withSteerMotorGains(Constants.MK4N_STEER_PID_CONSTANTS)
+            .withSteerMotorGains(Constants.MK4I_STEER_PID_CONSTANTS)
             .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
-            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS);
+            .withWheelRadius(Constants.MK4I_WHEEL_RADIUS);
 
     // Front Left
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
@@ -118,3 +118,5 @@ public class C2025RobotFactory implements RobotFactory {
                 backLeftConfig, backRightConfig);
     }
 }
+
+

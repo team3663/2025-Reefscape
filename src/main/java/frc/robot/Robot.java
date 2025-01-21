@@ -10,6 +10,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.config.C2024RobotFactory;
 import frc.robot.config.C2025RobotFactory;
 import frc.robot.config.RobotFactory;
 import frc.robot.utility.MacAddressUtils;
@@ -54,6 +55,7 @@ public class Robot extends TimedRobot {
         }
 
         RobotFactory robotFactory = switch (runtimeId) {
+            case C2024 -> new C2024RobotFactory();
             case C2025 -> new C2025RobotFactory();
             default -> new RobotFactory() {};
         };
