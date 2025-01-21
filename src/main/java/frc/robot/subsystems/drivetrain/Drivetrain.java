@@ -26,9 +26,9 @@ public class Drivetrain extends SubsystemBase {
     /**
      * Drives field Oriented with the ability to specify X, Y, and Angular Velocities
      *
-     * @param xVelocity
-     * @param yVelocity
-     * @param angularVelocity
+     * @param xVelocity       The target X (forwards) velocity in meters  per second.
+     * @param yVelocity       The target Y (towards the left side of the robot) velocity in meters per second.
+     * @param angularVelocity The target angular (counter-clockwise positive) velocity in radians per second.
      */
     public Command drive(DoubleSupplier xVelocity, DoubleSupplier yVelocity, DoubleSupplier angularVelocity) {
         return runEnd(

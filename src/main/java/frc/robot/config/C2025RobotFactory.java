@@ -88,7 +88,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public DrivetrainIO createDrivetrainIo() {
-        // Configuring front left motor
+        // Configuring front left module
         var frontLeftConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_FRONT_LEFT_STEER_ID,
                 DRIVETRAIN_FRONT_LEFT_DRIVE_ID,
@@ -98,7 +98,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        // Configuring front right motor
+        // Configuring front right module
         var frontRightConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_FRONT_RIGHT_STEER_ID,
                 DRIVETRAIN_FRONT_RIGHT_DRIVE_ID,
@@ -108,7 +108,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        // Configuring back left motor
+        // Configuring back left module
         var backLeftConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_BACK_LEFT_STEER_ID,
                 DRIVETRAIN_BACK_LEFT_DRIVE_ID,
@@ -118,7 +118,7 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        // Configuring back right motor
+        // Configuring back right module
         var backRightConfig = MODULE_CONSTANTS_FACTORY.createModuleConstants(
                 DRIVETRAIN_BACK_RIGHT_STEER_ID,
                 DRIVETRAIN_BACK_RIGHT_DRIVE_ID,
