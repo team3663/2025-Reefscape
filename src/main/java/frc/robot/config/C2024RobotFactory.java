@@ -30,7 +30,7 @@ public class C2024RobotFactory implements RobotFactory{
             TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> MODULE_CONSTANTS_FACTORY
             = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
             .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
-            .withDriveMotorGearRatio(Constants.MK4I_2PLUS_REDUCTION)
+            .withDriveMotorGearRatio(Constants.MK4I_3PLUS_REDUCTION)
             .withDriveInertia(DRIVE_INERTIA)
             .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE)
             .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
@@ -79,7 +79,7 @@ public class C2024RobotFactory implements RobotFactory{
                 DRIVETRAIN_FRONT_LEFT_DRIVE_ID,
                 DRIVETRAIN_FRONT_LEFT_ENCODER_ID,
                 DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET,
-                Constants.MODULE_X_OFFSET, Constants.MODULE_Y_OFFSET,
+                Constants.MODULE_X_OFFSET_2025, Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -89,7 +89,7 @@ public class C2024RobotFactory implements RobotFactory{
                 DRIVETRAIN_FRONT_RIGHT_DRIVE_ID,
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_ID,
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET,
-                Constants.MODULE_X_OFFSET, -Constants.MODULE_Y_OFFSET,
+                Constants.MODULE_X_OFFSET_2025, -Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -99,7 +99,7 @@ public class C2024RobotFactory implements RobotFactory{
                 DRIVETRAIN_BACK_LEFT_DRIVE_ID,
                 DRIVETRAIN_BACK_LEFT_ENCODER_ID,
                 DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET,
-                -Constants.MODULE_X_OFFSET, Constants.MODULE_Y_OFFSET,
+                -Constants.MODULE_X_OFFSET_2025, Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -109,7 +109,7 @@ public class C2024RobotFactory implements RobotFactory{
                 DRIVETRAIN_BACK_RIGHT_DRIVE_ID,
                 DRIVETRAIN_BACK_RIGHT_ENCODER_ID,
                 DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET,
-                -Constants.MODULE_X_OFFSET, -Constants.MODULE_Y_OFFSET,
+                -Constants.MODULE_X_OFFSET_2025, -Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 

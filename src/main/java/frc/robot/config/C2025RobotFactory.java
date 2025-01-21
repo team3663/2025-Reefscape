@@ -1,6 +1,5 @@
 package frc.robot.config;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -79,7 +78,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_FRONT_LEFT_DRIVE_ID,
                 DRIVETRAIN_FRONT_LEFT_ENCODER_ID,
                 DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET,
-                Constants.MODULE_X_OFFSET, Constants.MODULE_Y_OFFSET,
+                Constants.MODULE_X_OFFSET_2025, Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -89,7 +88,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_FRONT_RIGHT_DRIVE_ID,
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_ID,
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET,
-                Constants.MODULE_X_OFFSET, -Constants.MODULE_Y_OFFSET,
+                Constants.MODULE_X_OFFSET_2025, -Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -99,7 +98,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_BACK_LEFT_DRIVE_ID,
                 DRIVETRAIN_BACK_LEFT_ENCODER_ID,
                 DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET,
-                -Constants.MODULE_X_OFFSET, Constants.MODULE_Y_OFFSET,
+                -Constants.MODULE_X_OFFSET_2025, Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 
@@ -109,7 +108,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_BACK_RIGHT_DRIVE_ID,
                 DRIVETRAIN_BACK_RIGHT_ENCODER_ID,
                 DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET,
-                -Constants.MODULE_X_OFFSET, -Constants.MODULE_Y_OFFSET,
+                -Constants.MODULE_X_OFFSET_2025, -Constants.MODULE_Y_OFFSET_2025,
                 false, false, false
         );
 

@@ -15,7 +15,7 @@ public class Constants {
             .withKP(100.0);
     public static final double MK4N_WHEEL_RADIUS = Units.inchesToMeters(4.0);
 
-    public static final double MK4I_2PLUS_REDUCTION = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
+    public static final double MK4I_3PLUS_REDUCTION = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
     public static final double MK4I_STEER_REDUCTION = (150.0 / 7.0);
     public static final double MK4I_STEER_INERTIA = 0.00001;
     public static final double MK4I_STEER_FRICTION_VOLTAGE = 0.25;
@@ -24,10 +24,10 @@ public class Constants {
             .withKP(100.0);
 
 
-    public static final double MODULE_WHEEL_INSET = Units.inchesToMeters(2.625);
-    public static final double FRAME_X_LENGTH = Units.inchesToMeters(28.287024);
-    public static final double FRAME_Y_LENGTH = Units.inchesToMeters(27.5625);
-    public static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
-    public static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
+    public static final double MODULE_WHEEL_INSET_2025 = Units.inchesToMeters(2.625);
+    public static final double FRAME_X_LENGTH_2025 = Units.inchesToMeters(28.287024);
+    public static final double FRAME_Y_LENGTH_2025 = Units.inchesToMeters(27.5625);
+    public static final double MODULE_X_OFFSET_2025 = FRAME_X_LENGTH_2025 / 2.0 - MODULE_WHEEL_INSET_2025;
+    public static final double MODULE_Y_OFFSET_2025 = FRAME_Y_LENGTH_2025 / 2.0 - MODULE_WHEEL_INSET_2025;
 
 }
