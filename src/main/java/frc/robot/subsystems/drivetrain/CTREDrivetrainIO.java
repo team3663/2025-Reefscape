@@ -33,6 +33,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void updateInputs(DrivetrainInputs inputs) {
+        // Updates inputs and robot sim state (if in simulation)
         if (Robot.isSimulation()) {
             drivetrain.updateSimState(Robot.kDefaultPeriod, RobotController.getBatteryVoltage());
         }
