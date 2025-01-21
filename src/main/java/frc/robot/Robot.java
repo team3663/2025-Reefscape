@@ -11,16 +11,54 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.C2025RobotFactory;
+import frc.robot.config.RobotFactory;
+import frc.robot.utility.MacAddressUtils;
+import frc.robot.utility.RobotId;
+
+import java.util.Arrays;
+import java.util.Set;
 
 @Logged
 public class Robot extends TimedRobot {
+    /**
+     * The detected MAC addresses on the system.
+     */
+    private final Set<String> macAddresses = MacAddressUtils.getMacAddresses();
+
+    /**
+     * The ID of the robot that was detected based on the system's MAC addresses.
+     * <p>
+     * May be {@code null} if the system did not have a recognized MAC address.
+     */
+    private final RobotId detectedId = Arrays.stream(RobotId.values())
+            .filter(id -> !macAddresses.contains(id.getMacAddress()))
+            .findFirst().orElse(null);
+
+    /**
+     * The ID of the robot that was used to create the subsystem IO implementations.
+     * <p>
+     * This is typically the same as {@link #detectedId}. but if that is {@code null}, this will be {@link RobotId#C2025}.
+     */
+    private final RobotId runtimeId;
+
     @NotLogged
     private Command autonomousCommand;
 
     private final RobotContainer robotContainer;
 
     public Robot() {
-        robotContainer = new RobotContainer(new C2025RobotFactory());
+        if (isSimulation()) {
+            runtimeId = RobotId.SIM;
+        } else {
+            runtimeId = detectedId != null ? detectedId : RobotId.C2025;
+        }
+
+        RobotFactory robotFactory = switch (runtimeId) {
+            case C2025 -> new C2025RobotFactory();
+            default -> new RobotFactory() {};
+        };
+
+        robotContainer = new RobotContainer(robotFactory);
 
         Epilogue.configure(config -> {
         });
