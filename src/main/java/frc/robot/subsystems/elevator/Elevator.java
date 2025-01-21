@@ -30,7 +30,6 @@ public class Elevator extends SubsystemBase {
         return inputs.currentVelocityMotor1;
     }
 
-
     public double getPosition() {
         return inputs.currentPositionMotor1;
     }

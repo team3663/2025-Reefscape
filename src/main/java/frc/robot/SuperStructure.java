@@ -3,48 +3,48 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.shoulder.Shoulder;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
 
 import java.util.function.DoubleSupplier;
 
 public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
-    private final Shoulder shoulder;
+    private final Arm arm;
 
-    public SuperStructure(Elevator elevator, Shoulder shoulder) {
+    public SuperStructure(Elevator elevator, Arm arm) {
         this.elevator = elevator;
-        this.shoulder = shoulder;
+        this.arm = arm;
     }
 
     private boolean armNotCollide(double elevatorCurrentPos, double armCurrentPos, double elevatorTargetPos, double armTargetPos) {
         return true;
     }
 
-    private boolean armNotCollide(double elevatorTargetPos, double armTargetPos) {
-        return armNotCollide(elevator.getPosition(), shoulder.getPosition(), elevatorTargetPos, armTargetPos);
-    }
+//    private boolean armNotCollide(double elevatorTargetPos, double armTargetPos) {
+//        return armNotCollide(elevator.getPosition(), arm.getPosition(), elevatorTargetPos, armTargetPos);
+//    }
 
     public Command stop() {
         return runOnce(
                 () -> {
                     elevator.stop();
-                    shoulder.stop();
+                    arm.stop();
                 }
         );
     }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier armPosition) {
         return Commands.parallel(
-                elevator.followPosition(elevatorPosition),
-                shoulder.followPosition(armPosition));
+//                arm.followPosition(armPosition),
+                elevator.followPosition(elevatorPosition));
     }
 
     public Command goToPositions(double elevatorPosition, double armPosition) {
         return runEnd(
                 () -> {
                         elevator.goToPosition(elevatorPosition);
-                        shoulder.goToPosition(armPosition);
+//                        arm.goToPosition(armPosition);
                 }, this::stop
         );
     }
@@ -53,7 +53,7 @@ public class SuperStructure extends SubsystemBase {
         return runOnce(
                 () -> {
                     elevator.resetPosition();
-                    shoulder.resetPosition();
+//                    arm.resetPosition();
                 }
         );
     }
