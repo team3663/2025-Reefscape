@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.CANdi;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -16,6 +17,8 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.utility.ControllerHelper;
+import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.grabber.C2025GrabberIO;
 
 @Logged
 public class RobotContainer {
@@ -23,6 +26,7 @@ public class RobotContainer {
     private final Elevator elevator = new Elevator(new C2025ElevatorIO(
             new TalonFX(0), new TalonFX(1), 0));
     private final Arm arm = new Arm(new P2025ArmIO(new TalonFX(3)));
+    private final Grabber grabber = new Grabber(new C2025GrabberIO(new TalonFX(0), new CANdi(0)));
 
     private final SuperStructure superStructure = new SuperStructure(elevator, arm);
 
@@ -40,6 +44,8 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.a().onTrue(superStructure.stop());
+        driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
+        driverController.b().onTrue(grabber.stop());
     }
 
     public Command getAutonomousCommand() {
