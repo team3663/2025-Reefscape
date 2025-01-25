@@ -1,10 +1,12 @@
 package frc.robot.config;
 
+import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -15,6 +17,11 @@ import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.grabber.C2025GrabberIO;
+import frc.robot.subsystems.grabber.GrabberIO;
+import frc.robot.subsystems.grabber.GrabberInputs;
+import frc.robot.subsystems.led.LedCandleIo;
+import frc.robot.subsystems.led.LedIo;
 
 public class C2025RobotFactory implements RobotFactory {
     private static final CANBus DRIVETRAIN_CAN_BUS = new CANBus("3663");
@@ -132,5 +139,15 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public ArmIO createArmIo() {
         return new C2025ArmIO(new TalonFX(11), new TalonFX(12));
+    }
+
+    @Override
+    public GrabberIO createGrabberIo() {
+        return new C2025GrabberIO(new TalonFX(14), new CANdi(1));
+    }
+
+    @Override
+    public LedIo createLedIo() {
+        return new LedCandleIo(new CANdle(2));
     }
 }

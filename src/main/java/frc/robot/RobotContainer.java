@@ -14,6 +14,8 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.led.Led;
+import frc.robot.subsystems.led.LedColor;
 import frc.robot.utility.ControllerHelper;
 
 @Logged
@@ -22,6 +24,7 @@ public class RobotContainer {
     private final Elevator elevator;
     private final Arm arm;
     private final Grabber grabber;
+    private final Led led;
     private final SuperStructure superStructure;
 
     @NotLogged
@@ -32,6 +35,7 @@ public class RobotContainer {
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        led = new Led(robotFactory.createLedIo());
         superStructure = new SuperStructure(elevator, arm);
 
         configureBindings();
@@ -42,9 +46,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.a().onTrue(superStructure.stop());
-        driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
-        driverController.b().onTrue(grabber.stop());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 
