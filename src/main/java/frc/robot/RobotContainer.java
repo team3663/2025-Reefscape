@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.P2025ArmIO;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.utility.ControllerHelper;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
@@ -23,17 +26,19 @@ import frc.robot.subsystems.grabber.C2025GrabberIO;
 @Logged
 public class RobotContainer {
     private final Drivetrain drivetrain;
-    private final Elevator elevator = new Elevator(new C2025ElevatorIO(
-            new TalonFX(0), new TalonFX(1), 0));
-    private final Arm arm = new Arm(new P2025ArmIO(new TalonFX(3)));
-    private final Grabber grabber = new Grabber(new C2025GrabberIO(new TalonFX(0), new CANdi(0)));
-
-    private final SuperStructure superStructure = new SuperStructure(elevator, arm);
+    private final Elevator elevator;
+    private final Arm arm;
+    private final Grabber grabber;
+    private final SuperStructure superStructure;
 
     private final CommandXboxController driverController = new CommandXboxController(0);
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
+        elevator = new Elevator(robotFactory.createElevatorIo());
+        arm = new Arm(robotFactory.createArmIo());
+        grabber = new Grabber(robotFactory.createGrabberIo());
+        superStructure = new SuperStructure(elevator, arm);
 
         configureBindings();
 
@@ -46,6 +51,7 @@ public class RobotContainer {
         driverController.a().onTrue(superStructure.stop());
         driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
         driverController.b().onTrue(grabber.stop());
+        driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 
     public Command getAutonomousCommand() {
@@ -53,14 +59,14 @@ public class RobotContainer {
     }
 
     private double getDrivetrainXVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getLeftY(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getLeftY(), drivetrain.getConstants().maxLinearVelocity());
     }
 
     private double getDrivetrainYVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getLeftX(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getLeftX(), drivetrain.getConstants().maxLinearVelocity());
     }
 
     private double getDrivetrainAngularVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getRightX(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getRightX(), drivetrain.getConstants().maxAngularVelocity());
     }
 }
