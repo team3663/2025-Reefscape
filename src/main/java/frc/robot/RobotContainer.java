@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,6 +24,7 @@ public class RobotContainer {
     private final Grabber grabber;
     private final SuperStructure superStructure;
 
+    @NotLogged
     private final CommandXboxController driverController = new CommandXboxController(0);
 
     public RobotContainer(RobotFactory robotFactory) {
