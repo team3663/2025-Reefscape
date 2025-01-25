@@ -53,24 +53,24 @@ public class C2025ArmIO implements ArmIO {
         // Sims for Wrist and Shoulder
         if (Robot.isSimulation()) {
             // Shoulder sim
-            var simStateShoulderMotor = shoulderMotor.getSimState();
-            shoulderSim.setInputVoltage(simStateShoulderMotor.getMotorVoltage());
+            var shoulderSimState = shoulderMotor.getSimState();
+            shoulderSim.setInputVoltage(shoulderSimState.getMotorVoltage());
 
             // Updates sim for shoulder every 20 milliseconds
             shoulderSim.update(Robot.kDefaultPeriod);
-            simStateShoulderMotor.setRotorAcceleration(shoulderSim.getAngularAcceleration());
-            simStateShoulderMotor.setRotorVelocity(shoulderSim.getAngularVelocity());
-            simStateShoulderMotor.setRawRotorPosition(shoulderSim.getAngularPosition());
+            shoulderSimState.setRotorAcceleration(shoulderSim.getAngularAcceleration());
+            shoulderSimState.setRotorVelocity(shoulderSim.getAngularVelocity());
+            shoulderSimState.setRawRotorPosition(shoulderSim.getAngularPosition());
 
             // Wrist sim
-            var simStateWristMotor = wristMotor.getSimState();
-            wristSim.setInputVoltage(simStateWristMotor.getMotorVoltage());
+            var wristSimState = wristMotor.getSimState();
+            wristSim.setInputVoltage(wristSimState.getMotorVoltage());
 
             // Updates sim for wrist every 20 milliseconds
             wristSim.update(Robot.kDefaultPeriod);
-            simStateWristMotor.setRotorAcceleration(wristSim.getAngularAcceleration());
-            simStateWristMotor.setRotorVelocity(wristSim.getAngularVelocity());
-            simStateWristMotor.setRawRotorPosition(wristSim.getAngularPosition());
+            wristSimState.setRotorAcceleration(wristSim.getAngularAcceleration());
+            wristSimState.setRotorVelocity(wristSim.getAngularVelocity());
+            wristSimState.setRawRotorPosition(wristSim.getAngularPosition());
         }
 
         // Wrist inputs
