@@ -17,7 +17,7 @@ import frc.robot.Robot;
 
 public class C2025GrabberIO implements GrabberIO {
     private final TalonFX motor;
-    private final CANdi beamBreak;
+    private final CANdi gamePieceDetector;
 
     private final DCMotorSim simMotor = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
@@ -28,9 +28,9 @@ public class C2025GrabberIO implements GrabberIO {
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    public C2025GrabberIO(TalonFX motor, CANdi beamBreak) {
+    public C2025GrabberIO(TalonFX motor, CANdi gamePieceDetector) {
         this.motor = motor;
-        this.beamBreak = beamBreak;
+        this.gamePieceDetector = gamePieceDetector;
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -38,7 +38,7 @@ public class C2025GrabberIO implements GrabberIO {
         motor.getConfigurator().apply(motorConfig);
 
         CANdiConfiguration CANdiConfig = new CANdiConfiguration();
-        beamBreak.getConfigurator().apply(CANdiConfig);
+        gamePieceDetector.getConfigurator().apply(CANdiConfig);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class C2025GrabberIO implements GrabberIO {
         if (Robot.isSimulation()) {
             var simStateMotor = motor.getSimState();
             simMotor.setInputVoltage(simStateMotor.getMotorVoltage());
-            //Updates the sim information every 20 ms
+            // Updates the sim information every 20 ms
             simMotor.update(Robot.kDefaultPeriod);
             simStateMotor.setRotorAcceleration(simMotor.getAngularAcceleration());
             simStateMotor.setRotorVelocity(simMotor.getAngularVelocity());
@@ -59,7 +59,7 @@ public class C2025GrabberIO implements GrabberIO {
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
 
-        inputs.gamePieceDetected = beamBreak.getS1State().getValue() == S1StateValue.High;
+        inputs.gamePieceDetected = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
     }
 
     @Override
