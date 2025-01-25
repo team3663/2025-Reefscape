@@ -7,9 +7,6 @@ import com.ctre.phoenix.led.StrobeAnimation;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import java.util.function.BooleanSupplier;
-
-import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -24,11 +21,12 @@ public class Led {
 
     private final Animation startAnimation = new RgbFadeAnimation(LED_BRIGHTNESS, ANIMATION_SPEED, NUM_LEDS);
     private Animation currentAnimation;
-    private LedColor currentColor;
+    private LedColor currentColor = new LedColor(0, 0, 0);
     private Pattern currentPattern = Pattern.SOLID;
 
     public Led(LedIo io) {
         this.io = io;
+        io.setAnimation(startAnimation);
     }
 
     public void periodic() {
@@ -73,8 +71,10 @@ public class Led {
     }
 
     public Command setLedColor(LedColor color) {
-        return runOnce(
-                () -> io.setColor(color)
+        return runOnce(() -> {
+                    currentColor = color;
+                    io.setColor(color);
+                }
         );
     }
 

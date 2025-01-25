@@ -46,10 +46,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.a().onTrue(led.setLedColor(new LedColor(0, 0, 0)));
-        driverController.x().onTrue(led.setLedColor(new LedColor(255, 0, 0)));
-        driverController.y().onTrue(led.setLedColor(new LedColor(0, 255, 0)));
-        driverController.b().onTrue(led.setLedColor(new LedColor(0, 0, 255)));
     }
 
     public Command getAutonomousCommand() {

@@ -7,8 +7,6 @@ import com.ctre.phoenix.led.CANdleConfiguration;
 public class LedCandleIo implements LedIo {
     private final CANdle candle;
 
-    private Animation animation;
-
     public LedCandleIo(CANdle candle) {
         this.candle = candle;
         CANdleConfiguration config = new CANdleConfiguration();
