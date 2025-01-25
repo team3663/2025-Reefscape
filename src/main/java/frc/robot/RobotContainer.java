@@ -13,6 +13,8 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.led.Led;
+import frc.robot.subsystems.led.LedColor;
 import frc.robot.utility.ControllerHelper;
 
 @Logged
@@ -21,6 +23,7 @@ public class RobotContainer {
     private final Elevator elevator;
     private final Arm arm;
     private final Grabber grabber;
+    private final Led led;
     private final SuperStructure superStructure;
 
     private final CommandXboxController driverController = new CommandXboxController(0);
@@ -30,6 +33,7 @@ public class RobotContainer {
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        led = new Led(robotFactory.createLedIo());
         superStructure = new SuperStructure(elevator, arm);
 
         configureBindings();
@@ -40,10 +44,10 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.a().onTrue(superStructure.stop());
-        driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
-        driverController.b().onTrue(grabber.stop());
-        driverController.back().onTrue(drivetrain.resetFieldOriented());
+        driverController.a().onTrue(led.setLedColor(new LedColor(0, 0, 0)));
+        driverController.x().onTrue(led.setLedColor(new LedColor(255, 0, 0)));
+        driverController.y().onTrue(led.setLedColor(new LedColor(0, 255, 0)));
+        driverController.b().onTrue(led.setLedColor(new LedColor(0, 0, 255)));
     }
 
     public Command getAutonomousCommand() {
