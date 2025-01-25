@@ -46,6 +46,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 
     public Command getAutonomousCommand() {
