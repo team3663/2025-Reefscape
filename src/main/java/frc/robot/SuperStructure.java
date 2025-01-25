@@ -29,7 +29,7 @@ public class SuperStructure extends SubsystemBase {
         return runOnce(
                 () -> {
                     elevator.stop();
-                    arm.stopMotors();
+                    arm.stop();
                 }
         );
     }

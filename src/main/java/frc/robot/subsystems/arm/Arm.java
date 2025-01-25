@@ -26,7 +26,7 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public Command stopMotors() {
+    public Command stop() {
         return runOnce(() -> {
                     targetShoulderPosition = 0.0;
                     targetWristPosition = 0.0;
@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
                     // Wrist
                     targetWristPosition = positionWrist;
                     io.setWristTargetPosition(positionWrist);
-                }, this::stopMotors
+                }, this::stop
         ).until(this::atTargetPositions);
     }
 
@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
             // Wrist
             targetWristPosition = positionWrist.getAsDouble();
             io.setWristTargetPosition(targetWristPosition);
-        }, this::stopMotors);
+        }, this::stop);
     }
 
     public double getShoulderPosition() {
