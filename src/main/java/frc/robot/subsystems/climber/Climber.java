@@ -16,6 +16,7 @@ public class Climber extends SubsystemBase {
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
 
+
     public Climber(ClimberIO io) {
         this.io = io;
     }
@@ -63,13 +64,4 @@ public class Climber extends SubsystemBase {
                 io::stop
         );
     }
-
-    public Command withVoltageUntilBeam(double voltage) {
-        return runEnd(() -> {
-                    targetVoltage = voltage;
-                    io.setTargetVoltage(targetVoltage);
-                }, io::stop
-        ).until(() -> inputs.beamBrakeState);
-    }
-
 }

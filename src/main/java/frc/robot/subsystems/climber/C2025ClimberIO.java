@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.S1StateValue;
+import com.ctre.phoenix6.signals.S2StateValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -17,24 +18,22 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 
-public class C2025ClimberIO implements ClimberIO{
+public class C2025ClimberIO implements ClimberIO {
     private final TalonFX motor;
     private final CANcoder coder;
-    private final CANdi beamBrake1;
-    private final CANdi beamBrake2;
+    private final CANdi gamePieceDetector;
     private final NeutralOut stopRequest = new NeutralOut();
-    private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
 
+    private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final DCMotorSim sim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0));
 
-    public C2025ClimberIO(TalonFX motor, CANdi beamBrake1, CANdi beamBrake2, CANcoder coder) {
+    public C2025ClimberIO(TalonFX motor, CANdi gamePieceDetector, CANcoder coder) {
         this.motor = motor;
-        this.beamBrake1 = beamBrake1;
-        this.beamBrake2 = beamBrake2;
+        this.gamePieceDetector = gamePieceDetector;
         this.coder = coder;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -45,27 +44,27 @@ public class C2025ClimberIO implements ClimberIO{
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
 
-        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0/60.0;
-        config.MotionMagic.MotionMagicAcceleration = 2500.0/60.0;
+        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+        config.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
 
         motor.getConfigurator().apply(config);
 
         CANdiConfiguration CANdiConfig = new CANdiConfiguration();
-        beamBrake1.getConfigurator().apply(CANdiConfig);
-        beamBrake2.getConfigurator().apply(CANdiConfig);
+        gamePieceDetector.getConfigurator().apply(CANdiConfig);
 
         CANcoderConfiguration CANcoderConfig = new CANcoderConfiguration();
         coder.getConfigurator().apply(CANcoderConfig);
     }
+
     @Override
-    public void updateInputs(ClimberInputs inputs){
+    public void updateInputs(ClimberInputs inputs) {
         inputs.currentAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
 
-        inputs.gamePieceDetected1 = beamBrake1.getS1State().getValue() == S1StateValue.High;
-        inputs.gamePieceDetected2 = beamBrake2.getS1State().getValue() == S1StateValue.High;
+        inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
+        inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
 
         // SIM STATES
         if (Robot.isSimulation()) {

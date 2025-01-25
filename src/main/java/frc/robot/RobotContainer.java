@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.epilogue.Logged;
@@ -18,7 +19,7 @@ import frc.robot.utility.ControllerHelper;
 @Logged
 public class RobotContainer {
   private final Climber climber = new Climber(new C2025ClimberIO(
-          new TalonFX(0), new CANdi(0), new CANdi(1)));
+          new TalonFX(0), new CANdi(0), new CANcoder(0)));
 
   private final CommandXboxController controller = new CommandXboxController(0);
   public RobotContainer() {
