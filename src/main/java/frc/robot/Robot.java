@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
      * May be {@code null} if the system did not have a recognized MAC address.
      */
     private final RobotId detectedId = Arrays.stream(RobotId.values())
-            .filter(id -> !macAddresses.contains(id.getMacAddress()))
+            .filter(id -> macAddresses.contains(id.getMacAddress()))
             .findFirst().orElse(null);
 
     /**

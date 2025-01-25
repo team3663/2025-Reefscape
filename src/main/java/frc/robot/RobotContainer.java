@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.P2025ArmIO;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.utility.ControllerHelper;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
@@ -23,10 +26,18 @@ import frc.robot.subsystems.grabber.C2025GrabberIO;
 @Logged
 public class RobotContainer {
     private final Drivetrain drivetrain;
-    private final Elevator elevator = new Elevator(new C2025ElevatorIO(
-            new TalonFX(0), new TalonFX(1), 0));
-    private final Arm arm = new Arm(new P2025ArmIO(new TalonFX(3)));
-    private final Grabber grabber = new Grabber(new C2025GrabberIO(new TalonFX(0), new CANdi(0)));
+    private final Elevator elevator = new Elevator(
+//            new C2025ElevatorIO(new TalonFX(0), new TalonFX(1), 0)
+            new ElevatorIO() {}
+    );
+    private final Arm arm = new Arm(
+//            new P2025ArmIO(new TalonFX(3))
+            new ArmIO() {}
+    );
+    private final Grabber grabber = new Grabber(
+//            new C2025GrabberIO(new TalonFX(0), new CANdi(0))
+        new GrabberIO() {}
+    );
 
     private final SuperStructure superStructure = new SuperStructure(elevator, arm);
 
