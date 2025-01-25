@@ -61,7 +61,7 @@ public class C2025ElevatorIO implements ElevatorIO {
             var simStateMotor1 = motor.getSimState();
             var simStateMotor2 = motor2.getSimState();
             sim.setInputVoltage(simStateMotor1.getMotorVoltage());
-            //Updates the sim information every 20 ms
+            // Updates the sim information every 20 ms
             sim.update(Robot.kDefaultPeriod);
             simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
             simStateMotor1.setRotorVelocity(sim.getAngularVelocity());

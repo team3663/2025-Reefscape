@@ -4,10 +4,19 @@ import edu.wpi.first.epilogue.Logged;
 
 @Logged
 public class ArmInputs {
-    public double currentVelocity;
-    public double currentAppliedVoltage;
-    public double currentPosition;
+    // Shoulder inputs
+    public double currentVelocityShoulder;
+    public double currentAppliedVoltageShoulder;
+    public double currentPositionShoulder;
     
-    public double motorTemperature;
-    public double currentDraw;
+    public double motorTemperatureShoulder;
+    public double currentDrawShoulder;
+
+    // Wrist Inputs
+    public double currentVelocityWrist;
+    public double currentAppliedVoltageWrist;
+    public double currentPositionWrist;
+
+    public double motorTemperatureWrist;
+    public double currentDrawWrist;
 }

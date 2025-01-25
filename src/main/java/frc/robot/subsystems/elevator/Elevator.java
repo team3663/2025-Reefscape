@@ -30,7 +30,6 @@ public class Elevator extends SubsystemBase {
         return inputs.currentVelocityMotor1;
     }
 
-
     public double getPosition() {
         return inputs.currentPositionMotor1;
     }
@@ -41,10 +40,9 @@ public class Elevator extends SubsystemBase {
 
     public Command stop() {
         return runOnce(() -> {
-                    targetPosition = 0.0;
-                    io.stop();
-                }
-        );
+            targetPosition = 0.0;
+            io.stop();
+        });
     }
 
     public Command resetPosition() {

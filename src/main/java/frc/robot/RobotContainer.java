@@ -4,24 +4,16 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.CANdi;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.P2025ArmIO;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.grabber.GrabberIO;
-import frc.robot.utility.ControllerHelper;
 import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.subsystems.grabber.C2025GrabberIO;
+import frc.robot.utility.ControllerHelper;
 
 @Logged
 public class RobotContainer {
