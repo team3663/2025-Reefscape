@@ -14,11 +14,17 @@ public class Elevator extends SubsystemBase {
 
     private final ElevatorIO io;
     private final ElevatorInputs inputs = new ElevatorInputs();
+    private final Constants constants;
 
     private double targetPosition = 0.0;
 
     public Elevator(ElevatorIO io) {
         this.io = io;
+        this.constants = io.getConstants();
+    }
+
+    public Constants getConstants() {
+        return constants;
     }
 
     @Override
@@ -36,6 +42,10 @@ public class Elevator extends SubsystemBase {
 
     public boolean atTargetPosition() {
         return Math.abs(inputs.currentPositionMotor1 - targetPosition) < POSITION_THRESHOLD;
+    }
+
+    public double getTargetPosition() {
+        return targetPosition;
     }
 
     public Command stop() {
@@ -62,4 +72,8 @@ public class Elevator extends SubsystemBase {
             io.setTargetPosition(targetPosition);
         }, io::stop);
     }
+
+    public record Constants(
+            double maximumPosition
+    ) {}
 }
