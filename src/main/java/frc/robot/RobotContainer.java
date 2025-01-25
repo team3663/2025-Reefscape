@@ -28,15 +28,18 @@ public class RobotContainer {
     private final Drivetrain drivetrain;
     private final Elevator elevator = new Elevator(
 //            new C2025ElevatorIO(new TalonFX(0), new TalonFX(1), 0)
-            new ElevatorIO() {}
+            new ElevatorIO() {
+            }
     );
     private final Arm arm = new Arm(
 //            new P2025ArmIO(new TalonFX(3))
-            new ArmIO() {}
+            new ArmIO() {
+            }
     );
     private final Grabber grabber = new Grabber(
 //            new C2025GrabberIO(new TalonFX(0), new CANdi(0))
-        new GrabberIO() {}
+            new GrabberIO() {
+            }
     );
 
     private final SuperStructure superStructure = new SuperStructure(elevator, arm);
@@ -57,6 +60,7 @@ public class RobotContainer {
         driverController.a().onTrue(superStructure.stop());
         driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
         driverController.b().onTrue(grabber.stop());
+        driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 
     public Command getAutonomousCommand() {
@@ -64,14 +68,14 @@ public class RobotContainer {
     }
 
     private double getDrivetrainXVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getLeftY(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getLeftY(), drivetrain.getConstants().maxLinearVelocity());
     }
 
     private double getDrivetrainYVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getLeftX(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getLeftX(), drivetrain.getConstants().maxLinearVelocity());
     }
 
     private double getDrivetrainAngularVelocity() {
-        return -ControllerHelper.modifyAxis(driverController.getRightX(), 1.0);
+        return -ControllerHelper.modifyAxis(driverController.getRightX(), drivetrain.getConstants().maxAngularVelocity());
     }
 }

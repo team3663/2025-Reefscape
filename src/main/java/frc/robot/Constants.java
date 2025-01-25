@@ -20,6 +20,6 @@ public class Constants {
     public static final double MK4I_STEER_FRICTION_VOLTAGE = 0.25;
     public static final double MK4I_WHEEL_RADIUS = Units.inchesToMeters(2.0);
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
-            .withKP(100.0);
+            .withKP(50);
 
 }

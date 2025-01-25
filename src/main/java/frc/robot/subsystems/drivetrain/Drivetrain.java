@@ -12,15 +12,25 @@ public class Drivetrain extends SubsystemBase {
     @NotLogged
     private final DrivetrainIO io;
     private final DrivetrainInputs inputs = new DrivetrainInputs();
+    private final Constants constants;
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
+        this.constants = io.getConstants();
+    }
+
+    public Constants getConstants() {
+        return constants;
     }
 
     @Override
     public void periodic() {
         // Updates every 20 milliseconds
         io.updateInputs(inputs);
+    }
+
+    public Command resetFieldOriented() {
+        return runOnce(io::resetFieldOriented);
     }
 
     /**
@@ -41,5 +51,11 @@ public class Drivetrain extends SubsystemBase {
                 },
                 // end()
                 io::stop);
+    }
+
+    public record Constants(
+            double maxLinearVelocity,
+            double maxAngularVelocity
+    ) {
     }
 }

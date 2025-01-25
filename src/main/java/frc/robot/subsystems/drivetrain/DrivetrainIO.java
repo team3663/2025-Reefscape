@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
+import edu.wpi.first.math.util.Units;
+
 public interface DrivetrainIO {
     default void updateInputs(DrivetrainInputs inputs) {
     }
@@ -12,6 +14,17 @@ public interface DrivetrainIO {
      * @param angularVelocity The target angular (counter-clockwise positive) velocity in radians per second.
      */
     default void driveFieldOriented(double xVelocity, double yVelocity, double angularVelocity) {
+    }
+
+    default void resetFieldOriented() {
+
+    }
+
+    default Drivetrain.Constants getConstants() {
+        return new Drivetrain.Constants(
+                5.0,
+                Units.rotationsPerMinuteToRadiansPerSecond(60.0)
+        );
     }
 
     /**
