@@ -43,8 +43,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.a().onTrue(arm.stopMotors());
-        driverController.b().onTrue(arm.goToPositions(Math.PI, -Math.PI));
     }
 
     public Command getAutonomousCommand() {
