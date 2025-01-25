@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
@@ -23,7 +24,7 @@ public class C2025ClimberIO implements ClimberIO {
     private final CANcoder coder;
     private final CANdi gamePieceDetector;
     private final NeutralOut stopRequest = new NeutralOut();
-
+    private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final DCMotorSim sim = new DCMotorSim(
@@ -62,6 +63,7 @@ public class C2025ClimberIO implements ClimberIO {
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentVelocity = motor.getVelocity().getValueAsDouble();
 
         inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
         inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
@@ -92,7 +94,11 @@ public class C2025ClimberIO implements ClimberIO {
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+    @Override
+    public void setTargetVelocity(double velocity) {
+        motor.setControl(velocityRequest.withVelocity(velocity));
 
+    }
     @Override
     public void setTargetVoltage(double voltage) {
         motor.setControl(voltageRequest.withOutput(voltage));
