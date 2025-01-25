@@ -42,10 +42,8 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         RobotFactory robotFactory = switch (detectedId) {
+            case UNKNOWN, C2025 -> new C2025RobotFactory();
             case C2024 -> new C2024RobotFactory();
-            case C2025 -> new C2025RobotFactory();
-            default -> new C2025RobotFactory() {
-            };
         };
 
         robotContainer = new RobotContainer(robotFactory);
