@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
@@ -21,6 +22,7 @@ public class RobotContainer {
     private final Elevator elevator;
     private final Arm arm;
     private final Grabber grabber;
+    private final Climber climber;
     private final SuperStructure superStructure;
 
     private final CommandXboxController driverController = new CommandXboxController(0);
@@ -30,6 +32,7 @@ public class RobotContainer {
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        climber = new Climber(robotFactory.createClimberIo());
         superStructure = new SuperStructure(elevator, arm);
 
         configureBindings();
