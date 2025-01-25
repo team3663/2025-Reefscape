@@ -15,10 +15,15 @@ public class C2025ArmIO implements ArmIO {
     private final TalonFX shoulderMotor;
     private final TalonFX wristMotor;
 
-    private final DCMotorSim sim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2),
+    private final DCMotorSim shoulderSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
                     0.001, 1.0),
-            DCMotor.getKrakenX60(2).withReduction(1.0));
+            DCMotor.getKrakenX60(1).withReduction(1.0));
+
+    private final DCMotorSim wristSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
+                    0.001, 1.0),
+            DCMotor.getKrakenX60(1).withReduction(1.0));
 
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
@@ -49,22 +54,23 @@ public class C2025ArmIO implements ArmIO {
         if (Robot.isSimulation()) {
             // Shoulder sim
             var simStateShoulderMotor = shoulderMotor.getSimState();
-            sim.setInputVoltage(simStateShoulderMotor.getMotorVoltage());
+            shoulderSim.setInputVoltage(simStateShoulderMotor.getMotorVoltage());
+
+            // Updates sim for shoulder every 20 milliseconds
+            shoulderSim.update(Robot.kDefaultPeriod);
+            simStateShoulderMotor.setRotorAcceleration(shoulderSim.getAngularAcceleration());
+            simStateShoulderMotor.setRotorVelocity(shoulderSim.getAngularVelocity());
+            simStateShoulderMotor.setRawRotorPosition(shoulderSim.getAngularPosition());
 
             // Wrist sim
             var simStateWristMotor = wristMotor.getSimState();
-            sim.setInputVoltage(simStateWristMotor.getMotorVoltage());
+            wristSim.setInputVoltage(simStateWristMotor.getMotorVoltage());
 
-            // Updates sim for shoulder and wrist every 20 milliseconds
-            sim.update(Robot.kDefaultPeriod);
-            // Shoulder
-            simStateShoulderMotor.setRotorAcceleration(sim.getAngularAcceleration());
-            simStateShoulderMotor.setRotorVelocity(sim.getAngularVelocity());
-            simStateShoulderMotor.setRawRotorPosition(sim.getAngularPosition());
-            // Wrist
-            simStateWristMotor.setRotorAcceleration(sim.getAngularAcceleration());
-            simStateWristMotor.setRotorVelocity(sim.getAngularVelocity());
-            simStateWristMotor.setRawRotorPosition(sim.getAngularPosition());
+            // Updates sim for wrist every 20 milliseconds
+            wristSim.update(Robot.kDefaultPeriod);
+            simStateWristMotor.setRotorAcceleration(wristSim.getAngularAcceleration());
+            simStateWristMotor.setRotorVelocity(wristSim.getAngularVelocity());
+            simStateWristMotor.setRawRotorPosition(wristSim.getAngularPosition());
         }
 
         // Wrist inputs
@@ -89,7 +95,7 @@ public class C2025ArmIO implements ArmIO {
 
     @Override
     public void resetPositionShoulder() {
-        shoulderMotor.setPosition(0);
+        shoulderMotor.setPosition(0.0);
     }
 
     @Override
@@ -104,7 +110,7 @@ public class C2025ArmIO implements ArmIO {
 
     @Override
     public void resetPositionWrist() {
-        wristMotor.setPosition(0);
+        wristMotor.setPosition(0.0);
     }
 
     @Override
