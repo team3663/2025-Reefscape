@@ -5,28 +5,28 @@ public interface ArmIO {
     }
 
     default void stopShoulder() {
-        setTargetVoltageShoulder(0.0);
+        setShoulderTargetVoltage(0.0);
     }
 
-    default void setTargetPositionShoulder(double position) {
+    default void setShoulderTargetPosition(double position) {
     }
 
-    default void setTargetVoltageShoulder(double voltage) {
+    default void setShoulderTargetVoltage(double voltage) {
     }
 
-    default void resetPositionShoulder() {
+    default void resetShoulderPosition() {
     }
 
     default void stopWrist() {
-        setTargetVoltageWrist(0.0);
+        setWristTargetVoltage(0.0);
     }
 
-    default void setTargetPositionWrist(double position) {
+    default void setWristTargetPosition(double position) {
     }
 
-    default void setTargetVoltageWrist(double voltage) {
+    default void setWristTargetVoltage(double voltage) {
     }
 
-    default void resetPositionWrist() {
+    default void resetWristPosition() {
     }
 }

@@ -94,12 +94,12 @@ public class C2025ArmIO implements ArmIO {
     }
 
     @Override
-    public void resetPositionShoulder() {
+    public void resetShoulderPosition() {
         shoulderMotor.setPosition(0.0);
     }
 
     @Override
-    public void setTargetPositionShoulder(double position) {
+    public void setShoulderTargetPosition(double position) {
         shoulderMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
 
@@ -109,12 +109,12 @@ public class C2025ArmIO implements ArmIO {
     }
 
     @Override
-    public void resetPositionWrist() {
+    public void resetWristPosition() {
         wristMotor.setPosition(0.0);
     }
 
     @Override
-    public void setTargetPositionWrist(double position) {
+    public void setWristTargetPosition(double position) {
         wristMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
 }
