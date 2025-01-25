@@ -17,6 +17,8 @@ import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.elevator.C2025ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
 import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.subsystems.grabber.GrabberInputs;
@@ -139,6 +141,11 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public ArmIO createArmIo() {
         return new C2025ArmIO(new TalonFX(11), new TalonFX(12));
+    }
+
+    @Override
+    public ElevatorIO createElevatorIo() {
+        return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
     }
 
     @Override
