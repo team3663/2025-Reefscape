@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,10 +49,20 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
+        led.setDefaultCommand(led.signalCommand(() -> robotMode));
     }
 
     private void configureBindings() {
-        led.setDefaultCommand(led.signalCommand(() -> robotMode));
+        driverController.x().onTrue(
+                Commands.parallel(
+                        elevator.goToPosition(1.0),
+                        arm.goToPositions(Units.degreesToRadians(120.0), Units.degreesToRadians(20.0))
+                ));
+        driverController.b().onTrue(
+                Commands.parallel(
+                        elevator.goToPosition(0.0),
+                        arm.goToPositions(0.0, 0.0)
+                ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 
