@@ -63,7 +63,7 @@ public class C2025ClimberIO implements ClimberIO {
         inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
-        inputs.currentVelocity = motor.getVelocity().getValueAsDouble();
+        inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
 
         inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
         inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
