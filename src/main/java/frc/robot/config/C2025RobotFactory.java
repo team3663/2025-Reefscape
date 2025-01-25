@@ -17,8 +17,8 @@ public class C2025RobotFactory implements RobotFactory {
     private static final CANBus DRIVETRAIN_CAN_BUS = new CANBus("3663");
 
     private static final double MODULE_WHEEL_INSET = Units.inchesToMeters(2.625);
-    private static final double FRAME_X_LENGTH = Units.inchesToMeters(27);
-    private static final double FRAME_Y_LENGTH = Units.inchesToMeters(27);
+    private static final double FRAME_X_LENGTH = Units.inchesToMeters(27.0);
+    private static final double FRAME_Y_LENGTH = Units.inchesToMeters(27.0);
     private static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
 

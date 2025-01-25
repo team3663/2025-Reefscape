@@ -36,14 +36,14 @@ public class C2024RobotFactory implements RobotFactory {
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
     private static final double MAX_DRIVE_VELOCITY = DCMotor.getFalcon500Foc(1)
-            .freeSpeedRadPerSec / Constants.MK4I_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;
+            .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;
 
     // Creating a constants factory for the drive and steer motors of the drivetrain
     private static final SwerveModuleConstantsFactory<
             TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> MODULE_CONSTANTS_FACTORY
             = new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
             .withDriveMotorType(SwerveModuleConstants.DriveMotorArrangement.TalonFX_Integrated)
-            .withDriveMotorGearRatio(Constants.MK4I_3PLUS_REDUCTION)
+            .withDriveMotorGearRatio(Constants.MK4_3PLUS_REDUCTION)
             .withDriveInertia(DRIVE_INERTIA)
             .withDriveFrictionVoltage(DRIVE_FRICTION_VOLTAGE)
             .withDriveMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
