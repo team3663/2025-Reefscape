@@ -26,28 +26,19 @@ import frc.robot.subsystems.grabber.C2025GrabberIO;
 @Logged
 public class RobotContainer {
     private final Drivetrain drivetrain;
-    private final Elevator elevator = new Elevator(
-//            new C2025ElevatorIO(new TalonFX(0), new TalonFX(1), 0)
-            new ElevatorIO() {
-            }
-    );
-    private final Arm arm = new Arm(
-//            new P2025ArmIO(new TalonFX(3))
-            new ArmIO() {
-            }
-    );
-    private final Grabber grabber = new Grabber(
-//            new C2025GrabberIO(new TalonFX(0), new CANdi(0))
-            new GrabberIO() {
-            }
-    );
-
-    private final SuperStructure superStructure = new SuperStructure(elevator, arm);
+    private final Elevator elevator;
+    private final Arm arm;
+    private final Grabber grabber;
+    private final SuperStructure superStructure;
 
     private final CommandXboxController driverController = new CommandXboxController(0);
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
+        elevator = new Elevator(robotFactory.createElevatorIo());
+        arm = new Arm(robotFactory.createArmIo());
+        grabber = new Grabber(robotFactory.createGrabberIo());
+        superStructure = new SuperStructure(elevator, arm);
 
         configureBindings();
 
