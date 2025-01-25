@@ -6,73 +6,127 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.config.C2024RobotFactory;
+import frc.robot.config.C2025RobotFactory;
+import frc.robot.config.RobotFactory;
+import frc.robot.utility.MacAddressUtils;
+import frc.robot.utility.RobotId;
+
+import java.util.Arrays;
+import java.util.Set;
 
 @Logged
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+    /**
+     * The detected MAC addresses on the system.
+     */
+    private final Set<String> macAddresses = MacAddressUtils.getMacAddresses();
 
-  private final RobotContainer m_robotContainer;
+    /**
+     * The ID of the robot that was detected based on the system's MAC addresses.
+     * <p>
+     * May be {@code null} if the system did not have a recognized MAC address.
+     */
+    private final RobotId detectedId = Arrays.stream(RobotId.values())
+            .filter(id -> macAddresses.contains(id.getMacAddress()))
+            .findFirst().orElse(null);
 
-  public Robot() {
-    m_robotContainer = new RobotContainer();
+    /**
+     * The ID of the robot that was used to create the subsystem IO implementations.
+     * <p>
+     * This is typically the same as {@link #detectedId}. but if that is {@code null}, this will be {@link RobotId#C2025}.
+     */
+    private final RobotId runtimeId;
 
-    Epilogue.configure(config -> {});
-    Epilogue.bind(this);
-  }
+    @NotLogged
+    private Command autonomousCommand;
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
+    private final RobotContainer robotContainer;
 
-  @Override
-  public void disabledInit() {}
+    public Robot() {
+        if (isSimulation()) {
+            runtimeId = RobotId.SIM;
+        } else {
+            runtimeId = detectedId != null ? detectedId : RobotId.C2025;
+        }
 
-  @Override
-  public void disabledPeriodic() {}
+        RobotFactory robotFactory = switch (runtimeId) {
+            case C2024 -> new C2024RobotFactory();
+            case C2025 -> new C2025RobotFactory();
+            default -> new RobotFactory() {
+            };
+        };
 
-  @Override
-  public void disabledExit() {}
+        robotContainer = new RobotContainer(robotFactory);
 
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+        Epilogue.configure(config -> {
+        });
+        Epilogue.bind(this);
     }
-  }
 
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
     }
-  }
 
-  @Override
-  public void teleopPeriodic() {}
+    @Override
+    public void disabledInit() {
+    }
 
-  @Override
-  public void teleopExit() {}
+    @Override
+    public void disabledPeriodic() {
+    }
 
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
+    @Override
+    public void disabledExit() {
+    }
 
-  @Override
-  public void testPeriodic() {}
+    @Override
+    public void autonomousInit() {
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
-  @Override
-  public void testExit() {}
+        if (autonomousCommand != null) {
+            autonomousCommand.schedule();
+        }
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+    }
+
+    @Override
+    public void autonomousExit() {
+    }
+
+    @Override
+    public void teleopInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+    }
+
+    @Override
+    public void teleopPeriodic() {
+    }
+
+    @Override
+    public void teleopExit() {
+    }
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
+    }
+
+    @Override
+    public void testPeriodic() {
+    }
+
+    @Override
+    public void testExit() {
+    }
 }
