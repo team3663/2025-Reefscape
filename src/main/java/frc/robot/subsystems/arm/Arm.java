@@ -12,18 +12,32 @@ public class Arm extends SubsystemBase {
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
 
     private final ArmIO io;
-    private ArmInputs inputs = new ArmInputs();
+    private final ArmInputs inputs = new ArmInputs();
+    private final Constants constants;
 
     private double targetShoulderPosition = 0.0;
     private double targetWristPosition = 0.0;
 
     public Arm(ArmIO io) {
         this.io = io;
+        constants = io.getConstants();
+    }
+
+    public Constants getConstants() {
+        return constants;
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+    }
+
+    public double getTargetShoulderPosition() {
+        return targetShoulderPosition;
+    }
+
+    public double getTargetWristPosition() {
+        return targetWristPosition;
     }
 
     public Command stop() {
@@ -94,5 +108,8 @@ public class Arm extends SubsystemBase {
 
     public Command resetWristPosition() {
         return runOnce(io::resetWristPosition);
+    }
+
+    public record Constants(double shoulderLength, double wristLength) {
     }
 }

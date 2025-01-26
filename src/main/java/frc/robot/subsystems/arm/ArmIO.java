@@ -1,6 +1,10 @@
 package frc.robot.subsystems.arm;
 
 public interface ArmIO {
+    default Arm.Constants getConstants() {
+        return new Arm.Constants(0.2, 0.05);
+    }
+
     default void updateInputs(ArmInputs inputs) {
     }
 

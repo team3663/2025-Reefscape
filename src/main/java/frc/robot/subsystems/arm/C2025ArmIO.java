@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 public class C2025ArmIO implements ArmIO {
+    // TODO: Get real values from CAD
+    private static final Arm.Constants CONSTANTS = new Arm.Constants(0.2, 0.05);
+
     private final TalonFX shoulderMotor;
     private final TalonFX wristMotor;
 
@@ -46,6 +49,11 @@ public class C2025ArmIO implements ArmIO {
 
         shoulderMotor.getConfigurator().apply(config);
         wristMotor.getConfigurator().apply(config);
+    }
+
+    @Override
+    public Arm.Constants getConstants() {
+        return CONSTANTS;
     }
 
     @Override
