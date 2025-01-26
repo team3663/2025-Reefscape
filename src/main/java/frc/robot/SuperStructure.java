@@ -35,22 +35,47 @@ public class SuperStructure extends SubsystemBase {
         this.elevator = elevator;
         this.arm = arm;
 
-        mechanism = new Mechanism2d(2.0 * (arm.getConstants().shoulderLength() + arm.getConstants().wristLength()),
+        mechanism = new Mechanism2d(
+                2.0 * (arm.getConstants().shoulderLength() + arm.getConstants().wristLength()),
                 elevator.getConstants().maximumPosition() + arm.getConstants().shoulderLength() + arm.getConstants().wristLength());
-        var targetRoot = mechanism.getRoot("Target", arm.getConstants().shoulderLength() + arm.getConstants().wristLength(), 0.0);
-        targetElevatorMechanism = new MechanismLigament2d("TargetElevator", 0.0, 90.0, 10, new Color8Bit(Color.kDarkOrange));
+        var targetRoot = mechanism.getRoot(
+                "Target",
+                arm.getConstants().shoulderLength() + arm.getConstants().wristLength(),
+                0.0);
+        targetElevatorMechanism = new MechanismLigament2d(
+                "TargetElevator",
+                0.0, 90.0,
+                10, new Color8Bit(Color.kDarkOrange));
         targetRoot.append(targetElevatorMechanism);
-        targetShoulderMechanism = new MechanismLigament2d("TargetShoulder", arm.getConstants().shoulderLength(), 0.0, 10, new Color8Bit(Color.kOrange));
+        targetShoulderMechanism = new MechanismLigament2d(
+                "TargetShoulder",
+                arm.getConstants().shoulderLength(), 0.0,
+                10, new Color8Bit(Color.kOrange));
         targetElevatorMechanism.append(targetShoulderMechanism);
-        targetWristMechanism = new MechanismLigament2d("TargetWrist", arm.getConstants().wristLength(), 0.0, 10, new Color8Bit(Color.kGreen));
+        targetWristMechanism = new MechanismLigament2d(
+                "TargetWrist",
+                arm.getConstants().wristLength(), 0.0,
+                10, new Color8Bit(Color.kGreen));
         targetShoulderMechanism.append(targetWristMechanism);
 
-        var currentRoot = mechanism.getRoot("Current", arm.getConstants().shoulderLength() + arm.getConstants().wristLength(), 0.0);
-        currentElevatorMechanism = new MechanismLigament2d("CurrentElevator", 0.0, 90.0, 9, new Color8Bit(Color.kDarkBlue));
+        var currentRoot = mechanism.getRoot(
+                "Current",
+                arm.getConstants().shoulderLength() + arm.getConstants().wristLength(),
+                0.0);
+        currentElevatorMechanism = new MechanismLigament2d(
+                "CurrentElevator",
+                0.0, 90.0,
+                9, new Color8Bit(Color.kDarkBlue));
         currentRoot.append(currentElevatorMechanism);
-        currentShoulderMechanism = new MechanismLigament2d("CurrentShoulder", arm.getConstants().shoulderLength(), 0.0, 9, new Color8Bit(Color.kBlue));
+        currentShoulderMechanism = new MechanismLigament2d(
+                "CurrentShoulder",
+                arm.getConstants().shoulderLength(), 0.0,
+                9, new Color8Bit(Color.kBlue));
         currentElevatorMechanism.append(currentShoulderMechanism);
-        currentWristMechanism = new MechanismLigament2d("CurrentWrist", arm.getConstants().wristLength(), 0.0, 9, new Color8Bit(Color.kLightBlue));
+        currentWristMechanism = new MechanismLigament2d(
+                "CurrentWrist",
+                arm.getConstants().wristLength(), 0.0,
+                9, new Color8Bit(Color.kLightBlue));
         currentShoulderMechanism.append(currentWristMechanism);
 
         SmartDashboard.putData("Superstructure", mechanism);
