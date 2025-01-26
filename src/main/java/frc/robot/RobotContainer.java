@@ -15,8 +15,9 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
-import frc.robot.subsystems.led.LedColor;
 import frc.robot.utility.ControllerHelper;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
 public class RobotContainer {
@@ -29,6 +30,10 @@ public class RobotContainer {
 
     @NotLogged
     private final CommandXboxController driverController = new CommandXboxController(0);
+    @NotLogged
+    private final CommandXboxController operatorController = new CommandXboxController(1);
+
+    private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -46,7 +51,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        led.setDefaultCommand(led.signalCommand(() -> robotMode));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
+    }
+
+    private Command setRobotMode(RobotMode robotMode) {
+        return runOnce(() -> this.robotMode = robotMode);
     }
 
     public Command getAutonomousCommand() {
