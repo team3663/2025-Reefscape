@@ -11,15 +11,42 @@ import java.util.function.DoubleSupplier;
 public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     private final Arm arm;
+    private final double shoulderLength = 12.0;
+    private final double buffer= 4.0;
 
     public SuperStructure(Elevator elevator, Arm arm) {
         this.elevator = elevator;
         this.arm = arm;
     }
 
-    private boolean armNotCollide(double elevatorCurrentPos, double armCurrentPos, double elevatorTargetPos, double armTargetPos) {
-        return true;
+//    private boolean armGoStraightDown(double elevatorCurrentPos, double shoulderCurrentPos, double elevatorTargetPos, double shoulderTargetPos) {
+//        return (shoulderCurrentPos< shoulderTargetPos + Math.toRadians(180)) && (shoulderTargetPos < Math.toRadians(-90));
+//    }
+//
+//    private double goingDownMinHeight(double shoulderAngle){
+//        double targetElevatorPos= (shoulderLength*(Math.sin(shoulderAngle)+buffer));
+//         return targetElevatorPos;
+//    }
+//    private double goingUpMinAngle(double elevatorHeight){
+//        double bufferAngle= Math.cos((elevatorHeight / shoulderLength));
+//        double allowableAngle = -(bufferAngle + Math.toRadians(90));
+//        return allowableAngle;
+//    }
+
+    private double getAllowableHeight(double targetHeight, double armAngle){
+        targetHeight= Math.max(targetHeight, shoulderLength * (Math.sin(armAngle) + buffer));
+        return targetHeight;
     }
+
+    private double getAllowableAngle(double targetAngle, double targetHeight){
+        targetAngle= Math.max(targetAngle, ( - Math.cos((targetHeight/ shoulderLength) - Math.toRadians(90))));
+        return targetAngle;
+    }
+
+/// make sure everything ends when your at the target
+
+
+
 
 //    private boolean armNotCollide(double elevatorTargetPos, double armTargetPos) {
 //        return armNotCollide(elevator.getPosition(), arm.getPosition(), elevatorTargetPos, armTargetPos);
@@ -34,20 +61,17 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier armPosition) {
-        return Commands.parallel(
-//                arm.followPosition(armPosition),
-                elevator.followPosition(elevatorPosition));
-    }
 
     public Command goToPositions(double elevatorPosition, double armPosition) {
-        return runEnd(
-                () -> {
-                        elevator.goToPosition(elevatorPosition);
-//                        arm.goToPosition(armPosition);
-                }, this::stop
-        );
+        double height = getAllowableHeight(elevatorPosition, arm.getShoulderPosition());
+        double angle = getAllowableAngle(armPosition,height);
+        return Commands.parallel(
+                arm.goToPositions(angle, angle),
+                elevator.goToPosition(height)
+
+        ).until(()-> (elevatorPosition==height) && (armPosition==angle));
     }
+
 
     public Command resetPositions() {
         return runOnce(
