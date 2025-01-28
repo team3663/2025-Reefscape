@@ -1,10 +1,13 @@
 package frc.robot.config;
 
+import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -13,8 +16,17 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
+import frc.robot.subsystems.climber.C2025ClimberIO;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.elevator.C2025ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.grabber.C2025GrabberIO;
+import frc.robot.subsystems.grabber.GrabberIO;
+import frc.robot.subsystems.grabber.GrabberInputs;
+import frc.robot.subsystems.led.LedCandleIo;
+import frc.robot.subsystems.led.LedIo;
 
 public class C2025RobotFactory implements RobotFactory {
     private static final CANBus DRIVETRAIN_CAN_BUS = new CANBus("3663");
@@ -132,5 +144,25 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public ArmIO createArmIo() {
         return new C2025ArmIO(new TalonFX(11), new TalonFX(12));
+    }
+
+    @Override
+    public ClimberIO createClimberIo() {
+        return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
+    }
+    
+    @Override 
+    public ElevatorIO createElevatorIo() {
+        return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
+    }
+
+    @Override
+    public GrabberIO createGrabberIo() {
+        return new C2025GrabberIO(new TalonFX(14), new CANdi(1));
+    }
+
+    @Override
+    public LedIo createLedIo() {
+        return new LedCandleIo(new CANdle(2));
     }
 }
