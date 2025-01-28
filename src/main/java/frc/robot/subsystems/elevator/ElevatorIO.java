@@ -20,7 +20,4 @@ public interface ElevatorIO {
 
     default void resetPosition() {
     }
-
-    default void setLocked(boolean locked) {
-    }
 }

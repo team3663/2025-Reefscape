@@ -108,9 +108,4 @@ public class C2025ElevatorIO implements ElevatorIO {
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(position / PULLEY_CIRCUMFERENCE));
     }
-
-    @Override
-    public void setLocked(boolean locked) {
-        motor.setPosition(locked ? 1.0 : 0.0);
-    }
 }

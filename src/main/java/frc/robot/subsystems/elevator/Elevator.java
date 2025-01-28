@@ -78,21 +78,12 @@ public class Elevator extends SubsystemBase {
         }, io::stop);
     }
 
-    public Command lock() {
-        return runOnce(
-                () -> io.setLocked(true));
-    }
 
-
-    public Command unlock() {
-        return runOnce(
-                () -> io.setLocked(false));
-    }
 
 
     public Command zero() {
         return waitUntil(() -> Math.abs(inputs.currentVelocityMotor1) < VELOCITY_THRESHOLD)
-                // Then reset the climber position
+                // Then reset the elevator position
                 .andThen(() -> {
                     io.resetPosition();
                     zeroed = true;
@@ -102,11 +93,7 @@ public class Elevator extends SubsystemBase {
                 // Retract while we haven't found the bottom hard stop
                 .withDeadline(runEnd(
                         () -> io.setTargetVoltage(-1.0),
-                        io::stop))
-                // Before we move, unlock the climber
-                .beforeStarting(unlock())
-                // After we finish, lock the climber
-                .andThen(lock());
+                        io::stop));
     }
 
     public record Constants(
