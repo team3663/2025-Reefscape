@@ -23,6 +23,8 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
+    private final double shoulderLength = 12.0;
+    private final double buffer= 4.0;
 
     private final Mechanism2d mechanism;
     private final MechanismLigament2d targetElevatorMechanism;
@@ -82,6 +84,34 @@ public class SuperStructure extends SubsystemBase {
         SmartDashboard.putData("Superstructure", mechanism);
     }
 
+//    private boolean armGoStraightDown(double elevatorCurrentPos, double shoulderCurrentPos, double elevatorTargetPos, double shoulderTargetPos) {
+//        return (shoulderCurrentPos< shoulderTargetPos + Math.toRadians(180)) && (shoulderTargetPos < Math.toRadians(-90));
+//    }
+//
+//    private double goingDownMinHeight(double shoulderAngle){
+//        double targetElevatorPos= (shoulderLength*(Math.sin(shoulderAngle)+buffer));
+//         return targetElevatorPos;
+//    }
+//    private double goingUpMinAngle(double elevatorHeight){
+//        double bufferAngle= Math.cos((elevatorHeight / shoulderLength));
+//        double allowableAngle = -(bufferAngle + Math.toRadians(90));
+//        return allowableAngle;
+//    }
+
+    private double getAllowableHeight(double targetHeight, double armAngle){
+        targetHeight= Math.max(targetHeight, shoulderLength * (Math.sin(armAngle) + buffer));
+        return targetHeight;
+    }
+
+    private double getAllowableAngle(double targetAngle, double targetHeight){
+        targetAngle= Math.max(targetAngle, ( - Math.cos((targetHeight/ shoulderLength) - Math.toRadians(90))));
+        return targetAngle;
+    }
+
+/// make sure everything ends when your at the target
+
+
+
     @Override
     public void periodic() {
         targetElevatorMechanism.setLength(elevator.getTargetPosition());
@@ -112,11 +142,16 @@ public class SuperStructure extends SubsystemBase {
                 elevator.followPosition(elevatorPosition));
     }
 
-    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
+    public Command goToPositions(double elevatorPosition, double armPosition) {
+        double height = getAllowableHeight(elevatorPosition, arm.getShoulderPosition());
+        double angle = getAllowableAngle(armPosition,height);
         return Commands.parallel(
-                elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderPosition, wristPosition));
+                arm.goToPositions(angle, angle),
+                elevator.goToPosition(height)
+
+        ).until(()-> (elevatorPosition==height) && (armPosition==angle));
     }
+
 
     /**
      * Tells the super Structure where to go based on the Robot Mode
