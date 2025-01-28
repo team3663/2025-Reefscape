@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -15,6 +16,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
+import frc.robot.subsystems.climber.C2025ClimberIO;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
@@ -144,6 +147,11 @@ public class C2025RobotFactory implements RobotFactory {
     }
 
     @Override
+    public ClimberIO createClimberIo() {
+        return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
+    }
+    
+    @Override 
     public ElevatorIO createElevatorIo() {
         return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
     }
