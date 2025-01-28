@@ -7,15 +7,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+
 @Logged
 public class Elevator extends SubsystemBase {
-
-    private static final double POSITION_THRESHOLD = Units.inchesToMeters(1);
+    private static final double WAIT_TIME = 0.25; // In seconds
+    private static final double POSITION_THRESHOLD = Units.inchesToMeters(1.0);
+    private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1.0);
 
     private final ElevatorIO io;
     private final ElevatorInputs inputs = new ElevatorInputs();
     private final Constants constants;
 
+    private boolean zeroed = false;
     private double targetPosition = 0.0;
 
     public Elevator(ElevatorIO io) {
@@ -71,6 +76,37 @@ public class Elevator extends SubsystemBase {
             targetPosition = position.getAsDouble();
             io.setTargetPosition(targetPosition);
         }, io::stop);
+    }
+
+    public Command lock() {
+        return runOnce(
+                () -> io.setLocked(true));
+    }
+
+
+    public Command unlock() {
+        return runOnce(
+                () -> io.setLocked(false));
+    }
+
+
+    public Command zero() {
+        return waitUntil(() -> Math.abs(inputs.currentVelocityMotor1) < VELOCITY_THRESHOLD)
+                // Then reset the climber position
+                .andThen(() -> {
+                    io.resetPosition();
+                    zeroed = true;
+                })
+                // Before we check if we're at the bottom hard stop, wait a little
+                .beforeStarting(waitSeconds(WAIT_TIME))
+                // Retract while we haven't found the bottom hard stop
+                .withDeadline(runEnd(
+                        () -> io.setTargetVoltage(-1.0),
+                        io::stop))
+                // Before we move, unlock the climber
+                .beforeStarting(unlock())
+                // After we finish, lock the climber
+                .andThen(lock());
     }
 
     public record Constants(
