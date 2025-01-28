@@ -33,14 +33,7 @@ public class Robot extends TimedRobot {
      */
     private final RobotId detectedId = Arrays.stream(RobotId.values())
             .filter(id -> macAddresses.contains(id.getMacAddress()))
-            .findFirst().orElse(null);
-
-    /**
-     * The ID of the robot that was used to create the subsystem IO implementations.
-     * <p>
-     * This is typically the same as {@link #detectedId}. but if that is {@code null}, this will be {@link RobotId#C2025}.
-     */
-    private final RobotId runtimeId;
+            .findFirst().orElse(RobotId.UNKNOWN);
 
     @NotLogged
     private Command autonomousCommand;
@@ -48,17 +41,9 @@ public class Robot extends TimedRobot {
     private final RobotContainer robotContainer;
 
     public Robot() {
-        if (isSimulation()) {
-            runtimeId = RobotId.SIM;
-        } else {
-            runtimeId = detectedId != null ? detectedId : RobotId.C2025;
-        }
-
-        RobotFactory robotFactory = switch (runtimeId) {
+        RobotFactory robotFactory = switch (detectedId) {
+            case UNKNOWN, C2025 -> new C2025RobotFactory();
             case C2024 -> new C2024RobotFactory();
-            case C2025 -> new C2025RobotFactory();
-            default -> new RobotFactory() {
-            };
         };
 
         robotContainer = new RobotContainer(robotFactory);
