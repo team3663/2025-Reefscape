@@ -24,7 +24,6 @@ public class C2025ClimberIO implements ClimberIO {
     private final CANcoder coder;
     private final CANdi gamePieceDetector;
     private final NeutralOut stopRequest = new NeutralOut();
-    private final VelocityVoltage velocityRequest = new VelocityVoltage(0.0);
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final DCMotorSim sim = new DCMotorSim(
@@ -93,11 +92,6 @@ public class C2025ClimberIO implements ClimberIO {
     @Override
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
-    }
-    @Override
-    public void setTargetVelocity(double velocity) {
-        motor.setControl(velocityRequest.withVelocity(velocity));
-
     }
     @Override
     public void setTargetVoltage(double voltage) {
