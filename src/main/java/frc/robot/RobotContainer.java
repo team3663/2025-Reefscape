@@ -67,6 +67,16 @@ public class RobotContainer {
                         arm.goToPositions(0.0, 0.0)
                 ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
+
+        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
+        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
+        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+
+        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
     }
 
     private Command setRobotMode(RobotMode robotMode) {
