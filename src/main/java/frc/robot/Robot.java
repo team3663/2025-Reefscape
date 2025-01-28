@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
@@ -53,6 +54,8 @@ public class Robot extends TimedRobot {
         Epilogue.configure(config -> {
         });
         Epilogue.bind(this);
+
+        SignalLogger.setPath("/media/sda1/");
     }
 
     @Override
@@ -74,11 +77,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        autonomousCommand = robotContainer.getAutonomousCommand();
-
-        if (autonomousCommand != null) {
-            autonomousCommand.schedule();
-        }
     }
 
     @Override
@@ -91,9 +89,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        if (autonomousCommand != null) {
-            autonomousCommand.cancel();
-        }
     }
 
     @Override

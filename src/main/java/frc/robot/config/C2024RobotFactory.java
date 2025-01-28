@@ -33,7 +33,11 @@ public class C2024RobotFactory implements RobotFactory {
     private static final double DRIVE_INERTIA = 0.001;
     private static final double DRIVE_FRICTION_VOLTAGE = 0.0;
     private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
-    private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
+    private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs()
+            .withKS(0.216)
+            .withKV(0.12281)
+            .withKA(0.0037421)
+            .withKP(0.16965);
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
     private static final double MAX_DRIVE_VELOCITY = DCMotor.getFalcon500Foc(1)
             .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;

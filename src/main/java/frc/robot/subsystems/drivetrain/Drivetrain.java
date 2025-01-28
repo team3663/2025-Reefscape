@@ -1,27 +1,66 @@
 package frc.robot.subsystems.drivetrain;
 
+import choreo.auto.AutoFactory;
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import java.util.function.DoubleSupplier;
+
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 
 @Logged
 public class Drivetrain extends SubsystemBase {
     @NotLogged
-    private final DrivetrainIO io;
+    private DrivetrainIO io;
     private final DrivetrainInputs inputs = new DrivetrainInputs();
     private final Constants constants;
+    private final AutoFactory autoFactory;
+    private final SysIdRoutine sysIdTranslationRoutine;
+
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
         this.constants = io.getConstants();
+
+        autoFactory = new AutoFactory(
+                this::getPose, // returns current robot pose
+                io::resetOdometry, // resets current robot pose to provided pose 2d
+                io::followTrajectory, // trajectory follower
+                true, // if Alliance flipping should be enabled
+                this
+        );
+
+        // Creating a SysId Routine
+        sysIdTranslationRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.of(0.25).per(Second),
+                        Volts.of(4),
+                        null,
+                        (state) -> SignalLogger.writeString("state", state.toString())),
+                new SysIdRoutine.Mechanism(
+                        io::driveSysIdTranslation,
+                        null,
+                        this));
     }
 
     public Constants getConstants() {
         return constants;
     }
+
+    public Pose2d getPose() {
+        return inputs.pose;
+    }
+
+    public AutoFactory getAutoFactory() {
+        return autoFactory;
+    }
+
 
     @Override
     public void periodic() {
@@ -31,6 +70,14 @@ public class Drivetrain extends SubsystemBase {
 
     public Command resetFieldOriented() {
         return runOnce(io::resetFieldOriented);
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdTranslationRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdTranslationRoutine.dynamic(direction);
     }
 
     /**

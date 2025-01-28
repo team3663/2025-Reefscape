@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drivetrain;
 
+import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -8,8 +9,11 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 
 public class CTREDrivetrainIO implements DrivetrainIO {
@@ -18,8 +22,14 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     private final SwerveRequest.FieldCentric fieldOrientedRequest = new SwerveRequest.FieldCentric();
     private final SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
+    private final SwerveRequest.SysIdSwerveTranslation sysIdTranslationRequest = new SwerveRequest.SysIdSwerveTranslation();
 
     private volatile SwerveDrivetrain.SwerveDriveState lastState = new SwerveDrivetrain.SwerveDriveState();
+
+    private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
+    private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+
 
     @SafeVarargs
     public CTREDrivetrainIO(
@@ -29,6 +39,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         this.drivetrain = new SwerveDrivetrain<>(
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
         );
+        headingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.registerTelemetry(state -> lastState = state.clone());
 
@@ -74,6 +85,20 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     }
 
+    @Override
+    public void driveSysIdTranslation(Voltage voltage) {
+        drivetrain.setControl(sysIdTranslationRequest.withVolts(voltage));
+    }
+
+    @Override
+    public void resetOdometry(Pose2d newPose) {
+        drivetrain.getState().Pose = newPose;
+    }
+
+    @Override
+    public void followTrajectory(SwerveSample sample) {
+        this.driveFieldOriented(sample);
+    }
 
     @Override
     public void resetFieldOriented() {
@@ -86,6 +111,23 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVeolcity)
                 .withRotationalRate(angularVeolcity));
+    }
+
+    @Override
+    public void driveFieldOriented(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = drivetrain.getState().Pose;
+
+        // Generate the next speeds for the robot
+        double xVelocity = sample.vx + xController.calculate(pose.getX(), sample.x);
+        double yVelocity = sample.vy + yController.calculate(pose.getY(), sample.y);
+        double angularVelocity = sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading);
+
+        drivetrain.setControl(fieldOrientedRequest
+                .withVelocityX(xVelocity)
+                .withVelocityY(yVelocity)
+                .withRotationalRate(angularVelocity)
+        );
     }
 
     @Override
