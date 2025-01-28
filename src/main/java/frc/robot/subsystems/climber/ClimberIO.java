@@ -7,9 +7,6 @@ public interface ClimberIO {
     default void setTargetPosition(double position) {
     }
 
-    default void setTargetVelocity(double velocity){
-    }
-
     default void setTargetVoltage(double voltage) {
     }
 
