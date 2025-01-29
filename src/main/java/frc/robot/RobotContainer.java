@@ -7,6 +7,7 @@ package frc.robot;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.hardware.CANdi;
@@ -62,11 +63,10 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addCmd("FacePlantG", this::facePlantG);
+        autoChooser.addRoutine("FacePlantG", this::facePlantG);
+        autoChooser.addRoutine("Experiment", this::experiment);
 
-        // Getting the auto facto
-        //
-        // ry
+        // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
 
         // Puts auto chooser on the dashboard
@@ -85,11 +85,36 @@ public class RobotContainer {
                 ));
     }
 
-    private Command facePlantG() {
-        return Commands.sequence(autoFactory.resetOdometry("FacePlantG").andThen(
-                autoFactory.trajectoryCmd("FacePlantG")
-        ));
+    private AutoRoutine facePlantG() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlantG");
+
+        // Load the routine's trajectories
+        AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantG");
+
+        // When the routine begins, reset odometry and start the first trajectory
+        routine.active().onTrue(
+                Commands.sequence(
+                        facePlantGTraj.resetOdometry(),
+                        facePlantGTraj.cmd()
+                )
+        );
+        return routine;
     }
+
+    private AutoRoutine experiment() {
+        AutoRoutine routine = autoFactory.newRoutine("Experiment");
+
+        AutoTrajectory experimentTraj = routine.trajectory("Experiment");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        experimentTraj.resetOdometry(),
+                        experimentTraj.cmd()
+                )
+        );
+        return routine;
+    }
+
 
     private void configureBindings() {
 

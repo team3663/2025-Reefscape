@@ -5,6 +5,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -32,7 +33,7 @@ public class Drivetrain extends SubsystemBase {
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
                 io::followTrajectory, // trajectory follower
-                true, // if Alliance flipping should be enabled
+                allianceIsRed(), // if Alliance flipping should be enabled
                 this
         );
 
@@ -66,6 +67,18 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Updates every 20 milliseconds
         io.updateInputs(inputs);
+    }
+
+    /**
+     * Determines which alliance the robot is on
+     *
+     * @return True if alliance is red and the auto needs to be flipped.
+     * False if alliance is blue and the auto should not be flipped
+     */
+    public boolean allianceIsRed() {
+        return DriverStation.getAlliance()
+                .map(alliance -> alliance == DriverStation.Alliance.Red)
+                .orElse(false);
     }
 
     public Command resetFieldOriented() {
