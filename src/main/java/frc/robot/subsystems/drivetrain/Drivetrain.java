@@ -33,7 +33,7 @@ public class Drivetrain extends SubsystemBase {
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
                 io::followTrajectory, // trajectory follower
-                allianceIsRed(), // if Alliance flipping should be enabled
+                true,
                 this
         );
 
@@ -67,18 +67,6 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         // Updates every 20 milliseconds
         io.updateInputs(inputs);
-    }
-
-    /**
-     * Determines which alliance the robot is on
-     *
-     * @return True if alliance is red and the auto needs to be flipped.
-     * False if alliance is blue and the auto should not be flipped
-     */
-    public boolean allianceIsRed() {
-        return DriverStation.getAlliance()
-                .map(alliance -> alliance == DriverStation.Alliance.Red)
-                .orElse(false);
     }
 
     public Command resetFieldOriented() {
