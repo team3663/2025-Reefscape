@@ -92,7 +92,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void resetOdometry(Pose2d newPose) {
-        drivetrain.getState().Pose = newPose;
+        drivetrain.resetPose(newPose);
     }
 
     @Override
