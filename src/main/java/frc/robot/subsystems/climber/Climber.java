@@ -73,7 +73,7 @@ public class Climber extends SubsystemBase {
 
     public Command zero() {
         // Wait until the climber stops moving
-        return waitUntil(() -> Math.abs(inputs.currentPosition) < POSITION_THRESHOLD)
+        return waitUntil(() -> Math.abs(inputs.currentVelocity) < 0.01)
                 // Then reset the climber position
                 .andThen(() -> {
                     io.resetPosition();
