@@ -7,18 +7,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+
 @Logged
 public class Climber extends SubsystemBase {
-    private final ClimberIO io;
-    private final ClimberInputs inputs = new ClimberInputs();
-
     private static final double POSITION_THRESHOLD = Units.degreesToRadians(1.0);
+    private static final double WAIT_TIME = 0.25;
+    private final ClimberIO io;
+    private final Constants constants;
+    private final ClimberInputs inputs = new ClimberInputs();
+    private boolean zeroed = false;
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
 
 
     public Climber(ClimberIO io) {
         this.io = io;
+        this.constants = io.getConstants();
     }
 
     @Override
@@ -64,4 +70,23 @@ public class Climber extends SubsystemBase {
                 io::stop
         );
     }
+
+    public Command zero() {
+        // Wait until the climber stops moving
+        return waitUntil(() -> Math.abs(inputs.currentPosition) < POSITION_THRESHOLD)
+                // Then reset the climber position
+                .andThen(() -> {
+                    io.resetPosition();
+                    zeroed = true;
+                })
+                // Before we check if we're at the bottom hard stop, wait a little
+                .beforeStarting(waitSeconds(WAIT_TIME))
+                // Retract while we haven't found the bottom hard stop
+                .withDeadline(runEnd(
+                        () -> io.setTargetVoltage(-1.0),
+                        io::stop));
+    }
+    public record Constants(
+            double maximumPosition
+    ) {}
 }
