@@ -101,6 +101,10 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
+    public boolean atTargetPositions() {
+        return elevator.atTargetPosition() && arm.atTargetPositions();
+    }
+
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
                 arm.followPositions(shoulderPosition, wristPosition),

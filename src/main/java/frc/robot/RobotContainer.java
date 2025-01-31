@@ -19,7 +19,7 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.utility.ControllerHelper;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
@@ -64,7 +64,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Make a Robot Command map where each item in the RobotMode Enum is mapped to a command to go to the corresponding position
-        Map<RobotMode, Command> robotModeCommandMap = new HashMap<>();
+        Map<RobotMode, Command> robotModeCommandMap = new EnumMap<>(RobotMode.class);
         robotModeCommandMap.put(RobotMode.CORAL_LEVEL_1, commandFactory.goToL1());
         robotModeCommandMap.put(RobotMode.CORAL_LEVEL_2, commandFactory.goToL2());
         robotModeCommandMap.put(RobotMode.CORAL_LEVEL_3, commandFactory.goToL3());
@@ -74,7 +74,13 @@ public class RobotContainer {
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_UPPER, commandFactory.goToRemoveUpper());
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_LOWER, commandFactory.goToRemoveLower());
 
-        driverController.rightBumper().onTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
+        // TODO: Ask Jacob EnumMap vs HashMap
+        //          Selector for Both
+        driverController.rightBumper().whileTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
+//        driverController.rightTrigger().onTrue(commandFactory.goToL1());
+        driverController.rightTrigger().and(driverController.rightBumper())
+                .and(superStructure::atTargetPositions)
+                .onTrue(commandFactory.releaseGamePiece());
 
         driverController.x().onTrue(
                 Commands.parallel(
