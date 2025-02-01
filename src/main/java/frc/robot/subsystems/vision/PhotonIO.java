@@ -1,24 +1,24 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.geometry.Transform3d;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.List;
 import java.util.Optional;
 
+@Logged
 public class PhotonIO implements VisionIO {
     private final PhotonCamera camera;
     private final PhotonPoseEstimator estimator;
 
-    public PhotonIO(String cameraName, Transform3d cameraTransform) {
+    public PhotonIO(String cameraName, Transform3d cameraTransform, AprilTagFieldLayout fieldLayout) {
         camera = new PhotonCamera(cameraName);
-
-        AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
         estimator = new PhotonPoseEstimator(fieldLayout,
                 PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransform);
@@ -32,8 +32,13 @@ public class PhotonIO implements VisionIO {
         estimator.setLastPose(visionInputs.estimatedPose);
         estimator.setReferencePose(visionInputs.estimatedPose);
 
-        var result = camera.getLatestResult();
-        Optional<EstimatedRobotPose> newPose = estimator.update(result);
+        // Read all the new pipeline results since last time we checked, just return if there are none.
+        List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+        if (results.isEmpty())
+            return;
+
+        // Generate a new estimated pose using the most recent pipeline result.
+        Optional<EstimatedRobotPose> newPose = estimator.update(results.getLast());
 
         // If there is no new pose then we have nothing to do, just bail out.
         if (newPose.isEmpty()) {
