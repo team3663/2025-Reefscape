@@ -38,7 +38,7 @@ public class PhotonIO implements VisionIO {
             return;
 
         // Generate a new estimated pose using the most recent pipeline result.
-        Optional<EstimatedRobotPose> newPose = estimator.update(results.getLast());
+        Optional<EstimatedRobotPose> newPose = estimator.update(results.get(results.size() - 1));
 
         // If there is no new pose then we have nothing to do, just bail out.
         if (newPose.isEmpty()) {
