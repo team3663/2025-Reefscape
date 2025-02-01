@@ -23,7 +23,7 @@ public class ControllerHelper {
         double clippedValue = MathUtil.applyDeadband(value, DEADBAND_WIDTH);
 
         // Square the clipped value (preserving and inverting the sign) and return it.
-        return Math.copySign((clippedValue * clippedValue) * scale, value);
+        return scale * Math.copySign((clippedValue * clippedValue), value);
     }
 
     /**

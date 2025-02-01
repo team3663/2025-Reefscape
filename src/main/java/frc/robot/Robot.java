@@ -10,16 +10,43 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.config.C2024RobotFactory;
+import frc.robot.config.C2025RobotFactory;
+import frc.robot.config.RobotFactory;
+import frc.robot.utility.MacAddressUtils;
+import frc.robot.utility.RobotId;
+
+import java.util.Arrays;
+import java.util.Set;
 
 @Logged
 public class Robot extends TimedRobot {
+    /**
+     * The detected MAC addresses on the system.
+     */
+    private final Set<String> macAddresses = MacAddressUtils.getMacAddresses();
+
+    /**
+     * The ID of the robot that was detected based on the system's MAC addresses.
+     * <p>
+     * May be {@code null} if the system did not have a recognized MAC address.
+     */
+    private final RobotId detectedId = Arrays.stream(RobotId.values())
+            .filter(id -> macAddresses.contains(id.getMacAddress()))
+            .findFirst().orElse(RobotId.UNKNOWN);
+
     @NotLogged
     private Command autonomousCommand;
 
     private final RobotContainer robotContainer;
 
     public Robot() {
-        robotContainer = new RobotContainer();
+        RobotFactory robotFactory = switch (detectedId) {
+            case UNKNOWN, C2025 -> new C2025RobotFactory();
+            case C2024 -> new C2024RobotFactory();
+        };
+
+        robotContainer = new RobotContainer(robotFactory);
 
         Epilogue.configure(config -> {
         });

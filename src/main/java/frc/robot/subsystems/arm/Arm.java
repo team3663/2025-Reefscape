@@ -9,14 +9,22 @@ import java.util.function.DoubleSupplier;
 
 @Logged
 public class Arm extends SubsystemBase {
-    public static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(100.0);
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
+
     private final ArmIO io;
-    private ArmInputs inputs = new ArmInputs();
-    private double targetPosition = 0.0;
+    private final ArmInputs inputs = new ArmInputs();
+    private final Constants constants;
+
+    private double targetShoulderPosition = 0.0;
+    private double targetWristPosition = 0.0;
 
     public Arm(ArmIO io) {
         this.io = io;
+        constants = io.getConstants();
+    }
+
+    public Constants getConstants() {
+        return constants;
     }
 
     @Override
@@ -24,45 +32,84 @@ public class Arm extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public double getVelocity() {
-        return inputs.currentVelocity;
+    public double getTargetShoulderPosition() {
+        return targetShoulderPosition;
     }
 
-    public double getPosition() {
-        return inputs.currentPosition;
-    }
-
-    public boolean atTargetPosition() {
-        return Math.abs(inputs.currentPosition - targetPosition) < POSITION_THRESHOLD;
+    public double getTargetWristPosition() {
+        return targetWristPosition;
     }
 
     public Command stop() {
         return runOnce(() -> {
-                    targetPosition = 0.0;
-                    io.stop();
+                    targetShoulderPosition = 0.0;
+                    targetWristPosition = 0.0;
+                    io.stopShoulder();
+                    io.stopWrist();
                 }
         );
     }
 
-    public Command resetPosition() {
-        return runOnce(
-                () -> io.resetPosition()
-        );
+    public Command resetPositions() {
+        return runOnce(() -> {
+            io.resetShoulderPosition();
+            io.resetWristPosition();
+        });
     }
 
-    public Command goToPosition(double position) {
-        return run(
-                () -> {
-                    io.setTargetPosition(position);
-                    targetPosition = position;
-                }
-        ).until(this::atTargetPosition);
+    public boolean atTargetPositions() {
+        return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
 
-    public Command followPosition(DoubleSupplier position) {
+    public Command goToPositions(double positionShoulder, double positionWrist) {
         return runEnd(() -> {
-            targetPosition = position.getAsDouble();
-            io.setTargetPosition(targetPosition);
-        }, io::stop);
+                    // Shoulder
+                    targetShoulderPosition = positionShoulder;
+                    io.setShoulderTargetPosition(positionShoulder);
+
+                    // Wrist
+                    targetWristPosition = positionWrist;
+                    io.setWristTargetPosition(positionWrist);
+                }, this::stop
+        ).until(this::atTargetPositions);
+    }
+
+    public Command followPositions(DoubleSupplier positionShoulder, DoubleSupplier positionWrist) {
+        return runEnd(() -> {
+            // Shoulder
+            targetShoulderPosition = positionShoulder.getAsDouble();
+            io.setShoulderTargetPosition(targetShoulderPosition);
+
+            // Wrist
+            targetWristPosition = positionWrist.getAsDouble();
+            io.setWristTargetPosition(targetWristPosition);
+        }, this::stop);
+    }
+
+    public double getShoulderPosition() {
+        return inputs.currentPositionShoulder;
+    }
+
+    public boolean atShoulderTargetPosition() {
+        return Math.abs(inputs.currentPositionShoulder - targetShoulderPosition) < POSITION_THRESHOLD;
+    }
+
+    public Command resetShoulderPosition() {
+        return runOnce(io::resetShoulderPosition);
+    }
+
+    public double getWristPosition() {
+        return inputs.currentPositionWrist;
+    }
+
+    public boolean atWristTargetPosition() {
+        return Math.abs(inputs.currentPositionWrist - targetWristPosition) < POSITION_THRESHOLD;
+    }
+
+    public Command resetWristPosition() {
+        return runOnce(io::resetWristPosition);
+    }
+
+    public record Constants(double shoulderLength, double wristLength) {
     }
 }

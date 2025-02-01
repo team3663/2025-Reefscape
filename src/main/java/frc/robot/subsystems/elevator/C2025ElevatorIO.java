@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 public class C2025ElevatorIO implements ElevatorIO {
+    // TODO: Get real values from CAD
+    private static final Elevator.Constants CONSTANTS = new Elevator.Constants(1.0);
+
     private static final double GEAR_RATIO = 1.0;
     private static final double PULLEY_RADIUS = Units.inchesToMeters(1.0);
     private static final double PULLEY_CIRCUMFERENCE = (2 * Math.PI * PULLEY_RADIUS);
@@ -29,7 +32,7 @@ public class C2025ElevatorIO implements ElevatorIO {
             DCMotor.getKrakenX60(2).withReduction(1.0)
     );
 
-    public C2025ElevatorIO(TalonFX motor, TalonFX motor2, int motor1Id) {
+    public C2025ElevatorIO(TalonFX motor, TalonFX motor2) {
         this.motor = motor;
         this.motor2 = motor2;
 
@@ -51,7 +54,12 @@ public class C2025ElevatorIO implements ElevatorIO {
         motor.getConfigurator().apply(config);
         motor2.getConfigurator().apply(config);
 
-        motor2.setControl(new Follower(motor1Id, true));
+        motor2.setControl(new Follower(motor.getDeviceID(), true));
+    }
+
+    @Override
+    public Elevator.Constants getConstants() {
+        return CONSTANTS;
     }
 
     @Override
@@ -61,7 +69,7 @@ public class C2025ElevatorIO implements ElevatorIO {
             var simStateMotor1 = motor.getSimState();
             var simStateMotor2 = motor2.getSimState();
             sim.setInputVoltage(simStateMotor1.getMotorVoltage());
-            //Updates the sim information every 20 ms
+            // Updates the sim information every 20 ms
             sim.update(Robot.kDefaultPeriod);
             simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
             simStateMotor1.setRotorVelocity(sim.getAngularVelocity());

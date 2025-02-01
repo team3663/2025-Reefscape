@@ -1,0 +1,19 @@
+package frc.robot.subsystems.drivetrain;
+
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+
+@Logged
+public class DrivetrainInputs {
+    public int successfulDaqs = 0;
+    public int failedDaqs = 0;
+    public double odometryPeriod = 0.0;
+
+    public Pose2d pose = new Pose2d();
+    public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+    public SwerveModuleState[] moduleStates = new SwerveModuleState[0];
+    public SwerveModuleState[] moduleTargets = new SwerveModuleState[0];
+
+}
