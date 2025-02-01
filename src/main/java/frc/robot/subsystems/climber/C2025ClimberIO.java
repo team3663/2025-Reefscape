@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
@@ -20,6 +19,9 @@ import frc.robot.Robot;
 
 
 public class C2025ClimberIO implements ClimberIO {
+    // TODO: Get real values from CAD
+    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0);
+
     private final TalonFX motor;
     private final CANcoder coder;
     private final CANdi gamePieceDetector;
@@ -93,6 +95,7 @@ public class C2025ClimberIO implements ClimberIO {
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+
     @Override
     public void setTargetVoltage(double voltage) {
         motor.setControl(voltageRequest.withOutput(voltage));
@@ -100,6 +103,6 @@ public class C2025ClimberIO implements ClimberIO {
 
     @Override
     public Climber.Constants getConstants() {
-        return new Climber.Constants(1.0);
+        return CONSTANTS;
     }
 }
