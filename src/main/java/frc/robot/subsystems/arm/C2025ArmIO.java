@@ -84,18 +84,18 @@ public class C2025ArmIO implements ArmIO {
         }
 
         // Wrist inputs
-        inputs.currentAppliedVoltageWrist = wristMotor.getMotorVoltage().getValueAsDouble();
-        inputs.currentVelocityWrist = Units.rotationsToRadians(wristMotor.getVelocity().getValueAsDouble());
-        inputs.currentPositionWrist = Units.rotationsToRadians(wristMotor.getPosition().getValueAsDouble());
-        inputs.motorTemperatureWrist = wristMotor.getDeviceTemp().getValueAsDouble();
-        inputs.currentDrawWrist = wristMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentWristAppliedVoltage = wristMotor.getMotorVoltage().getValueAsDouble();
+        inputs.currentWristVelocity = Units.rotationsToRadians(wristMotor.getVelocity().getValueAsDouble());
+        inputs.currentWristPosition = Units.rotationsToRadians(wristMotor.getPosition().getValueAsDouble());
+        inputs.wristMotorPosition = wristMotor.getDeviceTemp().getValueAsDouble();
+        inputs.currentWristDraw = wristMotor.getSupplyCurrent().getValueAsDouble();
 
         // Shoulder inputs
-        inputs.currentAppliedVoltageShoulder = shoulderMotor.getMotorVoltage().getValueAsDouble();
-        inputs.currentVelocityShoulder = Units.rotationsToRadians(shoulderMotor.getVelocity().getValueAsDouble());
-        inputs.currentPositionShoulder = Units.rotationsToRadians(shoulderMotor.getPosition().getValueAsDouble());
-        inputs.motorTemperatureShoulder = shoulderMotor.getDeviceTemp().getValueAsDouble();
-        inputs.currentDrawShoulder = shoulderMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentAppliedShoulderVoltage = shoulderMotor.getMotorVoltage().getValueAsDouble();
+        inputs.currentShoulderVelocity = Units.rotationsToRadians(shoulderMotor.getVelocity().getValueAsDouble());
+        inputs.currentShoulderPosition = Units.rotationsToRadians(shoulderMotor.getPosition().getValueAsDouble());
+        inputs.shoulderMotorPosition = shoulderMotor.getDeviceTemp().getValueAsDouble();
+        inputs.currentShoulderDraw = shoulderMotor.getSupplyCurrent().getValueAsDouble();
     }
 
     @Override

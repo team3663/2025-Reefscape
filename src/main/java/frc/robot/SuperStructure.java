@@ -92,14 +92,6 @@ public class SuperStructure extends SubsystemBase {
         currentWristMechanism.setAngle(Units.radiansToDegrees(arm.getWristPosition()));
     }
 
-    private boolean armNotCollide(double elevatorCurrentPos, double armCurrentPos, double elevatorTargetPos, double armTargetPos) {
-        return true;
-    }
-
-//    private boolean armNotCollide(double elevatorTargetPos, double armTargetPos) {
-//        return armNotCollide(elevator.getPosition(), arm.getPosition(), elevatorTargetPos, armTargetPos);
-//    }
-
     public Command stop() {
         return runOnce(
                 () -> {
@@ -109,27 +101,19 @@ public class SuperStructure extends SubsystemBase {
         );
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier armPosition) {
+    public boolean atTargetPositions() {
+        return elevator.atTargetPosition() && arm.atTargetPositions();
+    }
+
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-//                arm.followPosition(armPosition),
+                arm.followPositions(shoulderPosition, wristPosition),
                 elevator.followPosition(elevatorPosition));
     }
 
-    public Command goToPositions(double elevatorPosition, double armPosition) {
-        return runEnd(
-                () -> {
-                        elevator.goToPosition(elevatorPosition);
-//                        arm.goToPosition(armPosition);
-                }, this::stop
-        );
-    }
-
-    public Command resetPositions() {
-        return runOnce(
-                () -> {
-                    elevator.resetPosition();
-//                    arm.resetPosition();
-                }
-        );
+    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
+        return Commands.parallel(
+            elevator.goToPosition(elevatorPosition),
+            arm.goToPositions(shoulderPosition, wristPosition));
     }
 }

@@ -63,37 +63,37 @@ public class Arm extends SubsystemBase {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
 
-    public Command goToPositions(double positionShoulder, double positionWrist) {
+    public Command goToPositions(double shoulderPosition, double wristPosition) {
         return runEnd(() -> {
                     // Shoulder
-                    targetShoulderPosition = positionShoulder;
-                    io.setShoulderTargetPosition(positionShoulder);
+                    targetShoulderPosition = shoulderPosition;
+                    io.setShoulderTargetPosition(shoulderPosition);
 
                     // Wrist
-                    targetWristPosition = positionWrist;
-                    io.setWristTargetPosition(positionWrist);
+                    targetWristPosition = wristPosition;
+                    io.setWristTargetPosition(wristPosition);
                 }, this::stop
         ).until(this::atTargetPositions);
     }
 
-    public Command followPositions(DoubleSupplier positionShoulder, DoubleSupplier positionWrist) {
+    public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return runEnd(() -> {
             // Shoulder
-            targetShoulderPosition = positionShoulder.getAsDouble();
+            targetShoulderPosition = shoulderPosition.getAsDouble();
             io.setShoulderTargetPosition(targetShoulderPosition);
 
             // Wrist
-            targetWristPosition = positionWrist.getAsDouble();
+            targetWristPosition = wristPosition.getAsDouble();
             io.setWristTargetPosition(targetWristPosition);
         }, this::stop);
     }
 
     public double getShoulderPosition() {
-        return inputs.currentPositionShoulder;
+        return inputs.currentShoulderPosition;
     }
 
     public boolean atShoulderTargetPosition() {
-        return Math.abs(inputs.currentPositionShoulder - targetShoulderPosition) < POSITION_THRESHOLD;
+        return Math.abs(inputs.currentShoulderPosition - targetShoulderPosition) < POSITION_THRESHOLD;
     }
 
     public Command resetShoulderPosition() {
@@ -101,11 +101,11 @@ public class Arm extends SubsystemBase {
     }
 
     public double getWristPosition() {
-        return inputs.currentPositionWrist;
+        return inputs.currentWristPosition;
     }
 
     public boolean atWristTargetPosition() {
-        return Math.abs(inputs.currentPositionWrist - targetWristPosition) < POSITION_THRESHOLD;
+        return Math.abs(inputs.currentWristPosition - targetWristPosition) < POSITION_THRESHOLD;
     }
 
     public Command resetWristPosition() {
