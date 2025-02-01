@@ -74,10 +74,7 @@ public class RobotContainer {
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_UPPER, commandFactory.goToRemoveUpper());
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_LOWER, commandFactory.goToRemoveLower());
 
-        // TODO: Ask Jacob EnumMap vs HashMap
-        //          Selector for Both
         driverController.rightBumper().whileTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
-//        driverController.rightTrigger().onTrue(commandFactory.goToL1());
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .onTrue(commandFactory.releaseGamePiece());
