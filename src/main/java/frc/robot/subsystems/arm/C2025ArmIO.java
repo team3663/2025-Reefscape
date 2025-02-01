@@ -3,7 +3,9 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -17,6 +19,7 @@ public class C2025ArmIO implements ArmIO {
 
     private final TalonFX shoulderMotor;
     private final TalonFX wristMotor;
+    private final CANcoder shoulderCanCoder;
 
     private final DCMotorSim shoulderSim = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
@@ -31,24 +34,43 @@ public class C2025ArmIO implements ArmIO {
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    public C2025ArmIO(TalonFX shoulderMotor, TalonFX wristMotor) {
+    public C2025ArmIO(TalonFX shoulderMotor, TalonFX wristMotor, CANcoder shoulderCanCoder) {
         this.shoulderMotor = shoulderMotor;
         this.wristMotor = wristMotor;
+        this.shoulderCanCoder = shoulderCanCoder;
 
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        // Shoulder motor config
+        TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
+        shoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-        config.Slot0.kV = 0.115;
-        config.Slot0.kA = 0.01;
-        config.Slot0.kP = 0.5;
-        config.Slot0.kI = 0.0;
-        config.Slot0.kD = 0.0;
+        shoulderConfig.Slot0.kV = 0.115;
+        shoulderConfig.Slot0.kA = 0.01;
+        shoulderConfig.Slot0.kP = 0.5;
+        shoulderConfig.Slot0.kI = 0.0;
+        shoulderConfig.Slot0.kD = 0.0;
 
-        config.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
-        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+        shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
+        shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
-        shoulderMotor.getConfigurator().apply(config);
-        wristMotor.getConfigurator().apply(config);
+        shoulderConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
+        shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+
+        shoulderMotor.getConfigurator().apply(shoulderConfig);
+
+        // Wrist motor config
+        TalonFXConfiguration wristConfig = new TalonFXConfiguration();
+        wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        wristConfig.Slot0.kV = 0.115;
+        wristConfig.Slot0.kA = 0.01;
+        wristConfig.Slot0.kP = 0.5;
+        wristConfig.Slot0.kI = 0.0;
+        wristConfig.Slot0.kD = 0.0;
+
+        wristConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
+        wristConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+
+        wristMotor.getConfigurator().apply(wristConfig);
     }
 
     @Override
