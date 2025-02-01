@@ -116,13 +116,4 @@ public class SuperStructure extends SubsystemBase {
             elevator.goToPosition(elevatorPosition),
             arm.goToPositions(shoulderPosition, wristPosition));
     }
-
-    public Command resetPositions() {
-        return runOnce(
-                () -> {
-                    elevator.resetPosition();
-                    arm.resetPositions();
-                }
-        );
-    }
 }
