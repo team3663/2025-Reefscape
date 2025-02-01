@@ -65,6 +65,8 @@ public class RobotContainer {
         // Add options to the shooter
         autoChooser.addRoutine("FacePlantG", this::facePlantG);
         autoChooser.addRoutine("Experiment", this::experiment);
+        autoChooser.addRoutine("ActualAuto", this::actualAuto);
+        autoChooser.addRoutine("Go10FT", this::go10FT);
 
         // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
@@ -79,9 +81,7 @@ public class RobotContainer {
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
                 Commands.sequence(
-                        Commands.print("START"),
-                        autoChooser.selectedCommandScheduler(),
-                        Commands.print("END")
+                        autoChooser.selectedCommandScheduler()
                 ));
     }
 
@@ -98,6 +98,47 @@ public class RobotContainer {
                         facePlantGTraj.cmd()
                 )
         );
+        return routine;
+    }
+
+    private AutoRoutine go10FT(){
+        AutoRoutine routine = autoFactory.newRoutine("go10FT");
+
+        AutoTrajectory go10FTTraj = routine.trajectory("go10FT");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        go10FTTraj.resetOdometry(),
+                        go10FTTraj.cmd()
+                )
+        );
+        return routine;
+    }
+
+    private AutoRoutine actualAuto(){
+        AutoRoutine routine = autoFactory.newRoutine("ActualAuto");
+        
+        AutoTrajectory Start = routine.trajectory("Start-F");
+        AutoTrajectory FWCS = routine.trajectory("F-WCS");
+        AutoTrajectory WCSC = routine.trajectory("WCS-C");
+        AutoTrajectory CWCS = routine.trajectory("C-WCS");
+        AutoTrajectory WCSD = routine.trajectory("WCS-D");
+        AutoTrajectory DWCS = routine.trajectory("D-WCS");
+        AutoTrajectory WCSE = routine.trajectory("WCS-E");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+        Start.done().onTrue(FWCS.cmd());
+        FWCS.done().onTrue(WCSC.cmd());
+        WCSC.done().onTrue(CWCS.cmd());
+        CWCS.done().onTrue(WCSD.cmd());
+        WCSD.done().onTrue(DWCS.cmd());
+        DWCS.done().onTrue(WCSE.cmd());
+
         return routine;
     }
 

@@ -11,14 +11,16 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 
 public class CTREDrivetrainIO implements DrivetrainIO {
     private final SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain;
     private final Drivetrain.Constants constants;
+
+    private SwerveDriveKinematics kinematics;
 
     private final SwerveRequest.FieldCentric fieldOrientedRequest = new SwerveRequest.FieldCentric();
     private final SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
@@ -81,8 +83,6 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
-
-
     }
 
     @Override

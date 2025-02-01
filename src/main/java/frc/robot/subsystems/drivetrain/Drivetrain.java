@@ -1,11 +1,11 @@
 package frc.robot.subsystems.drivetrain;
 
 import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -18,12 +18,13 @@ import static edu.wpi.first.units.Units.Volts;
 @Logged
 public class Drivetrain extends SubsystemBase {
     @NotLogged
-    private DrivetrainIO io;
+    private final DrivetrainIO io;
     private final DrivetrainInputs inputs = new DrivetrainInputs();
     private final Constants constants;
     private final AutoFactory autoFactory;
     private final SysIdRoutine sysIdTranslationRoutine;
 
+    private Pose2d targetPathPose = new Pose2d();
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -32,7 +33,11 @@ public class Drivetrain extends SubsystemBase {
         autoFactory = new AutoFactory(
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
-                io::followTrajectory, // trajectory follower
+                (SwerveSample sample) -> {
+                    targetPathPose = sample.getPose();
+
+                    io.followTrajectory(sample);
+                }, // trajectory follower
                 true,
                 this
         );
