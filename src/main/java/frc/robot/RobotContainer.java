@@ -435,13 +435,13 @@ public class RobotContainer {
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
         driverController.x().onTrue(
-                superStructure.goToPositions(0.25,0.9));
+                superStructure.goToPositions(0.25,0.9,0.0));
         driverController.a().onTrue(
-                superStructure.goToPositions(0.0,0.5));
+                superStructure.goToPositions(0.0,-Math.PI/2,0.0));
         driverController.b().onTrue(
-               superStructure.goToPositions(0.5,-20));
+               superStructure.goToPositions(0.5,-20,0.0));
         driverController.y().onTrue(
-                superStructure.goToPositions(0.7,0.2));
+                superStructure.goToPositions(0.7,0.2,0.0));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
 
         // Operator Controller Robot Mode

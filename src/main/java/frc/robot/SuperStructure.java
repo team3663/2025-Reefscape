@@ -23,8 +23,9 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
-    private final double shoulderLength = 2.0;
-    private final double buffer= 0.05;
+
+    private  static final double shoulderBuffer= Units.inchesToMeters(4.0);
+    private  static final double wristBuffer= Units.inchesToMeters(4.0);
 
     private final Mechanism2d mechanism;
     private final MechanismLigament2d targetElevatorMechanism;
@@ -98,13 +99,18 @@ public class SuperStructure extends SubsystemBase {
 //        return allowableAngle;
 //    }
 
-    private double getAllowableHeight(double targetHeight, double armAngle){
-        targetHeight= Math.max(targetHeight, shoulderLength * (Math.sin(armAngle) + buffer));
+    private double getAllowableHeight(double targetHeight, double shoulderAngle, double wristAngle){
+        targetHeight= Math.max(targetHeight,Math.max( -(arm.getConstants().shoulderLength() + shoulderBuffer) * Math.sin(arm.getShoulderPosition()),
+                arm.getConstants().shoulderLength()* Math.sin(arm.getShoulderPosition()) - (arm.getConstants().wristLength() + wristBuffer)
+                        * Math.sin(arm.getWristPosition() +arm.getShoulderPosition())));
         return targetHeight;
     }
 
-    private double getAllowableAngle(double targetAngle, double targetHeight){
-        targetAngle= Math.max(targetAngle, ( - Math.cos((targetHeight/ shoulderLength) - Math.toRadians(90))));
+    private double getAllowableAngleWrist(double targetAngle){
+         double checkAngle = arm.getConstants().shoulderLength() * Math.sin((arm.getShoulderPosition() + elevator.getPosition())/ arm.getConstants().wristLength());
+        if (Math.abs(checkAngle) <=1.0){
+            targetAngle= - arm.getShoulderPosition()- Math.asin((arm.getShoulderPosition() + elevator.getPosition() + wristBuffer)/ arm.getConstants().wristLength());
+        }
         return targetAngle;
     }
 
@@ -142,9 +148,9 @@ public class SuperStructure extends SubsystemBase {
                 elevator.followPosition(elevatorPosition));
     }
 
-    public Command goToPositions(double elevatorPosition, double armPosition) {
-        double height = getAllowableHeight(elevatorPosition, arm.getShoulderPosition());
-        double angle = getAllowableAngle(armPosition,height);
+    public Command goToPositions(double elevatorPosition, double armPosition, double wristPosition) {
+        double height = getAllowableHeight(elevatorPosition, arm.getShoulderPosition(), arm.getWristPosition());
+        double angle = getAllowableAngleWrist(wristPosition);
         return Commands.parallel(
                 arm.goToPositions(angle, angle),
                 elevator.goToPosition(height)
