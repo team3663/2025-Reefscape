@@ -12,6 +12,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 @Logged
 public class Climber extends SubsystemBase {
+    private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1);
     private static final double POSITION_THRESHOLD = Units.degreesToRadians(1.0);
     private static final double WAIT_TIME = 0.25;
     private final ClimberIO io;
@@ -76,7 +77,7 @@ public class Climber extends SubsystemBase {
         return runEnd(() -> io.setTargetVoltage(-1.0), io::stop)
                 // While doing that wait until the elevator stops (Hit the hard stop)
                 // Also stop the previous command when this one stops (It hit the hard stop and reset position)
-                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < 0.01)
+                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
                         // Then reset the elevator position and set zeroed to true
                         .andThen(() -> {
                             io.resetPosition();
@@ -85,6 +86,7 @@ public class Climber extends SubsystemBase {
                         // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet
                         .beforeStarting(waitSeconds(WAIT_TIME)));
     }
+
     public record Constants(
             double maximumPosition
     ) {}

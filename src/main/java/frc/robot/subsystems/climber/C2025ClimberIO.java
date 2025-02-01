@@ -98,4 +98,8 @@ public class C2025ClimberIO implements ClimberIO {
         motor.setControl(voltageRequest.withOutput(voltage));
     }
 
+    @Override
+    public Climber.Constants getConstants() {
+        return new Climber.Constants(1.0);
+    }
 }

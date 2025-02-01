@@ -19,6 +19,6 @@ public interface ClimberIO {
         setTargetVoltage(0.0);
     }
     default Climber.Constants getConstants() {
-        return new Climber.Constants(1.0);
+        return new Climber.Constants(0);
     }
 }
