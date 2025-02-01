@@ -40,7 +40,7 @@ public class C2025ArmIO implements ArmIO {
 
         config.Slot0.kV = 0.115;
         config.Slot0.kA = 0.01;
-        config.Slot0.kP = 0.5;
+        config.Slot0.kP = 0.79;
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
 
