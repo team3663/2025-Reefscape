@@ -57,15 +57,13 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.x().onTrue(
-                Commands.parallel(
-                        elevator.goToPosition(1.0),
-                        arm.goToPositions(Units.degreesToRadians(120.0), Units.degreesToRadians(20.0))
-                ));
+                superStructure.goToPositions(0.25,0.9));
+        driverController.a().onTrue(
+                superStructure.goToPositions(0.0,0.5));
         driverController.b().onTrue(
-                Commands.parallel(
-                        elevator.goToPosition(0.0),
-                        arm.goToPositions(0.0, 0.0)
-                ));
+               superStructure.goToPositions(0.5,-20));
+        driverController.y().onTrue(
+                superStructure.goToPositions(0.7,0.2));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
     }
 

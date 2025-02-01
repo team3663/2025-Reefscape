@@ -22,8 +22,8 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
-    private final double shoulderLength = 12.0;
-    private final double buffer= 4.0;
+    private final double shoulderLength = 2.0;
+    private final double buffer= 0.05;
 
     private final Mechanism2d mechanism;
     private final MechanismLigament2d targetElevatorMechanism;
