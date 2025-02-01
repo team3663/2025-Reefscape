@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class PhotonIO implements VisionIO {
+    private final PhotonCamera camera;
     private final PhotonPoseEstimator estimator;
 
     public PhotonIO(String cameraName, Transform3d cameraTransform) {
-        PhotonCamera camera = new PhotonCamera(cameraName);
+        camera = new PhotonCamera(cameraName);
 
         AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
 
@@ -31,7 +32,8 @@ public class PhotonIO implements VisionIO {
         estimator.setLastPose(visionInputs.estimatedPose);
         estimator.setReferencePose(visionInputs.estimatedPose);
 
-        Optional<EstimatedRobotPose> newPose = estimator.update();
+        var result = camera.getLatestResult();
+        Optional<EstimatedRobotPose> newPose = estimator.update(result);
 
         // If there is no new pose then we have nothing to do, just bail out.
         if (newPose.isEmpty()) {
