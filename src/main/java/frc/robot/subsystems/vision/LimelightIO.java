@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.LimelightHelpers;
 
 @Logged
-public class LimelightIO {
+public class LimelightIO implements VisionIO {
 
     VisionMeasurement currentMeasurement = new VisionMeasurement(Pose2d.kZero, 0, VecBuilder.fill(0,0,0));
 
