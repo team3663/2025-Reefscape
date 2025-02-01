@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -32,6 +33,7 @@ public class C2025ArmIO implements ArmIO {
             DCMotor.getKrakenX60(1).withReduction(1.0));
 
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
+    private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
     public C2025ArmIO(TalonFX shoulderMotor, TalonFX wristMotor, CANcoder shoulderCanCoder) {
@@ -104,18 +106,18 @@ public class C2025ArmIO implements ArmIO {
         }
 
         // Wrist inputs
-        inputs.currentAppliedVoltageWrist = wristMotor.getMotorVoltage().getValueAsDouble();
-        inputs.currentVelocityWrist = Units.rotationsToRadians(wristMotor.getVelocity().getValueAsDouble());
-        inputs.currentPositionWrist = Units.rotationsToRadians(wristMotor.getPosition().getValueAsDouble());
-        inputs.motorTemperatureWrist = wristMotor.getDeviceTemp().getValueAsDouble();
-        inputs.currentDrawWrist = wristMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentWristAppliedVoltage = wristMotor.getMotorVoltage().getValueAsDouble();
+        inputs.currentWristVelocity = Units.rotationsToRadians(wristMotor.getVelocity().getValueAsDouble());
+        inputs.currentWristPosition = Units.rotationsToRadians(wristMotor.getPosition().getValueAsDouble());
+        inputs.wristMotorPosition = wristMotor.getDeviceTemp().getValueAsDouble();
+        inputs.currentWristDraw = wristMotor.getSupplyCurrent().getValueAsDouble();
 
         // Shoulder inputs
-        inputs.currentAppliedVoltageShoulder = shoulderMotor.getMotorVoltage().getValueAsDouble();
-        inputs.currentVelocityShoulder = Units.rotationsToRadians(shoulderMotor.getVelocity().getValueAsDouble());
-        inputs.currentPositionShoulder = Units.rotationsToRadians(shoulderMotor.getPosition().getValueAsDouble());
-        inputs.motorTemperatureShoulder = shoulderMotor.getDeviceTemp().getValueAsDouble();
-        inputs.currentDrawShoulder = shoulderMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentAppliedShoulderVoltage = shoulderMotor.getMotorVoltage().getValueAsDouble();
+        inputs.currentShoulderVelocity = Units.rotationsToRadians(shoulderMotor.getVelocity().getValueAsDouble());
+        inputs.currentShoulderPosition = Units.rotationsToRadians(shoulderMotor.getPosition().getValueAsDouble());
+        inputs.shoulderMotorPosition = shoulderMotor.getDeviceTemp().getValueAsDouble();
+        inputs.currentShoulderDraw = shoulderMotor.getSupplyCurrent().getValueAsDouble();
     }
 
     @Override
@@ -146,5 +148,9 @@ public class C2025ArmIO implements ArmIO {
     @Override
     public void setWristTargetPosition(double position) {
         wristMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
+    }
+    @Override
+    public void setWristTargetVoltage(double voltage){
+        wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 }
