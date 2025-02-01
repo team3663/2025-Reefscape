@@ -67,6 +67,9 @@ public class RobotContainer {
                         arm.goToPositions(0.0, 0.0)
                 ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
+        driverController.y().onTrue(arm.zeroWrist());
+        driverController.rightTrigger().whileTrue(arm.goToPositions(0, Units.rotationsToRadians(3.0)));
+        driverController.leftTrigger().onTrue(arm.stop());
     }
 
     private Command setRobotMode(RobotMode robotMode) {
