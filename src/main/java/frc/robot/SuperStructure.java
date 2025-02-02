@@ -109,22 +109,20 @@ public class SuperStructure extends SubsystemBase {
 //        return allowableAngle;
 //    }
 
-    private double getAllowableHeight(double targetHeight, double shoulderAngle, double wristAngle){
+    private double getAllowableHeight(double targetHeight){
         targetHeight= Math.max(targetHeight,Math.max( -(arm.getConstants().shoulderLength() + shoulderBuffer) * Math.sin(arm.getShoulderPosition()),
                 arm.getConstants().shoulderLength()* Math.sin(arm.getShoulderPosition()) - (arm.getConstants().wristLength() + wristBuffer)
                         * Math.sin(arm.getWristPosition() +arm.getShoulderPosition())));
         return targetHeight;
     }
 
-    private double getAllowableAngleWrist(double targetAngle){
-         double checkAngle = arm.getConstants().shoulderLength() * Math.sin((arm.getShoulderPosition() + elevator.getPosition())/ arm.getConstants().wristLength());
-        if (Math.abs(checkAngle) <=1.0){
-            targetAngle= - arm.getShoulderPosition()- Math.asin((arm.getShoulderPosition() + elevator.getPosition() + wristBuffer)/ arm.getConstants().wristLength());
+    private double getAllowableAngleWrist(double targetAngle) {
+        double checkAngle = (arm.getConstants().shoulderLength() * Math.sin(arm.getShoulderPosition()) + elevator.getPosition()- wristBuffer) / arm.getConstants().wristLength();
+        if (Math.abs(checkAngle) <= 1.0) {
+            targetAngle = -arm.getShoulderPosition() - Math.asin((arm.getConstants().shoulderLength() *Math.sin(arm.getShoulderPosition()) + elevator.getPosition() - wristBuffer) / arm.getConstants().wristLength());
         }
         return targetAngle;
     }
-
-
 
 
 
@@ -144,13 +142,13 @@ public class SuperStructure extends SubsystemBase {
 
 
     public Command goToPositions(double elevatorPosition, double armPosition, double wristPosition) {
-        double height = getAllowableHeight(elevatorPosition, arm.getShoulderPosition(), arm.getWristPosition());
+        double height = getAllowableHeight(elevatorPosition);
         double angle = getAllowableAngleWrist(wristPosition);
         return Commands.parallel(
-                arm.goToPositions(angle, angle),
+                arm.goToPositions(armPosition, angle),
                 elevator.goToPosition(height)
 
-        ).until(()-> (elevatorPosition==height) && (armPosition==angle));
+        ).until(()-> (elevatorPosition==height) && (arm.getWristPosition()==angle));
     }
 
 
