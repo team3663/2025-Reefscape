@@ -3,8 +3,31 @@
  "version":1,
  "type":"Swerve",
  "variables":{
-  "expressions":{},
-  "poses":{}
+  "expressions":{
+   "FieldWidth":{
+    "dimension":"Length",
+    "var":{
+     "exp":"5 ft",
+     "val":1.524
+    }
+   }
+  },
+  "poses":{
+   "RightStartingPos":{
+    "x":{
+     "exp":"300 in - 14 in",
+     "val":7.264399999999999
+    },
+    "y":{
+     "exp":"14 in + 4 ft",
+     "val":1.5748
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{

@@ -9,15 +9,10 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.CANdi;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -28,7 +23,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
-import frc.robot.subsystems.led.LedColor;
 import frc.robot.utility.ControllerHelper;
 
 @Logged
@@ -64,9 +58,11 @@ public class RobotContainer {
 
         // Add options to the shooter
         autoChooser.addRoutine("FacePlantG", this::facePlantG);
-        autoChooser.addRoutine("Experiment", this::experiment);
-        autoChooser.addRoutine("ActualAuto", this::actualAuto);
-        autoChooser.addRoutine("Go10FT", this::go10FT);
+        autoChooser.addRoutine("FacePlantH", this::facePlantH);
+        autoChooser.addRoutine("4Coral", this::fourCoral);
+        autoChooser.addRoutine("BehindTheBack", this::behindTheBack);
+        autoChooser.addRoutine("FlippedBehindTheBack", this::flippedBehindTheBack);
+        autoChooser.addRoutine("Flipped4Coral", this::flipped4Coral);
 
         // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
@@ -95,30 +91,74 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         facePlantGTraj.resetOdometry(),
+                        Commands.waitSeconds(2).andThen(
                         facePlantGTraj.cmd()
+                        )
                 )
         );
         return routine;
     }
 
-    private AutoRoutine go10FT(){
-        AutoRoutine routine = autoFactory.newRoutine("go10FT");
+    private AutoRoutine behindTheBack(){
+        AutoRoutine routine = autoFactory.newRoutine("BehindTheBack");
 
-        AutoTrajectory go10FTTraj = routine.trajectory("go10FT");
+        AutoTrajectory Start = routine.trajectory("PStart-A");
+        AutoTrajectory ADCS = routine.trajectory("A-DCS");
+        AutoTrajectory DCSB = routine.trajectory("DCS-B");
 
         routine.active().onTrue(
                 Commands.sequence(
-                        go10FTTraj.resetOdometry(),
-                        go10FTTraj.cmd()
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(ADCS.cmd());
+        ADCS.done().onTrue(DCSB.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine flippedBehindTheBack(){
+        AutoRoutine routine = autoFactory.newRoutine("FlippedBehindTheBack");
+
+        AutoTrajectory Start = routine.trajectory("LStart-B");
+        AutoTrajectory BLDCS = routine.trajectory("B-LDCS");
+        AutoTrajectory LDCSA = routine.trajectory("LDCS-A");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(BLDCS.cmd());
+        BLDCS.done().onTrue(LDCSA.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine facePlantH(){
+        AutoRoutine routine = autoFactory.newRoutine("FacePlantH");
+
+        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH" );
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        facePlantHTraj.resetOdometry(),
+                        Commands.waitSeconds(2).andThen(
+                                facePlantHTraj.cmd()
+                        )
                 )
         );
         return routine;
     }
 
-    private AutoRoutine actualAuto(){
+    private AutoRoutine fourCoral(){
         AutoRoutine routine = autoFactory.newRoutine("ActualAuto");
         
-        AutoTrajectory Start = routine.trajectory("Start-F");
+        AutoTrajectory Start = routine.trajectory("PStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
         AutoTrajectory WCSC = routine.trajectory("WCS-C");
         AutoTrajectory CWCS = routine.trajectory("C-WCS");
@@ -142,17 +182,31 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine experiment() {
-        AutoRoutine routine = autoFactory.newRoutine("Experiment");
+    private AutoRoutine flipped4Coral(){
+        AutoRoutine routine = autoFactory.newRoutine("Flipped4Coral");
 
-        AutoTrajectory experimentTraj = routine.trajectory("Experiment");
+        AutoTrajectory Start = routine.trajectory("LStart-I");
+        AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
+        AutoTrajectory LWCSL = routine.trajectory("LWCS-L");
+        AutoTrajectory LLWCS = routine.trajectory("L-LWCS");
+        AutoTrajectory LWCSK = routine.trajectory("LWCS-K");
+        AutoTrajectory KLWCS = routine.trajectory("K-LWCS");
+        AutoTrajectory LWCSJ = routine.trajectory("LWCS-J");
 
         routine.active().onTrue(
                 Commands.sequence(
-                        experimentTraj.resetOdometry(),
-                        experimentTraj.cmd()
+                        Start.resetOdometry(),
+                        Start.cmd()
                 )
         );
+
+        Start.done().onTrue(ILWCS.cmd());
+        ILWCS.done().onTrue(LWCSL.cmd());
+        LWCSL.done().onTrue(LLWCS.cmd());
+        LLWCS.done().onTrue(LWCSK.cmd());
+        LWCSK.done().onTrue(KLWCS.cmd());
+        KLWCS.done().onTrue(LWCSJ.cmd());
+
         return routine;
     }
 
