@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -8,6 +9,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -40,6 +42,14 @@ public class C2025ArmIO implements ArmIO {
         this.shoulderMotor = shoulderMotor;
         this.wristMotor = wristMotor;
         this.shoulderCanCoder = shoulderCanCoder;
+
+        // CANCoder config
+        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        canCoderConfig.MagnetSensor.MagnetOffset = 0.0;
+//        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+
+        shoulderCanCoder.getConfigurator().apply(canCoderConfig);
 
         // Shoulder motor config
         TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
