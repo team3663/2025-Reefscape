@@ -36,35 +36,34 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command stop() {
-        return runOnce(stopRun());
+        return runOnce(this::stopInternal);
     }
 
-    private Runnable stopRun() {
-        return () -> {
-            targetVoltage = 0.0;
-            io.stop();
-        };
+    // Supports command implementations by making it easier to both reset the target position and stop the motor
+    private void stopInternal() {
+        targetVoltage = 0.0;
+        io.stop();
     }
 
     public Command withVoltage(double voltage) {
         return runEnd(() -> {
             targetVoltage = voltage;
             io.setTargetVoltage(targetVoltage);
-        }, stopRun());
+        }, this::stopInternal);
     }
 
     public Command followVoltage(DoubleSupplier velocity) {
         return runEnd(() -> {
             targetVoltage = velocity.getAsDouble();
             io.setTargetVoltage(targetVoltage);
-        }, stopRun());
+        }, this::stopInternal);
     }
 
     public Command withVoltageUntilDetected(double voltage) {
         return runEnd(() -> {
                     targetVoltage = voltage;
                     io.setTargetVoltage(targetVoltage);
-                }, stopRun()
+                }, this::stopInternal
         ).until(() -> inputs.gamePieceDetected);
     }
 }
