@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
@@ -47,6 +48,8 @@ public class C2025RobotFactory implements RobotFactory {
     private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
+    private static final double MAX_DRIVE_VELOCITY = DCMotor.getFalcon500Foc(1)
+            .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;
 
     // Creating a constants factory for the drive and steer motors of the drivetrain
     private static final SwerveModuleConstantsFactory<
@@ -67,7 +70,8 @@ public class C2025RobotFactory implements RobotFactory {
             .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withSteerMotorGains(Constants.MK4N_STEER_PID_CONSTANTS)
             .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
-            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS);
+            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS)
+            .withSpeedAt12Volts(MAX_DRIVE_VELOCITY);
 
     // Front Left
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
