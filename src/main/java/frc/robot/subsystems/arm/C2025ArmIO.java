@@ -18,7 +18,9 @@ import frc.robot.Robot;
 
 public class C2025ArmIO implements ArmIO {
     // TODO: Get real values from CAD
-    private static final Arm.Constants CONSTANTS = new Arm.Constants(0.2, 0.05);
+    private static final Arm.Constants CONSTANTS = new Arm.Constants(
+            0.2, Units.degreesToRadians(-135.0), Units.degreesToRadians(180.0),
+            0.05, Units.degreesToRadians(-90.0), Units.degreesToRadians(90.0));
 
     private final TalonFX shoulderMotor;
     private final TalonFX wristMotor;

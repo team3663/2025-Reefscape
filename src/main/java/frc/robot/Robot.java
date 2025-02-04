@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.C2024RobotFactory;
 import frc.robot.config.C2025RobotFactory;
 import frc.robot.config.RobotFactory;
+import frc.robot.config.SimRobotFactory;
 import frc.robot.utility.MacAddressUtils;
 import frc.robot.utility.RobotId;
 
@@ -42,8 +43,9 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         RobotFactory robotFactory = switch (detectedId) {
-            case UNKNOWN, C2025 -> new C2025RobotFactory();
+            case C2025 -> new C2025RobotFactory();
             case C2024 -> new C2024RobotFactory();
+            case UNKNOWN -> isSimulation() ? new SimRobotFactory() : new C2025RobotFactory();
         };
 
         robotContainer = new RobotContainer(robotFactory);

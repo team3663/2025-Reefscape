@@ -14,7 +14,7 @@ import frc.robot.Robot;
 
 public class C2025ElevatorIO implements ElevatorIO {
     // TODO: Get real values from CAD
-    private static final Elevator.Constants CONSTANTS = new Elevator.Constants(1.0);
+    private static final Elevator.Constants CONSTANTS = new Elevator.Constants(0.0, 1.0);
 
     private static final double GEAR_RATIO = 1.0;
     private static final double PULLEY_RADIUS = Units.inchesToMeters(1.0);
