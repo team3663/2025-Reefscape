@@ -1,5 +1,7 @@
 package frc.robot.subsystems.climber;
 
+import frc.robot.subsystems.elevator.Elevator;
+
 public interface ClimberIO {
     default void updateInputs(ClimberInputs inputs) {
     }
@@ -15,5 +17,8 @@ public interface ClimberIO {
 
     default void stop() {
         setTargetVoltage(0.0);
+    }
+    default Climber.Constants getConstants() {
+        return new Climber.Constants(0);
     }
 }
