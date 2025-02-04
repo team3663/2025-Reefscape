@@ -59,10 +59,14 @@ public class RobotContainer {
         // Add options to the shooter
         autoChooser.addRoutine("FacePlantG", this::facePlantG);
         autoChooser.addRoutine("FacePlantH", this::facePlantH);
-        autoChooser.addRoutine("4Coral", this::fourCoral);
+        autoChooser.addRoutine("FourCoral", this::fourCoral);
         autoChooser.addRoutine("BehindTheBack", this::behindTheBack);
         autoChooser.addRoutine("FlippedBehindTheBack", this::flippedBehindTheBack);
         autoChooser.addRoutine("Flipped4Coral", this::flipped4Coral);
+        autoChooser.addRoutine("FiveCoral", this::fiveCoral);
+        autoChooser.addRoutine("FlippedFiveCoral", this::flippedFiveCoral);
+        autoChooser.addRoutine("TwoCoralFE", this::twoCoralFE);
+        autoChooser.addRoutine("TwoCoralDC", this::twoCoralDC);
 
         // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
@@ -115,6 +119,46 @@ public class RobotContainer {
 
         Start.done().onTrue(ADCS.cmd());
         ADCS.done().onTrue(DCSB.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralFE(){
+        AutoRoutine routine = autoFactory.newRoutine("twoCoralEF");
+
+        AutoTrajectory Start = routine.trajectory("PStart-F");
+        AutoTrajectory FWCS = routine.trajectory("F-WCS");
+        AutoTrajectory WCSE = routine.trajectory("WCS-E");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(FWCS.cmd());
+        FWCS.done().onTrue(WCSE.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralDC(){
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoralDC");
+
+        AutoTrajectory Start = routine.trajectory("PStart-D");
+        AutoTrajectory DWCS = routine.trajectory("D-WCS");
+        AutoTrajectory WCSC = routine.trajectory("WCS-C");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(DWCS.cmd());
+        DWCS.done().onTrue(WCSC.cmd());
 
         return routine;
     }
@@ -202,6 +246,69 @@ public class RobotContainer {
 
         Start.done().onTrue(ILWCS.cmd());
         ILWCS.done().onTrue(LWCSL.cmd());
+        LWCSL.done().onTrue(LLWCS.cmd());
+        LLWCS.done().onTrue(LWCSK.cmd());
+        LWCSK.done().onTrue(KLWCS.cmd());
+        KLWCS.done().onTrue(LWCSJ.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine fiveCoral(){
+        AutoRoutine routine = autoFactory.newRoutine("FiveCoral");
+
+        AutoTrajectory Start = routine.trajectory("PStart-F");
+        AutoTrajectory FWCS = routine.trajectory("F-WCS");
+        AutoTrajectory WCSB = routine.trajectory("WCS-B");
+        AutoTrajectory BWCS = routine.trajectory("B-WCS");
+        AutoTrajectory WCSC = routine.trajectory("WCS-C");
+        AutoTrajectory CWCS = routine.trajectory("C-WCS");
+        AutoTrajectory WCSD = routine.trajectory("WCS-D");
+        AutoTrajectory DWCS = routine.trajectory("D-WCS");
+        AutoTrajectory WCSE = routine.trajectory("WCS-E");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+        Start.done().onTrue(FWCS.cmd());
+        FWCS.done().onTrue(WCSB.cmd());
+        WCSB.done().onTrue(BWCS.cmd());
+        BWCS.done().onTrue(WCSC.cmd());
+        WCSC.done().onTrue(CWCS.cmd());
+        CWCS.done().onTrue(WCSD.cmd());
+        WCSD.done().onTrue(DWCS.cmd());
+        DWCS.done().onTrue(WCSE.cmd());
+
+        return routine;
+    }
+
+    private AutoRoutine flippedFiveCoral(){
+        AutoRoutine routine = autoFactory.newRoutine("FlippedFiveCoral");
+
+        AutoTrajectory Start = routine.trajectory("LStart-I");
+        AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
+        AutoTrajectory LWCSA = routine.trajectory("LWCS-A");
+        AutoTrajectory ALWCS = routine.trajectory("A-LWCS");
+        AutoTrajectory LWCSL = routine.trajectory("LWCS-L");
+        AutoTrajectory LLWCS = routine.trajectory("L-LWCS");
+        AutoTrajectory LWCSK = routine.trajectory("LWCS-K");
+        AutoTrajectory KLWCS = routine.trajectory("K-LWCS");
+        AutoTrajectory LWCSJ = routine.trajectory("LWCS-J");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(ILWCS.cmd());
+        ILWCS.done().onTrue(LWCSA.cmd());
+        LWCSA.done().onTrue(ALWCS.cmd());
+        ALWCS.done().onTrue(LWCSL.cmd());
         LWCSL.done().onTrue(LLWCS.cmd());
         LLWCS.done().onTrue(LWCSK.cmd());
         LWCSK.done().onTrue(KLWCS.cmd());
