@@ -26,12 +26,6 @@ public class C2025ElevatorIO implements ElevatorIO {
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    private final DCMotorSim sim = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(2),
-                    0.001, GEAR_RATIO),
-            DCMotor.getKrakenX60(2).withReduction(1.0)
-    );
-
     public C2025ElevatorIO(TalonFX motor, TalonFX motor2) {
         this.motor = motor;
         this.motor2 = motor2;
@@ -64,21 +58,6 @@ public class C2025ElevatorIO implements ElevatorIO {
 
     @Override
     public void updateInputs(ElevatorInputs inputs) {
-        if (Robot.isSimulation()) {
-            // Sims for Motor 1 and 2
-            var simStateMotor1 = motor.getSimState();
-            var simStateMotor2 = motor2.getSimState();
-            sim.setInputVoltage(simStateMotor1.getMotorVoltage());
-            // Updates the sim information every 20 ms
-            sim.update(Robot.kDefaultPeriod);
-            simStateMotor1.setRotorAcceleration(sim.getAngularAcceleration());
-            simStateMotor1.setRotorVelocity(sim.getAngularVelocity());
-            simStateMotor1.setRawRotorPosition(sim.getAngularPosition());
-            simStateMotor2.setRotorAcceleration(sim.getAngularAcceleration());
-            simStateMotor2.setRotorVelocity(sim.getAngularVelocity());
-            simStateMotor2.setRawRotorPosition(sim.getAngularPosition());
-        }
-
         // Inputs for Motor 1
         inputs.currentVelocityMotor1 = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
         inputs.currentAppliedVoltageMotor1 = motor.getMotorVoltage().getValueAsDouble();
