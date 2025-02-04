@@ -77,7 +77,9 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
-                .onTrue(commandFactory.releaseGamePiece());
+                .whileTrue(commandFactory.releaseGamePiece());
+
+        driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
         driverController.x().onTrue(
                 Commands.parallel(
