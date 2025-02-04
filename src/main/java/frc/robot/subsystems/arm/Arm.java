@@ -51,13 +51,6 @@ public class Arm extends SubsystemBase {
         );
     }
 
-    public Command resetPositions() {
-        return runOnce(() -> {
-            io.resetShoulderPosition();
-            io.resetWristPosition();
-        });
-    }
-
     public boolean atTargetPositions() {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
@@ -80,6 +73,8 @@ public class Arm extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return runEnd(() -> {
+    public Command followPositions(DoubleSupplier positionShoulder, DoubleSupplier positionWrist) {
+        return run(() -> {
             // Shoulder
             targetShoulderPosition = shoulderPosition.getAsDouble();
             io.setShoulderTargetPosition(targetShoulderPosition);
@@ -87,7 +82,7 @@ public class Arm extends SubsystemBase {
             // Wrist
             targetWristPosition = wristPosition.getAsDouble();
             io.setWristTargetPosition(targetWristPosition);
-        }, this::stop);
+        });
     }
 
     public double getShoulderPosition() {
@@ -100,10 +95,6 @@ public class Arm extends SubsystemBase {
 
     public boolean shoulderAtPosition(double position, double threshold) {
         return Math.abs(inputs.currentShoulderPosition - position) < threshold;
-    }
-
-    public Command resetShoulderPosition() {
-        return runOnce(io::resetShoulderPosition);
     }
 
     public double getWristPosition() {

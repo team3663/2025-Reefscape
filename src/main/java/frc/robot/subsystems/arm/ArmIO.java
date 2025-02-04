@@ -5,7 +5,7 @@ import edu.wpi.first.math.util.Units;
 public interface ArmIO {
     default Arm.Constants getConstants() {
         return new Arm.Constants(
-                0.2, Units.degreesToRadians(-135.0), Units.degreesToRadians(180.0),
+                0.2, Units.degreesToRadians(-90.0), Units.degreesToRadians(180.0),
                 0.05, Units.degreesToRadians(-90.0), Units.degreesToRadians(90.0));
     }
 

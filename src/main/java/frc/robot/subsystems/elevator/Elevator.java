@@ -98,7 +98,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public record Constants(
-            double minimumPosition, double maximumPosition
-    ) {
-    }
+            double maximumPosition
+    ) {}
 }
