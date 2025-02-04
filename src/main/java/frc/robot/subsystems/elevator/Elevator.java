@@ -67,13 +67,14 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command followPosition(DoubleSupplier position) {
-        return runEnd(() -> {
+        return run(() -> {
             targetPosition = position.getAsDouble();
             io.setTargetPosition(targetPosition);
-        }, io::stop);
+        });
     }
 
     public record Constants(
+            double minimumPosition,
             double maximumPosition
     ) {}
 }

@@ -1,8 +1,12 @@
 package frc.robot.subsystems.arm;
 
+import edu.wpi.first.math.util.Units;
+
 public interface ArmIO {
     default Arm.Constants getConstants() {
-        return new Arm.Constants(0.2, 0.05);
+        return new Arm.Constants(
+                0.2, Units.degreesToRadians(-90.0), Units.degreesToRadians(180.0),
+                0.05, Units.degreesToRadians(-90.0), Units.degreesToRadians(90.0));
     }
 
     default void updateInputs(ArmInputs inputs) {
