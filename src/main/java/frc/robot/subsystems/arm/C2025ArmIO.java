@@ -61,8 +61,10 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.Slot0.kI = 0.0;
         shoulderConfig.Slot0.kD = 0.0;
 
-        shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
-        shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        if (!Robot.isSimulation()) {
+            shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
+            shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        }
 
         shoulderConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
         shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
