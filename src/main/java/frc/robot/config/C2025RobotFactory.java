@@ -143,7 +143,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public ArmIO createArmIo() {
-        return new C2025ArmIO(new TalonFX(11), new TalonFX(12));
+        return new C2025ArmIO(new TalonFX(11), new TalonFX(12), new CANcoder(0));
     }
 
     @Override
