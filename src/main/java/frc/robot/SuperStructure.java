@@ -84,11 +84,11 @@ public class SuperStructure extends SubsystemBase {
     @Override
     public void periodic() {
         targetElevatorMechanism.setLength(elevator.getTargetPosition());
-        targetShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getTargetShoulderPosition()) + 90.0);
+        targetShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getTargetShoulderPosition()) - 90.0);
         targetWristMechanism.setAngle(Units.radiansToDegrees(arm.getTargetWristPosition()));
 
         currentElevatorMechanism.setLength(elevator.getPosition());
-        currentShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getShoulderPosition()) + 90.0);
+        currentShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getShoulderPosition()) - 90.0);
         currentWristMechanism.setAngle(Units.radiansToDegrees(arm.getWristPosition()));
     }
 

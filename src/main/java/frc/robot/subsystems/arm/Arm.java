@@ -2,11 +2,10 @@ package frc.robot.subsystems.arm;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
-
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
@@ -120,6 +119,7 @@ public class Arm extends SubsystemBase {
                         .andThen(io::resetWristPosition));
     }
 
-    public record Constants(double shoulderLength, double wristLength) {
+    public record Constants(double shoulderLength, double minimumShoulderAngle, double maximumShoulderAngle,
+                            double wristLength, double minimumWristAngle, double maximumWristAngle) {
     }
 }
