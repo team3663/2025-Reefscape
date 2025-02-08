@@ -1,6 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
+import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 
 public interface DrivetrainIO {
     default void updateInputs(DrivetrainInputs inputs) {
@@ -16,9 +19,22 @@ public interface DrivetrainIO {
     default void driveFieldOriented(double xVelocity, double yVelocity, double angularVelocity) {
     }
 
+    default void driveFieldOriented(SwerveSample sample) {
+    }
+
+    default void resetOdometry(Pose2d newPose) {
+    }
+
     default void resetFieldOriented() {
+    }
+
+    default void followTrajectory(SwerveSample Sample) {
+    }
+
+    default void driveSysIdTranslation(Voltage voltage) {
 
     }
+
 
     default Drivetrain.Constants getConstants() {
         return new Drivetrain.Constants(
@@ -33,3 +49,4 @@ public interface DrivetrainIO {
     default void stop() {
     }
 }
+
