@@ -15,6 +15,7 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
@@ -115,5 +116,28 @@ public class SuperStructure extends SubsystemBase {
         return Commands.parallel(
                 elevator.goToPosition(elevatorPosition),
                 arm.goToPositions(shoulderPosition, wristPosition));
+    }
+
+    /**
+     * Tells the super Structure where to go based on the Robot Mode
+     *
+     * @param robotMode A supplier for the current RobotMode so it knows where to go
+     * @return The command to follow the current position based on the Robot Mode
+     */
+    public Command goToPositions(Supplier<RobotMode> robotMode) {
+        DoubleSupplier targetElevatorHeight = () -> {
+            if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
+                    arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
+                return robotMode.get().getElevatorHeight();
+            else return elevator.getPosition();
+        };
+        DoubleSupplier targetShoulderAngle = () -> {
+            if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD))
+                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
+            return robotMode.get().getShoulderAngle();
+        };
+        DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
+
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 }

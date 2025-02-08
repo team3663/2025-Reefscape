@@ -427,23 +427,12 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        // Make a Robot Command map where each item in the RobotMode Enum is mapped to a command to go to the corresponding position
-        Map<RobotMode, Command> robotModeCommandMap = new EnumMap<>(RobotMode.class);
-        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_1, commandFactory.goToL1());
-        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_2, commandFactory.goToL2());
-        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_3, commandFactory.goToL3());
-        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_4, commandFactory.goToL4());
-        robotModeCommandMap.put(RobotMode.ALGAE_NET, commandFactory.goToNet());
-        robotModeCommandMap.put(RobotMode.ALGAE_PROCESSOR, commandFactory.goToProcessor());
-        robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_UPPER, commandFactory.goToRemoveUpper());
-        robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_LOWER, commandFactory.goToRemoveLower());
-
-        driverController.rightBumper().whileTrue(commandFactory.goToPosition(() -> robotMode));
-        driverController.rightTrigger().and(driverController.rightBumper())
+        operatorController.rightBumper().whileTrue(superStructure.goToPositions(() -> robotMode));
+        operatorController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
+        operatorController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
         driverController.x().onTrue(
                 Commands.parallel(

@@ -46,7 +46,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return Math.abs(inputs.currentPositionMotor1 - targetPosition) < POSITION_THRESHOLD;
+        return atPosition(targetPosition, POSITION_THRESHOLD);
+    }
+
+    public boolean atPosition(double position, double threshold) {
+        return Math.abs(inputs.currentPositionMotor1 - position) < threshold;
     }
 
     public double getTargetPosition() {

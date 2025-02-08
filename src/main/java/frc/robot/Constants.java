@@ -23,50 +23,13 @@ public class Constants {
             .withKP(50);
 
     public static class ArmPositions {
-        // TODO: get the actual values of all of these variables!!
-        // Coral Scoring
-        // Level 1
-        public static final double CORAL_LEVEL_1_ELEVATOR_HEIGHT = 0.1;
-        public static final double CORAL_LEVEL_1_SHOULDER_ANGLE = 0.1;
-        public static final double CORAL_LEVEL_1_WRIST_ANGLE = 0.1;
-        // Level 2
-        public static final double CORAL_LEVEL_2_ELEVATOR_HEIGHT = 0.2;
-        public static final double CORAL_LEVEL_2_SHOULDER_ANGLE = 0.2;
-        public static final double CORAL_LEVEL_2_WRIST_ANGLE = 0.2;
-        // Level 3
-        public static final double CORAL_LEVEL_3_ELEVATOR_HEIGHT = 0.3;
-        public static final double CORAL_LEVEL_3_SHOULDER_ANGLE = 0.3;
-        public static final double CORAL_LEVEL_3_WRIST_ANGLE = 0.3;
-        // Level 4
-        public static final double CORAL_LEVEL_4_ELEVATOR_HEIGHT = 0.4;
-        public static final double CORAL_LEVEL_4_SHOULDER_ANGLE = 0.4;
-        public static final double CORAL_LEVEL_4_WRIST_ANGLE = 0.4;
-
-        // Algae Scoring
-        // Net
-        public static final double ALGAE_NET_ELEVATOR_HEIGHT = 0.5;
-        public static final double ALGAE_NET_SHOULDER_ANGLE = 0.5;
-        public static final double ALGAE_NET_WRIST_ANGLE = 0.5;
-        // Processor
-        public static final double ALGAE_PROCESSOR_ELEVATOR_HEIGHT = 0.6;
-        public static final double ALGAE_PROCESSOR_SHOULDER_ANGLE = 0.6;
-        public static final double ALGAE_PROCESSOR_WRIST_ANGLE = 0.6;
-
-        // Removing Algae
-        // Upper
-        public static final double REMOVE_ALGAE_UPPER_ELEVATOR_HEIGHT = 0.7;
-        public static final double REMOVE_ALGAE_UPPER_SHOULDER_ANGLE = 0.7;
-        public static final double REMOVE_ALGAE_UPPER_WRIST_ANGLE = 0.7;
-        // Lower
-        public static final double REMOVE_ALGAE_LOWER_ELEVATOR_HEIGHT = 0.8;
-        public static final double REMOVE_ALGAE_LOWER_SHOULDER_ANGLE = 0.8;
-        public static final double REMOVE_ALGAE_LOWER_WRIST_ANGLE = 0.8;
-
+        // TODO: get the actual values of these variables!!
         // Coral Station
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.0;
         public static final double CORAL_STATION_SHOULDER_ANGLE = 0.0;
         public static final double CORAL_STATION_WRIST_ANGLE = 0.0;
 
+        // Shoulder Safe variables
         public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
         public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
     }
