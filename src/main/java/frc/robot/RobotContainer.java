@@ -11,6 +11,8 @@ import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,11 +21,17 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.utility.ControllerHelper;
+
+import java.util.EnumMap;
+import java.util.Map;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
 public class RobotContainer {
@@ -31,27 +39,38 @@ public class RobotContainer {
     private final Elevator elevator;
     private final Arm arm;
     private final Grabber grabber;
+    private final Climber climber;
     private final Led led;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
+    private final CommandFactory commandFactory;
+
     @NotLogged
     private final CommandXboxController driverController = new CommandXboxController(0);
+    @NotLogged
+    private final CommandXboxController operatorController = new CommandXboxController(1);
+
+    private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         superStructure = new SuperStructure(elevator, arm);
+
+        commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 
         configureBindings();
 
         drivetrain.setDefaultCommand(
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
+        led.setDefaultCommand(led.signalCommand(() -> robotMode));
 
         // Creates Auto Chooser
         autoChooser = new AutoChooser();
@@ -292,7 +311,7 @@ public class RobotContainer {
 
     private AutoRoutine fourCoral(){
         AutoRoutine routine = autoFactory.newRoutine("ActualAuto");
-        
+
         AutoTrajectory Start = routine.trajectory("PStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
         AutoTrajectory WCSC = routine.trajectory("WCS-C");
@@ -410,24 +429,47 @@ public class RobotContainer {
 
 
     private void configureBindings() {
+        // Make a Robot Command map where each item in the RobotMode Enum is mapped to a command to go to the corresponding position
+        Map<RobotMode, Command> robotModeCommandMap = new EnumMap<>(RobotMode.class);
+        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_1, commandFactory.goToL1());
+        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_2, commandFactory.goToL2());
+        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_3, commandFactory.goToL3());
+        robotModeCommandMap.put(RobotMode.CORAL_LEVEL_4, commandFactory.goToL4());
+        robotModeCommandMap.put(RobotMode.ALGAE_NET, commandFactory.goToNet());
+        robotModeCommandMap.put(RobotMode.ALGAE_PROCESSOR, commandFactory.goToProcessor());
+        robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_UPPER, commandFactory.goToRemoveUpper());
+        robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_LOWER, commandFactory.goToRemoveLower());
 
-        //Joystick Y = quasistatic forward
-        driverController.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        // Joystick A = quasistatic reverse
-        driverController.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        // Joystick B = dynamic forward
-        driverController.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        //Joystick X = dynamic reverse
-        driverController.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        driverController.rightBumper().whileTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
+        driverController.rightTrigger().and(driverController.rightBumper())
+                .and(superStructure::atTargetPositions)
+                .onTrue(commandFactory.releaseGamePiece());
 
-        driverController.povUp().onTrue(Commands.run(SignalLogger::start));
-
-        driverController.povDown().onTrue(Commands.run(SignalLogger::stop));
-
-//        driverController.a().onTrue(superStructure.stop());
-//        driverController.x().onTrue(grabber.withVoltageUntilDetected(12));
-//        driverController.b().onTrue(grabber.stop());
+        driverController.x().onTrue(
+                Commands.parallel(
+                        elevator.goToPosition(1.0),
+                        arm.goToPositions(Units.degreesToRadians(120.0), Units.degreesToRadians(20.0))
+                ));
+        driverController.b().onTrue(
+                Commands.parallel(
+                        elevator.goToPosition(0.0),
+                        arm.goToPositions(0.0, 0.0)
+                ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
+
+        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
+        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
+        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+
+        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+    }
+
+    private Command setRobotMode(RobotMode robotMode) {
+        return runOnce(() -> this.robotMode = robotMode);
     }
 
     private double getDrivetrainXVelocity() {

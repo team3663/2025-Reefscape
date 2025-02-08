@@ -3,6 +3,7 @@ package frc.robot.subsystems.led;
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
+import edu.wpi.first.wpilibj.util.Color;
 
 public class LedCandleIo implements LedIo {
     private final CANdle candle;
@@ -21,8 +22,8 @@ public class LedCandleIo implements LedIo {
     }
 
     @Override
-    public void setColor(LedColor color) {
-        candle.setLEDs(color.red, color.green, color.blue);
+    public void setColor(Color color) {
+        candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.green * 255));
     }
 
     @Override

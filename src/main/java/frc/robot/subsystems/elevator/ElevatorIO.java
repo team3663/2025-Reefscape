@@ -1,6 +1,10 @@
 package frc.robot.subsystems.elevator;
 
 public interface ElevatorIO {
+    default Elevator.Constants getConstants() {
+        return new Elevator.Constants(0.0, 1.0);
+    }
+
     default void updateInputs(ElevatorInputs inputs) {
     }
 

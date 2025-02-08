@@ -31,6 +31,9 @@ public class Grabber extends SubsystemBase {
         return inputs.currentAppliedVoltage;
     }
 
+    public boolean getGamePieceNotDetected() {
+        return !inputs.gamePieceDetected;
+    }
 
     public Command stop() {
         return runOnce(() -> {

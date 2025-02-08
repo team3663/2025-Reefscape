@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.climber;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
@@ -11,25 +11,21 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 @Logged
-public class Elevator extends SubsystemBase {
-    private static final double WAIT_TIME = 0.25; // In seconds
-    private static final double POSITION_THRESHOLD = Units.inchesToMeters(1.0);
-    private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1.0);
-
-    private final ElevatorIO io;
-    private final ElevatorInputs inputs = new ElevatorInputs();
+public class Climber extends SubsystemBase {
+    private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1);
+    private static final double POSITION_THRESHOLD = Units.degreesToRadians(1.0);
+    private static final double WAIT_TIME = 0.25;
+    private final ClimberIO io;
     private final Constants constants;
-
+    private final ClimberInputs inputs = new ClimberInputs();
     private boolean zeroed = false;
     private double targetPosition = 0.0;
+    private double targetVoltage = 0.0;
 
-    public Elevator(ElevatorIO io) {
+
+    public Climber(ClimberIO io) {
         this.io = io;
         this.constants = io.getConstants();
-    }
-
-    public Constants getConstants() {
-        return constants;
     }
 
     @Override
@@ -37,54 +33,51 @@ public class Elevator extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    public double getVelocity() {
-        return inputs.currentVelocityMotor1;
-    }
-
-    public double getPosition() {
-        return inputs.currentPositionMotor1;
-    }
-
     public boolean atTargetPosition() {
-        return Math.abs(inputs.currentPositionMotor1 - targetPosition) < POSITION_THRESHOLD;
-    }
-
-    public double getTargetPosition() {
-        return targetPosition;
+        return Math.abs(inputs.currentPosition - targetPosition) < POSITION_THRESHOLD;
     }
 
     public Command stop() {
         return runOnce(() -> {
-            targetPosition = 0.0;
-            io.stop();
-        });
+                    targetPosition = 0.0;
+                    targetVoltage = 0.0;
+                    io.stop();
+                }
+        );
     }
 
     public Command resetPosition() {
-        return runOnce(io::resetPosition);
+        return runOnce(
+                io::resetPosition
+        );
     }
 
+
     public Command goToPosition(double position) {
-        return run(() -> {
-            io.setTargetPosition(position);
-            targetPosition = position;
-        }).until(this::atTargetPosition);
+        return runEnd(
+                () -> {
+                    io.setTargetPosition(position);
+                    targetPosition = position;
+                }, io::stop
+        ).until(this::atTargetPosition);
     }
 
     public Command followPosition(DoubleSupplier position) {
-        return runEnd(() -> {
-            targetPosition = position.getAsDouble();
-            io.setTargetPosition(targetPosition);
-        }, io::stop);
+        return runEnd(
+                () -> {
+                    targetPosition = position.getAsDouble();
+                    io.setTargetPosition(targetPosition);
+                },
+                io::stop
+        );
     }
-
 
     public Command zero() {
         // Run the Elevator backwards until stopped and then stop
         return runEnd(() -> io.setTargetVoltage(-1.0), io::stop)
                 // While doing that wait until the elevator stops (Hit the hard stop)
                 // Also stop the previous command when this one stops (It hit the hard stop and reset position)
-                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocityMotor1) < VELOCITY_THRESHOLD)
+                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
                         // Then reset the elevator position and set zeroed to true
                         .andThen(() -> {
                             io.resetPosition();
@@ -95,7 +88,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public record Constants(
-            double minimumPosition, double maximumPosition
-    ) {
-    }
+            double maximumPosition
+    ) {}
 }

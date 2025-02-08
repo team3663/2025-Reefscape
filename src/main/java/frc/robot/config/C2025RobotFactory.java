@@ -6,17 +6,23 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
+import frc.robot.subsystems.climber.C2025ClimberIO;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
+import frc.robot.subsystems.elevator.C2025ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
 import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.subsystems.grabber.GrabberInputs;
@@ -42,6 +48,8 @@ public class C2025RobotFactory implements RobotFactory {
     private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
+    private static final double MAX_DRIVE_VELOCITY = DCMotor.getFalcon500Foc(1)
+            .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;
 
     // Creating a constants factory for the drive and steer motors of the drivetrain
     private static final SwerveModuleConstantsFactory<
@@ -62,7 +70,8 @@ public class C2025RobotFactory implements RobotFactory {
             .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withSteerMotorGains(Constants.MK4N_STEER_PID_CONSTANTS)
             .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
-            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS);
+            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS)
+            .withSpeedAt12Volts(MAX_DRIVE_VELOCITY);
 
     // Front Left
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
@@ -138,7 +147,17 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public ArmIO createArmIo() {
-        return new C2025ArmIO(new TalonFX(11), new TalonFX(12));
+        return new C2025ArmIO(new TalonFX(11), new TalonFX(12), new CANcoder(0));
+    }
+
+    @Override
+    public ClimberIO createClimberIo() {
+        return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
+    }
+    
+    @Override 
+    public ElevatorIO createElevatorIo() {
+        return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
     }
 
     @Override

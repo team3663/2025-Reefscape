@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.config.C2024RobotFactory;
 import frc.robot.config.C2025RobotFactory;
 import frc.robot.config.RobotFactory;
+import frc.robot.config.SimRobotFactory;
 import frc.robot.utility.MacAddressUtils;
 import frc.robot.utility.RobotId;
 
@@ -43,9 +44,9 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         RobotFactory robotFactory = switch (detectedId) {
-            case C2024 -> new C2024RobotFactory();
             case C2025 -> new C2025RobotFactory();
-            default -> new C2024RobotFactory();
+            case C2024 -> new C2024RobotFactory();
+            case UNKNOWN -> isSimulation() ? new SimRobotFactory() : new C2025RobotFactory();
         };
 
         robotContainer = new RobotContainer(robotFactory);
@@ -54,7 +55,7 @@ public class Robot extends TimedRobot {
         });
         Epilogue.bind(this);
 
-        SignalLogger.setPath("/media/sda1/");
+        //SignalLogger.setPath("/media/sda1/");
     }
 
     @Override
@@ -76,6 +77,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        autonomousCommand = robotContainer.getAutonomousCommand();
+
+        if (autonomousCommand != null) {
+            autonomousCommand.schedule();
+        }
     }
 
     @Override
@@ -88,6 +94,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
     }
 
     @Override
