@@ -111,10 +111,8 @@ public class RobotContainer {
     private AutoRoutine facePlantG() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlantG");
 
-        // Load the routine's trajectories
         AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantG");
 
-        // When the routine begins, reset odometry and start the first trajectory
         routine.active().onTrue(
                 Commands.sequence(
                         facePlantGTraj.resetOdometry(),

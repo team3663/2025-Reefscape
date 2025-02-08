@@ -49,7 +49,7 @@ public class C2025RobotFactory implements RobotFactory {
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs();
     private static final TalonFXConfiguration STEER_CONFIG = new TalonFXConfiguration();
     private static final double MAX_DRIVE_VELOCITY = DCMotor.getFalcon500Foc(1)
-            .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4I_WHEEL_RADIUS;
+            .freeSpeedRadPerSec / Constants.MK4_3PLUS_REDUCTION * Constants.MK4_WHEEL_RADIUS;
 
     // Creating a constants factory for the drive and steer motors of the drivetrain
     private static final SwerveModuleConstantsFactory<
