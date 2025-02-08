@@ -427,12 +427,12 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        operatorController.rightBumper().whileTrue(superStructure.goToPositions(() -> robotMode));
-        operatorController.rightTrigger().and(driverController.rightBumper())
+        driverController.rightBumper().whileTrue(superStructure.goToPositions(() -> robotMode));
+        driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        operatorController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
+        driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
         driverController.x().onTrue(
                 Commands.parallel(
@@ -446,6 +446,7 @@ public class RobotContainer {
                 ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
 
+        // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
         operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
         operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
@@ -455,6 +456,17 @@ public class RobotContainer {
         operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+
+        // Driver Controller Robot Mode
+        driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
+        driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
+        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+
+        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+        driverController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+        driverController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
     }
 
     private Command setRobotMode(RobotMode robotMode) {
