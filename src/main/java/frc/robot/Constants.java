@@ -66,5 +66,8 @@ public class Constants {
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.0;
         public static final double CORAL_STATION_SHOULDER_ANGLE = 0.0;
         public static final double CORAL_STATION_WRIST_ANGLE = 0.0;
+
+        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
+        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
     }
 }

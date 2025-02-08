@@ -113,7 +113,7 @@ public class SuperStructure extends SubsystemBase {
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
         return Commands.parallel(
-            elevator.goToPosition(elevatorPosition),
-            arm.goToPositions(shoulderPosition, wristPosition));
+                elevator.goToPosition(elevatorPosition),
+                arm.goToPositions(shoulderPosition, wristPosition));
     }
 }

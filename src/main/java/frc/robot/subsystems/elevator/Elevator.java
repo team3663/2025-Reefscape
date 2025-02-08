@@ -13,7 +13,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 @Logged
 public class Elevator extends SubsystemBase {
     private static final double WAIT_TIME = 0.25; // In seconds
-    private static final double POSITION_THRESHOLD = Units.inchesToMeters(1.0);
+    public static final double POSITION_THRESHOLD = Units.inchesToMeters(1.0);
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1.0);
 
     private final ElevatorIO io;
@@ -77,7 +77,6 @@ public class Elevator extends SubsystemBase {
             io.setTargetPosition(targetPosition);
         }, io::stop);
     }
-
 
     public Command zero() {
         // Run the Elevator backwards until stopped and then stop
