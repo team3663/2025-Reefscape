@@ -71,6 +71,7 @@ public class RobotContainer {
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
         led.setDefaultCommand(led.signalCommand(() -> robotMode));
+        superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
 
         // Creates Auto Chooser
         autoChooser = new AutoChooser();
@@ -427,23 +428,12 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(superStructure.goToPositions(() -> robotMode));
+        driverController.rightBumper().whileTrue(superStructure.followPositions(() -> robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
-
-        driverController.x().onTrue(
-                Commands.parallel(
-                        elevator.goToPosition(1.0),
-                        arm.goToPositions(Units.degreesToRadians(120.0), Units.degreesToRadians(20.0))
-                ));
-        driverController.b().onTrue(
-                Commands.parallel(
-                        elevator.goToPosition(0.0),
-                        arm.goToPositions(0.0, 0.0)
-                ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
 

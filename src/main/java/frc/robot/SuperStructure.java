@@ -19,6 +19,10 @@ import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
+    private static final double ELEVATOR_DEFAULT_POSITION = 0;
+    private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
+    private static final double WRIST_DEFAULT_ANGLE = 0;
+
     @NotLogged
     private final Elevator elevator;
     @NotLogged
@@ -109,13 +113,15 @@ public class SuperStructure extends SubsystemBase {
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
                 arm.followPositions(shoulderPosition, wristPosition),
-                elevator.followPosition(elevatorPosition));
+                elevator.followPosition(elevatorPosition),
+                run(() -> {}));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
         return Commands.parallel(
                 elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderPosition, wristPosition));
+                arm.goToPositions(shoulderPosition, wristPosition),
+                runOnce(() -> {}));
     }
 
     /**
@@ -124,7 +130,7 @@ public class SuperStructure extends SubsystemBase {
      * @param robotMode A supplier for the current RobotMode so it knows where to go
      * @return The command to follow the current position based on the Robot Mode
      */
-    public Command goToPositions(Supplier<RobotMode> robotMode) {
+    public Command followPositions(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> {
             if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
@@ -139,5 +145,9 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
+    }
+
+    public Command goToDefaultPositions() {
+        return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
     }
 }
