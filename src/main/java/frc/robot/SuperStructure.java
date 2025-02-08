@@ -19,6 +19,10 @@ import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
+    private static final double ELEVATOR_DEFAULT_POSITION = 0;
+    private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
+    private static final double WRIST_DEFAULT_ANGLE = 0;
+
     @NotLogged
     private final Elevator elevator;
     @NotLogged
@@ -141,5 +145,9 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
+    }
+
+    public Command goToDefaultPositions() {
+        return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
     }
 }

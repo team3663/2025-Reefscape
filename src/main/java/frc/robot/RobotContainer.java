@@ -71,7 +71,7 @@ public class RobotContainer {
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
         led.setDefaultCommand(led.signalCommand(() -> robotMode));
-        superStructure.setDefaultCommand(superStructure.goToPositions(0, Units.degreesToRadians(90), 0));
+        superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
 
         // Creates Auto Chooser
         autoChooser = new AutoChooser();
