@@ -22,7 +22,7 @@ public class Constants {
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
 
-    public class ScoringPositions {
+    public static class ArmPositions {
         // TODO: get the actual values of all of these variables!!
         // Coral Scoring
         // Level 1
@@ -61,5 +61,10 @@ public class Constants {
         public static final double REMOVE_ALGAE_LOWER_ELEVATOR_HEIGHT = 0.0;
         public static final double REMOVE_ALGAE_LOWER_SHOULDER_ANGLE = 0.0;
         public static final double REMOVE_ALGAE_LOWER_WRIST_ANGLE = 0.0;
+
+        // Coral Station
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.0;
+        public static final double CORAL_STATION_SHOULDER_ANGLE = 0.0;
+        public static final double CORAL_STATION_WRIST_ANGLE = 0.0;
     }
 }
