@@ -437,6 +437,9 @@ public class RobotContainer {
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
 
+        operatorController.leftBumper().onTrue(climber.deploy());
+        operatorController.rightBumper().onTrue(climber.climb());
+
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
         operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
