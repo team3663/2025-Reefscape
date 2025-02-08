@@ -40,6 +40,11 @@ public class CommandFactory {
         this.superStructure = superStructure;
     }
 
+    /**
+     * Tells the super Structure where to go based on the Robot Mode
+     * @param robotMode A supplier for the current RobotMode so it knows where to go
+     * @return The command to follow the current position based on the Robot Mode
+     */
     public Command goToPosition(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> switch (robotMode.get()) {
             case CORAL_LEVEL_1 -> Constants.ArmPositions.CORAL_LEVEL_1_ELEVATOR_HEIGHT;
@@ -75,6 +80,9 @@ public class CommandFactory {
         return superStructure.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 
+    /**
+     * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
+     */
     public Command releaseGamePiece() {
         return runEnd(() -> {
             grabber.withVoltage(-1.0);
