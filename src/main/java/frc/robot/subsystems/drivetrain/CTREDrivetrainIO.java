@@ -20,8 +20,6 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain;
     private final Drivetrain.Constants constants;
 
-    private SwerveDriveKinematics kinematics;
-
     private final SwerveRequest.FieldCentric fieldOrientedRequest = new SwerveRequest.FieldCentric();
     private final SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
     private final SwerveRequest.SysIdSwerveTranslation sysIdTranslationRequest = new SwerveRequest.SysIdSwerveTranslation();
