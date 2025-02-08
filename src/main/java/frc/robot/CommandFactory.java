@@ -8,6 +8,9 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
 public class CommandFactory {
@@ -35,6 +38,41 @@ public class CommandFactory {
         this.climber = climber;
         this.led = led;
         this.superStructure = superStructure;
+    }
+
+    public Command goToPosition(Supplier<RobotMode> robotMode) {
+        DoubleSupplier targetElevatorHeight = () -> switch (robotMode.get()) {
+            case CORAL_LEVEL_1 -> Constants.ArmPositions.CORAL_LEVEL_1_ELEVATOR_HEIGHT;
+            case CORAL_LEVEL_2 -> Constants.ArmPositions.CORAL_LEVEL_2_ELEVATOR_HEIGHT;
+            case CORAL_LEVEL_3 -> Constants.ArmPositions.CORAL_LEVEL_3_ELEVATOR_HEIGHT;
+            case CORAL_LEVEL_4 -> Constants.ArmPositions.CORAL_LEVEL_4_ELEVATOR_HEIGHT;
+            case ALGAE_PROCESSOR -> Constants.ArmPositions.ALGAE_PROCESSOR_ELEVATOR_HEIGHT;
+            case ALGAE_NET -> Constants.ArmPositions.ALGAE_NET_ELEVATOR_HEIGHT;
+            case ALGAE_REMOVE_LOWER -> Constants.ArmPositions.REMOVE_ALGAE_LOWER_ELEVATOR_HEIGHT;
+            case ALGAE_REMOVE_UPPER -> Constants.ArmPositions.REMOVE_ALGAE_UPPER_ELEVATOR_HEIGHT;
+        };
+        DoubleSupplier targetShoulderAngle = () -> switch (robotMode.get()) {
+            case CORAL_LEVEL_1 -> Constants.ArmPositions.CORAL_LEVEL_1_SHOULDER_ANGLE;
+            case CORAL_LEVEL_2 -> Constants.ArmPositions.CORAL_LEVEL_2_SHOULDER_ANGLE;
+            case CORAL_LEVEL_3 -> Constants.ArmPositions.CORAL_LEVEL_3_SHOULDER_ANGLE;
+            case CORAL_LEVEL_4 -> Constants.ArmPositions.CORAL_LEVEL_4_SHOULDER_ANGLE;
+            case ALGAE_PROCESSOR -> Constants.ArmPositions.ALGAE_PROCESSOR_SHOULDER_ANGLE;
+            case ALGAE_NET -> Constants.ArmPositions.ALGAE_NET_SHOULDER_ANGLE;
+            case ALGAE_REMOVE_LOWER -> Constants.ArmPositions.REMOVE_ALGAE_LOWER_SHOULDER_ANGLE;
+            case ALGAE_REMOVE_UPPER -> Constants.ArmPositions.REMOVE_ALGAE_UPPER_SHOULDER_ANGLE;
+        };
+        DoubleSupplier targetWristAngle = () -> switch (robotMode.get()) {
+            case CORAL_LEVEL_1 -> Constants.ArmPositions.CORAL_LEVEL_1_WRIST_ANGLE;
+            case CORAL_LEVEL_2 -> Constants.ArmPositions.CORAL_LEVEL_2_WRIST_ANGLE;
+            case CORAL_LEVEL_3 -> Constants.ArmPositions.CORAL_LEVEL_3_WRIST_ANGLE;
+            case CORAL_LEVEL_4 -> Constants.ArmPositions.CORAL_LEVEL_4_WRIST_ANGLE;
+            case ALGAE_PROCESSOR -> Constants.ArmPositions.ALGAE_PROCESSOR_WRIST_ANGLE;
+            case ALGAE_NET -> Constants.ArmPositions.ALGAE_NET_WRIST_ANGLE;
+            case ALGAE_REMOVE_LOWER -> Constants.ArmPositions.REMOVE_ALGAE_LOWER_WRIST_ANGLE;
+            case ALGAE_REMOVE_UPPER -> Constants.ArmPositions.REMOVE_ALGAE_UPPER_WRIST_ANGLE;
+        };
+
+        return superStructure.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 
     public Command releaseGamePiece() {
