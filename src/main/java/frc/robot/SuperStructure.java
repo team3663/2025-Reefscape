@@ -109,13 +109,15 @@ public class SuperStructure extends SubsystemBase {
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
                 arm.followPositions(shoulderPosition, wristPosition),
-                elevator.followPosition(elevatorPosition));
+                elevator.followPosition(elevatorPosition),
+                run(() -> {}));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
         return Commands.parallel(
                 elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderPosition, wristPosition));
+                arm.goToPositions(shoulderPosition, wristPosition),
+                run(() -> {}));
     }
 
     /**
@@ -124,7 +126,7 @@ public class SuperStructure extends SubsystemBase {
      * @param robotMode A supplier for the current RobotMode so it knows where to go
      * @return The command to follow the current position based on the Robot Mode
      */
-    public Command goToPositions(Supplier<RobotMode> robotMode) {
+    public Command followPositions(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> {
             if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
