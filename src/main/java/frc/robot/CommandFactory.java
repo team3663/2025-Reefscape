@@ -8,7 +8,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -111,8 +110,8 @@ public class CommandFactory {
      */
     public Command goToL4() {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_4_ELEVATOR_HEIGHT,
-Constants.ArmPositions.CORAL_LEVEL_4_SHOULDER_ANGLE,
-Constants.ArmPositions.CORAL_LEVEL_4_WRIST_ANGLE);
+                Constants.ArmPositions.CORAL_LEVEL_4_SHOULDER_ANGLE,
+                Constants.ArmPositions.CORAL_LEVEL_4_WRIST_ANGLE);
     }
 
     /**
@@ -120,8 +119,8 @@ Constants.ArmPositions.CORAL_LEVEL_4_WRIST_ANGLE);
      */
     public Command goToL3() {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_3_ELEVATOR_HEIGHT,
-Constants.ArmPositions.CORAL_LEVEL_3_SHOULDER_ANGLE,
-Constants.ArmPositions.CORAL_LEVEL_3_WRIST_ANGLE);
+                Constants.ArmPositions.CORAL_LEVEL_3_SHOULDER_ANGLE,
+                Constants.ArmPositions.CORAL_LEVEL_3_WRIST_ANGLE);
     }
 
     /**
@@ -129,8 +128,8 @@ Constants.ArmPositions.CORAL_LEVEL_3_WRIST_ANGLE);
      */
     public Command goToL2() {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_2_ELEVATOR_HEIGHT,
-Constants.ArmPositions.CORAL_LEVEL_2_SHOULDER_ANGLE,
-Constants.ArmPositions.CORAL_LEVEL_2_WRIST_ANGLE);
+                Constants.ArmPositions.CORAL_LEVEL_2_SHOULDER_ANGLE,
+                Constants.ArmPositions.CORAL_LEVEL_2_WRIST_ANGLE);
     }
 
     /**
@@ -138,8 +137,8 @@ Constants.ArmPositions.CORAL_LEVEL_2_WRIST_ANGLE);
      */
     public Command goToL1() {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_1_ELEVATOR_HEIGHT,
-Constants.ArmPositions.CORAL_LEVEL_1_SHOULDER_ANGLE,
-Constants.ArmPositions.CORAL_LEVEL_1_WRIST_ANGLE);
+                Constants.ArmPositions.CORAL_LEVEL_1_SHOULDER_ANGLE,
+                Constants.ArmPositions.CORAL_LEVEL_1_WRIST_ANGLE);
     }
 
     /**
@@ -147,8 +146,8 @@ Constants.ArmPositions.CORAL_LEVEL_1_WRIST_ANGLE);
      */
     public Command goToNet() {
         return superStructure.goToPositions(Constants.ArmPositions.ALGAE_NET_ELEVATOR_HEIGHT,
-Constants.ArmPositions.ALGAE_NET_SHOULDER_ANGLE,
-Constants.ArmPositions.ALGAE_NET_WRIST_ANGLE);
+                Constants.ArmPositions.ALGAE_NET_SHOULDER_ANGLE,
+                Constants.ArmPositions.ALGAE_NET_WRIST_ANGLE);
     }
 
     /**
@@ -156,8 +155,8 @@ Constants.ArmPositions.ALGAE_NET_WRIST_ANGLE);
      */
     public Command goToProcessor() {
         return superStructure.goToPositions(Constants.ArmPositions.ALGAE_PROCESSOR_ELEVATOR_HEIGHT,
-Constants.ArmPositions.ALGAE_PROCESSOR_SHOULDER_ANGLE,
-Constants.ArmPositions.ALGAE_PROCESSOR_WRIST_ANGLE);
+                Constants.ArmPositions.ALGAE_PROCESSOR_SHOULDER_ANGLE,
+                Constants.ArmPositions.ALGAE_PROCESSOR_WRIST_ANGLE);
     }
 
     /**
@@ -165,8 +164,8 @@ Constants.ArmPositions.ALGAE_PROCESSOR_WRIST_ANGLE);
      */
     public Command goToRemoveUpper() {
         return superStructure.goToPositions(Constants.ArmPositions.REMOVE_ALGAE_UPPER_ELEVATOR_HEIGHT,
-Constants.ArmPositions.REMOVE_ALGAE_UPPER_SHOULDER_ANGLE,
-Constants.ArmPositions.REMOVE_ALGAE_UPPER_WRIST_ANGLE);
+                Constants.ArmPositions.REMOVE_ALGAE_UPPER_SHOULDER_ANGLE,
+                Constants.ArmPositions.REMOVE_ALGAE_UPPER_WRIST_ANGLE);
     }
 
     /**
@@ -174,8 +173,8 @@ Constants.ArmPositions.REMOVE_ALGAE_UPPER_WRIST_ANGLE);
      */
     public Command goToRemoveLower() {
         return superStructure.goToPositions(Constants.ArmPositions.REMOVE_ALGAE_LOWER_ELEVATOR_HEIGHT,
-Constants.ArmPositions.REMOVE_ALGAE_LOWER_SHOULDER_ANGLE,
-Constants.ArmPositions.REMOVE_ALGAE_LOWER_WRIST_ANGLE);
+                Constants.ArmPositions.REMOVE_ALGAE_LOWER_SHOULDER_ANGLE,
+                Constants.ArmPositions.REMOVE_ALGAE_LOWER_WRIST_ANGLE);
     }
 
     /**
@@ -183,8 +182,8 @@ Constants.ArmPositions.REMOVE_ALGAE_LOWER_WRIST_ANGLE);
      */
     public Command goToCoralStationAndIntake() {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-    Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-    Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE)
-.andThen(grabber.withVoltageUntilDetected(-1.0));
+                        Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+                        Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE)
+                .andThen(grabber.withVoltageUntilDetected(-1.0));
     }
 }
