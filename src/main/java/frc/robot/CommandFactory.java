@@ -37,82 +37,13 @@ public class CommandFactory {
         this.superStructure = superStructure;
     }
 
+    /**
+     * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
+     */
     public Command releaseGamePiece() {
         return runEnd(() -> {
             grabber.withVoltage(-1.0);
         }, grabber::stop).until(grabber::getGamePieceNotDetected);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place on level 4
-     */
-    public Command goToL4() {
-        return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_4_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.CORAL_LEVEL_4_SHOULDER_ANGLE,
-                Constants.ArmPositions.CORAL_LEVEL_4_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place on level 3
-     */
-    public Command goToL3() {
-        return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_3_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.CORAL_LEVEL_3_SHOULDER_ANGLE,
-                Constants.ArmPositions.CORAL_LEVEL_3_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place on level 2
-     */
-    public Command goToL2() {
-        return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_2_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.CORAL_LEVEL_2_SHOULDER_ANGLE,
-                Constants.ArmPositions.CORAL_LEVEL_2_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place on level 1
-     */
-    public Command goToL1() {
-        return superStructure.goToPositions(Constants.ArmPositions.CORAL_LEVEL_1_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.CORAL_LEVEL_1_SHOULDER_ANGLE,
-                Constants.ArmPositions.CORAL_LEVEL_1_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place in the Net
-     */
-    public Command goToNet() {
-        return superStructure.goToPositions(Constants.ArmPositions.ALGAE_NET_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.ALGAE_NET_SHOULDER_ANGLE,
-                Constants.ArmPositions.ALGAE_NET_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to place in the Processor
-     */
-    public Command goToProcessor() {
-        return superStructure.goToPositions(Constants.ArmPositions.ALGAE_PROCESSOR_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.ALGAE_PROCESSOR_SHOULDER_ANGLE,
-                Constants.ArmPositions.ALGAE_PROCESSOR_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to remove the upper algae
-     */
-    public Command goToRemoveUpper() {
-        return superStructure.goToPositions(Constants.ArmPositions.REMOVE_ALGAE_UPPER_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.REMOVE_ALGAE_UPPER_SHOULDER_ANGLE,
-                Constants.ArmPositions.REMOVE_ALGAE_UPPER_WRIST_ANGLE);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to remove the lower algae
-     */
-    public Command goToRemoveLower() {
-        return superStructure.goToPositions(Constants.ArmPositions.REMOVE_ALGAE_LOWER_ELEVATOR_HEIGHT,
-                Constants.ArmPositions.REMOVE_ALGAE_LOWER_SHOULDER_ANGLE,
-                Constants.ArmPositions.REMOVE_ALGAE_LOWER_WRIST_ANGLE);
     }
 
     /**
