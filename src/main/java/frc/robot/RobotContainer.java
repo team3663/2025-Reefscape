@@ -438,13 +438,12 @@ public class RobotContainer {
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_UPPER, commandFactory.goToRemoveUpper());
         robotModeCommandMap.put(RobotMode.ALGAE_REMOVE_LOWER, commandFactory.goToRemoveLower());
 
-//        driverController.rightBumper().whileTrue(Commands.select(robotModeCommandMap, () -> this.robotMode));
-        operatorController.rightBumper().whileTrue(commandFactory.goToPosition(() -> robotMode));
-        operatorController.rightTrigger().and(driverController.rightBumper())
+        driverController.rightBumper().whileTrue(commandFactory.goToPosition(() -> robotMode));
+        driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        operatorController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
+        driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
         driverController.x().onTrue(
                 Commands.parallel(
