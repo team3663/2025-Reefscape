@@ -61,10 +61,8 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.Slot0.kI = 0.0;
         shoulderConfig.Slot0.kD = 0.0;
 
-        if (!Robot.isSimulation()) {
-            shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
-            shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        }
+        shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
+        shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
         shoulderConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
         shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
@@ -96,6 +94,9 @@ public class C2025ArmIO implements ArmIO {
     public void updateInputs(ArmInputs inputs) {
         // Sims for Wrist and Shoulder
         if (Robot.isSimulation()) {
+            // The Shoulder CANcoder's sim state
+            var shoulderCanCoderSimState = shoulderCanCoder.getSimState();
+
             // Shoulder sim
             var shoulderSimState = shoulderMotor.getSimState();
             shoulderSim.setInputVoltage(shoulderSimState.getMotorVoltage());
@@ -105,6 +106,9 @@ public class C2025ArmIO implements ArmIO {
             shoulderSimState.setRotorAcceleration(shoulderSim.getAngularAcceleration());
             shoulderSimState.setRotorVelocity(shoulderSim.getAngularVelocity());
             shoulderSimState.setRawRotorPosition(shoulderSim.getAngularPosition());
+            shoulderCanCoderSimState.setRawPosition(shoulderSim.getAngularPosition());
+            shoulderCanCoderSimState.setVelocity(shoulderSim.getAngularVelocityRPM());
+            shoulderCanCoderSimState.setSupplyVoltage(shoulderSim.getInputVoltage());
 
             // Wrist sim
             var wristSimState = wristMotor.getSimState();
@@ -161,8 +165,9 @@ public class C2025ArmIO implements ArmIO {
     public void setWristTargetPosition(double position) {
         wristMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+
     @Override
-    public void setWristTargetVoltage(double voltage){
+    public void setWristTargetVoltage(double voltage) {
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 }
