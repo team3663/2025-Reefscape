@@ -434,14 +434,6 @@ public class RobotContainer {
 
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
 
-        driverController.x().onTrue(
-                superStructure.goToPositions(0.25,0.9,0.0));
-        driverController.a().onTrue(
-                superStructure.goToPositions(0.0,-Math.PI/2,Math.toRadians(20)));
-        driverController.b().onTrue(
-               superStructure.goToPositions(0.0,Math.toRadians(5),Math.toRadians(-90)));
-        driverController.y().onTrue(
-                superStructure.goToPositions(0.7,0.2,0.0));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
 
         // Operator Controller Robot Mode

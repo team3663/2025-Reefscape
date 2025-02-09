@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
+import pabeles.concurrency.IntOperatorTask;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -88,16 +89,6 @@ public class SuperStructure extends SubsystemBase {
         SmartDashboard.putData("Superstructure", mechanism);
     }
 
-    @Override
-    public void periodic() {
-        targetElevatorMechanism.setLength(elevator.getTargetPosition());
-        targetShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getTargetShoulderPosition()) - 90.0);
-        targetWristMechanism.setAngle(Units.radiansToDegrees(arm.getTargetWristPosition()));
-
-        currentElevatorMechanism.setLength(elevator.getPosition());
-        currentShoulderMechanism.setAngle(Units.radiansToDegrees(arm.getShoulderPosition()) - 90.0);
-        currentWristMechanism.setAngle(Units.radiansToDegrees(arm.getWristPosition()));
-    }
 
 //    private boolean armGoStraightDown(double elevatorCurrentPos, double shoulderCurrentPos, double elevatorTargetPos, double shoulderTargetPos) {
 //        return (shoulderCurrentPos< shoulderTargetPos + Math.toRadians(180)) && (shoulderTargetPos < Math.toRadians(-90));
@@ -129,6 +120,17 @@ public class SuperStructure extends SubsystemBase {
         }
         return arm.getConstants().minimumWristAngle();
     }
+     private double  getMinimumAllowableShoulderAngle( double currentElevatorPos, double currentShoulderPos, double currentWristPos,
+                                                       double targetElevatorPos, double targetShoulderPos, double targetWristPos){
+        double targetPos = targetShoulderPos;
+         if ( ((currentElevatorPos- shoulderBuffer)/ arm.getConstants().shoulderLength()) <=1){
+             targetPos= Math.max(targetPos, -Math.asin((currentElevatorPos- shoulderBuffer)/ arm.getConstants().shoulderLength()));
+         }
+         if ( ((targetElevatorPos- shoulderBuffer)/ arm.getConstants().shoulderLength()) <=1){
+             targetPos= Math.max(targetPos, -Math.asin((targetElevatorPos- shoulderBuffer)/ arm.getConstants().shoulderLength()));
+         }
+         return targetPos;
+     }
 
 /// make sure everything ends when your at the target
 
@@ -167,7 +169,7 @@ public class SuperStructure extends SubsystemBase {
     public Command goToPositions(double elevatorPosition, double armPosition, double wristPosition) {
         return Commands.parallel(
                 arm.followPositions(
-                        () -> armPosition,
+                        () -> Math.max( armPosition, getMinimumAllowableShoulderAngle(elevator.getPosition(), arm.getShoulderPosition(),arm.getWristPosition(), elevatorPosition, armPosition,wristPosition)),
                         () -> Math.max(wristPosition, getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> Math.max(elevatorPosition, getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition())))
         ).until(()-> elevator.atTargetPosition() && arm.atTargetPositions());

@@ -4,6 +4,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import java.util.function.DoubleSupplier;
 
@@ -15,7 +16,7 @@ public class Arm extends SubsystemBase {
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
     private final ArmIO io;
     private final ArmInputs inputs = new ArmInputs();
-    private final Constants constants;
+    private final Arm.Constants constants;
     private double targetShoulderPosition = 0.0;
     private double targetWristPosition = 0.0;
 
@@ -71,16 +72,14 @@ public class Arm extends SubsystemBase {
         ).until(this::atTargetPositions);
     }
 
-    public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
-        return runEnd(() -> {
     public Command followPositions(DoubleSupplier positionShoulder, DoubleSupplier positionWrist) {
         return run(() -> {
             // Shoulder
-            targetShoulderPosition = shoulderPosition.getAsDouble();
+            targetShoulderPosition = positionShoulder.getAsDouble();
             io.setShoulderTargetPosition(targetShoulderPosition);
 
             // Wrist
-            targetWristPosition = wristPosition.getAsDouble();
+            targetWristPosition = positionWrist.getAsDouble();
             io.setWristTargetPosition(targetWristPosition);
         });
     }
@@ -112,6 +111,7 @@ public class Arm extends SubsystemBase {
     public Command resetWristPosition() {
         return runOnce(io::resetWristPosition);
     }
+
 
     public Command zeroWrist() {
         return runEnd(() -> io.setWristTargetVoltage(-1.0),
