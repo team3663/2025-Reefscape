@@ -11,4 +11,5 @@ public class GrabberInputs {
     public double currentDraw;
 
     public boolean gamePieceDetected;
+    public boolean gamePieceDetectedPrevious;
 }

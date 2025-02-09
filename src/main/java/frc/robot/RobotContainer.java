@@ -440,6 +440,8 @@ public class RobotContainer {
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
+        grabber.onDetected(led.intakeFlash());
+
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
         operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));

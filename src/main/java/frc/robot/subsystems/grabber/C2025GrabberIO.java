@@ -59,6 +59,7 @@ public class C2025GrabberIO implements GrabberIO {
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
 
+        inputs.gamePieceDetectedPrevious = inputs.gamePieceDetected;
         inputs.gamePieceDetected = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
     }
 

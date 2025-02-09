@@ -1,6 +1,7 @@
 package frc.robot.subsystems.grabber;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -65,5 +66,12 @@ public class Grabber extends SubsystemBase {
                     io.setTargetVoltage(targetVoltage);
                 }, this::stopInternal
         ).until(() -> inputs.gamePieceDetected);
+    }
+
+    public void onDetected(Command command) {
+        new EventLoop().bind(() -> {
+            if (!inputs.gamePieceDetectedPrevious && inputs.gamePieceDetected)
+                command.schedule();
+        });
     }
 }
