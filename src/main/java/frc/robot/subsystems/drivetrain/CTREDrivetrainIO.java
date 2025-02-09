@@ -9,11 +9,16 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class CTREDrivetrainIO implements DrivetrainIO {
@@ -30,15 +35,27 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
 
+    private final RobotConfig robotConfig;
+    private final ModuleConfig moduleConfig;
+
 
     @SafeVarargs
     public CTREDrivetrainIO(
+            double ROBOT_WEIGHT_KG,
+            double ROBOT_MOI,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants
     ) {
         this.drivetrain = new SwerveDrivetrain<>(
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
         );
+
+        moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, Constants.MAX_DRIVE_VELOCITY_MPS,
+                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(4), moduleConstants[0].DriveMotorGearRatio,
+                moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 4);
+
+        robotConfig = new RobotConfig(ROBOT_WEIGHT_KG, ROBOT_MOI, moduleConfig, drivetrain.getModuleLocations());
+
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.registerTelemetry(state -> lastState = state.clone());
@@ -56,7 +73,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         }
 
         constants = new Drivetrain.Constants(maxModuleVelocity,
-                maxModuleVelocity / maxDriveBaseRadius);
+                maxModuleVelocity / maxDriveBaseRadius, robotConfig);
     }
 
     @Override

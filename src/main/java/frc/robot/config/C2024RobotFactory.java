@@ -8,9 +8,14 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 
@@ -24,6 +29,9 @@ public class C2024RobotFactory implements RobotFactory {
     static final double FRONT_MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     private static final double BACK_MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - INTAKE_X_OFFSET - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
+
+    private static final double CURRENT_LIMIT = 60;
+    private static final double ROBOT_WEIGHT_KG = 61.235;
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -88,7 +96,6 @@ public class C2024RobotFactory implements RobotFactory {
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
     private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(-234.84);
 
-
     @Override
     public DrivetrainIO createDrivetrainIo() {
         // Configuring front left module
@@ -131,7 +138,8 @@ public class C2024RobotFactory implements RobotFactory {
                 false, true, false
         );
 
-        return new CTREDrivetrainIO(DRIVETRAIN_CONSTANTS,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, 6.0,
+                DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
     }

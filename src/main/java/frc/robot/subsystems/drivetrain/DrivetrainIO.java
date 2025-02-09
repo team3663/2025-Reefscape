@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
@@ -39,8 +40,8 @@ public interface DrivetrainIO {
     default Drivetrain.Constants getConstants() {
         return new Drivetrain.Constants(
                 5.0,
-                Units.rotationsPerMinuteToRadiansPerSecond(60.0)
-        );
+                Units.rotationsPerMinuteToRadiansPerSecond(60.0),
+                new RobotConfig(null,null,null,null, null));
     }
 
     /**

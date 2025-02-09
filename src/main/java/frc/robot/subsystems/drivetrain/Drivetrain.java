@@ -3,12 +3,16 @@ package frc.robot.subsystems.drivetrain;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
+import frc.robot.config.C2024RobotFactory;
 
 import java.util.function.DoubleSupplier;
 
@@ -63,6 +67,14 @@ public class Drivetrain extends SubsystemBase {
         return inputs.pose;
     }
 
+    public ChassisSpeeds getRobotSpeeds(){
+        return inputs.chassisSpeeds;
+    }
+
+    public RobotConfig getRobotConfig(){
+        return constants.robotConfig;
+    }
+
     public AutoFactory getAutoFactory() {
         return autoFactory;
     }
@@ -108,7 +120,8 @@ public class Drivetrain extends SubsystemBase {
 
     public record Constants(
             double maxLinearVelocity,
-            double maxAngularVelocity
+            double maxAngularVelocity,
+            RobotConfig robotConfig
     ) {
     }
 }

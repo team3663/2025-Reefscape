@@ -19,8 +19,11 @@ public class Constants {
     public static final double MK4I_STEER_INERTIA = 0.00001;
     public static final double MK4I_STEER_FRICTION_VOLTAGE = 0.25;
     public static final double MK4_WHEEL_RADIUS = Units.inchesToMeters(1.93);
+    public static final double WHEEL_COF = 1.2;
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
+
+    public static final double MAX_DRIVE_VELOCITY_MPS = 5.0;
 
     public static class ArmPositions {
         // TODO: get the actual values of all of these variables!!

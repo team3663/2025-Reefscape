@@ -12,6 +12,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -37,6 +40,9 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double FRAME_Y_LENGTH = Units.inchesToMeters(27.0);
     private static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
+
+    private static final double CURRENT_LIMIT = 6.0;
+    private static final double ROBOT_WEIGHT_KG = 61.235;
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -140,7 +146,8 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        return new CTREDrivetrainIO(DRIVETRAIN_CONSTANTS,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, 6.0,
+                DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
     }
