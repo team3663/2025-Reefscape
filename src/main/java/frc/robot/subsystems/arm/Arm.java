@@ -14,6 +14,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 @Logged
 public class Arm extends SubsystemBase {
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
+
     private final ArmIO io;
     private final ArmInputs inputs = new ArmInputs();
     private final Arm.Constants constants;
@@ -50,6 +51,13 @@ public class Arm extends SubsystemBase {
                     io.stopWrist();
                 }
         );
+    }
+
+    public Command resetPositions() {
+        return runOnce(() -> {
+            io.resetShoulderPosition();
+            io.resetWristPosition();
+        });
     }
 
     public boolean atTargetPositions() {

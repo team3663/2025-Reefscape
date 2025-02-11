@@ -32,11 +32,17 @@ public class SuperStructure extends SubsystemBase {
     private  static final double wristBuffer= Units.inchesToMeters(4.0);
 
     private final Mechanism2d mechanism;
+    @NotLogged
     private final MechanismLigament2d targetElevatorMechanism;
+    @NotLogged
     private final MechanismLigament2d targetShoulderMechanism;
+    @NotLogged
     private final MechanismLigament2d targetWristMechanism;
+    @NotLogged
     private final MechanismLigament2d currentElevatorMechanism;
+    @NotLogged
     private final MechanismLigament2d currentShoulderMechanism;
+    @NotLogged
     private final MechanismLigament2d currentWristMechanism;
 
     public SuperStructure(Elevator elevator, Arm arm) {
