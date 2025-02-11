@@ -71,8 +71,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void addVisionMeasurements(List<VisionMeasurement> measurements) {
-        Translation2d currentPosition = inputs.pose.getTranslation();
-
         for (VisionMeasurement measurement : measurements) {
             io.addVisionMeasurement(measurement.timestamp, measurement.estimatedPose, measurement.stdDevs);
         }
