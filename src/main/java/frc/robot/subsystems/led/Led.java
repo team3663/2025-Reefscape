@@ -12,6 +12,8 @@ import frc.robot.RobotMode;
 
 import java.util.function.Supplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+
 @Logged
 public class Led extends SubsystemBase {
     private static final Pattern CORAL_PATTERN = Pattern.SOLID;
@@ -131,6 +133,13 @@ public class Led extends SubsystemBase {
                     }
                 }
         );
+    }
+
+    public Command intakeFlash() {
+        return runOnce(() -> {
+            currentColor = Color.kWhite;
+            setPattern(Pattern.STROBE);
+        }).andThen(waitSeconds(0.5));
     }
 
     public enum Pattern {

@@ -15,10 +15,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
@@ -27,9 +28,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.utility.ControllerHelper;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
@@ -71,6 +69,7 @@ public class RobotContainer {
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
         led.setDefaultCommand(led.signalCommand(() -> robotMode));
+        superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
 
         // Creates Auto Chooser
         autoChooser = new AutoChooser();
@@ -117,14 +116,14 @@ public class RobotContainer {
                 Commands.sequence(
                         facePlantGTraj.resetOdometry(),
                         Commands.waitSeconds(2).andThen(
-                        facePlantGTraj.cmd()
+                                facePlantGTraj.cmd()
                         )
                 )
         );
         return routine;
     }
 
-    private AutoRoutine behindTheBack(){
+    private AutoRoutine behindTheBack() {
         AutoRoutine routine = autoFactory.newRoutine("BehindTheBack");
 
         AutoTrajectory Start = routine.trajectory("PStart-A");
@@ -144,7 +143,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine threeCoralEDC(){
+    private AutoRoutine threeCoralEDC() {
         AutoRoutine routine = autoFactory.newRoutine("threeCoralEDC");
 
         AutoTrajectory Start = routine.trajectory("PStart-E");
@@ -167,7 +166,8 @@ public class RobotContainer {
 
         return routine;
     }
-    private AutoRoutine threeCoralJKL(){
+
+    private AutoRoutine threeCoralJKL() {
         AutoRoutine routine = autoFactory.newRoutine("threeCoralEDC");
 
         AutoTrajectory Start = routine.trajectory("LStart-J");
@@ -192,7 +192,7 @@ public class RobotContainer {
     }
 
 
-    private AutoRoutine twoCoralFE(){
+    private AutoRoutine twoCoralFE() {
         AutoRoutine routine = autoFactory.newRoutine("twoCoralEF");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
@@ -211,7 +211,8 @@ public class RobotContainer {
 
         return routine;
     }
-    private AutoRoutine twoCoralKL(){
+
+    private AutoRoutine twoCoralKL() {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoralKL");
 
         AutoTrajectory Start = routine.trajectory("LStart-K");
@@ -231,7 +232,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine twoCoralIJ(){
+    private AutoRoutine twoCoralIJ() {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoralIJ");
 
         AutoTrajectory Start = routine.trajectory("LStart-I");
@@ -251,7 +252,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine twoCoralDC(){
+    private AutoRoutine twoCoralDC() {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoralDC");
 
         AutoTrajectory Start = routine.trajectory("PStart-D");
@@ -271,7 +272,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine flippedBehindTheBack(){
+    private AutoRoutine flippedBehindTheBack() {
         AutoRoutine routine = autoFactory.newRoutine("FlippedBehindTheBack");
 
         AutoTrajectory Start = routine.trajectory("LStart-B");
@@ -291,10 +292,10 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine facePlantH(){
+    private AutoRoutine facePlantH() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlantH");
 
-        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH" );
+        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH");
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -307,7 +308,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine fourCoral(){
+    private AutoRoutine fourCoral() {
         AutoRoutine routine = autoFactory.newRoutine("ActualAuto");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
@@ -334,7 +335,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine flipped4Coral(){
+    private AutoRoutine flipped4Coral() {
         AutoRoutine routine = autoFactory.newRoutine("Flipped4Coral");
 
         AutoTrajectory Start = routine.trajectory("LStart-I");
@@ -362,7 +363,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine fiveCoral(){
+    private AutoRoutine fiveCoral() {
         AutoRoutine routine = autoFactory.newRoutine("FiveCoral");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
@@ -393,7 +394,7 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine flippedFiveCoral(){
+    private AutoRoutine flippedFiveCoral() {
         AutoRoutine routine = autoFactory.newRoutine("FlippedFiveCoral");
 
         AutoTrajectory Start = routine.trajectory("LStart-I");
@@ -427,14 +428,19 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(superStructure.goToPositions(() -> robotMode));
+        driverController.rightBumper().whileTrue(superStructure.followPositions(() -> robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
-
         driverController.back().onTrue(drivetrain.resetFieldOriented());
+        driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
+
+        operatorController.leftBumper().onTrue(climber.deploy());
+        operatorController.rightBumper().onTrue(climber.climb());
+
+        new Trigger(grabber::getGamePieceDetected).debounce(0.5).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));

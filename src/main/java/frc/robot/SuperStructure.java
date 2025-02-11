@@ -23,24 +23,21 @@ public class SuperStructure extends SubsystemBase {
     private static final double SHOULDER_BUFFER = Units.inchesToMeters(4.0);
     private static final double WRIST_BUFFER = Units.inchesToMeters(4.0);
 
+    private static final double ELEVATOR_DEFAULT_POSITION = 0;
+    private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
+    private static final double WRIST_DEFAULT_ANGLE = 0;
+
     @NotLogged
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
 
-
     private final Mechanism2d mechanism;
-    @NotLogged
     private final MechanismLigament2d targetElevatorMechanism;
-    @NotLogged
     private final MechanismLigament2d targetShoulderMechanism;
-    @NotLogged
     private final MechanismLigament2d targetWristMechanism;
-    @NotLogged
     private final MechanismLigament2d currentElevatorMechanism;
-    @NotLogged
     private final MechanismLigament2d currentShoulderMechanism;
-    @NotLogged
     private final MechanismLigament2d currentWristMechanism;
 
     public SuperStructure(Elevator elevator, Arm arm) {
@@ -168,7 +165,7 @@ public class SuperStructure extends SubsystemBase {
      * @param robotMode A supplier for the current RobotMode so it knows where to go
      * @return The command to follow the current position based on the Robot Mode
      */
-    public Command goToPositions(Supplier<RobotMode> robotMode) {
+    public Command followPositions(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> {
             if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
@@ -183,5 +180,9 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
+    }
+
+    public Command goToDefaultPositions() {
+        return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
     }
 }

@@ -1,6 +1,7 @@
 package frc.robot;
 
 public enum RobotMode {
+    // TODO: get the actual values of these variables!!
     CORAL_LEVEL_1(0.1, 0.1, 0.1),
     CORAL_LEVEL_2(0.2, 0.2, 0.2),
     CORAL_LEVEL_3(0.3, 0.3, 0.3),
