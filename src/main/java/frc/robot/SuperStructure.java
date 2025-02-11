@@ -109,14 +109,14 @@ public class SuperStructure extends SubsystemBase {
 
     private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double currentShoulderPos, double currentWristPos,
                                                     double targetElevatorPos, double targetShoulderPos, double targetWristPos) {
-        double targetPos = targetShoulderPos;
+        double minimumAllowablePos = arm.getConstants().minimumShoulderAngle();
         if (((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
-            targetPos = Math.max(targetPos, -Math.asin((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
         if (((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
-            targetPos = Math.max(targetPos, -Math.asin((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
-        return targetPos;
+        return minimumAllowablePos;
     }
 
     @Override
