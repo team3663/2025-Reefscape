@@ -107,8 +107,7 @@ public class SuperStructure extends SubsystemBase {
         return arm.getConstants().minimumWristAngle();
     }
 
-    private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double currentShoulderPos, double currentWristPos,
-                                                    double targetElevatorPos, double targetShoulderPos, double targetWristPos) {
+    private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double targetElevatorPos) {
         double minimumAllowablePos = arm.getConstants().minimumShoulderAngle();
         if (((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
             minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
@@ -146,8 +145,7 @@ public class SuperStructure extends SubsystemBase {
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
                 arm.followPositions(
-                        () -> Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), arm.getShoulderPosition(), arm.getWristPosition(),
-                                elevatorPosition.getAsDouble(), shoulderPosition.getAsDouble(), wristPosition.getAsDouble())),
+                        () -> Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition())))
         );
