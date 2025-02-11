@@ -147,14 +147,15 @@ public class SuperStructure extends SubsystemBase {
                 arm.followPositions(
                         () -> Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
-                elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition())))
+                elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()))),
+                run(() -> {
+                })
         );
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return Commands.parallel(
-                followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
-        ).until(() -> elevator.atTargetPosition() && arm.atTargetPositions());
+        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
+                        .until(() -> elevator.atTargetPosition() && arm.atTargetPositions());
     }
 
     /**
