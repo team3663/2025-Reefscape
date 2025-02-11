@@ -41,6 +41,7 @@ public interface DrivetrainIO {
         return new Drivetrain.Constants(
                 5.0,
                 Units.rotationsPerMinuteToRadiansPerSecond(60.0),
+                0.0,
                 new RobotConfig(null,null,null,null, null));
     }
 
