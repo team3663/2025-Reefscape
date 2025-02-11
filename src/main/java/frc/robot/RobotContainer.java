@@ -74,23 +74,31 @@ public class RobotContainer {
     private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
 
 
-    private static final Pose2d BRANCH_A = new Pose2d(3.2095999717712402, 4.149653434753418, Rotation2d.fromDegrees(0));
-    private static final Pose2d BRANCH_B = new Pose2d(3.2095999717712402, 3.861128807067871, Rotation2d.fromDegrees(0));
-    private static final Pose2d BRANCH_C = new Pose2d(3.7248220443725586, 2.9955556392669678, Rotation2d.fromRadians(0));
-    private static final Pose2d BRANCH_D = new Pose2d(4.0133466720581055, 2.8306846618652344, Rotation2d.fromRadians(0));
-    private static final Pose2d BRANCH_E = new Pose2d(5.023182392120361, 2.8306844234466553, Rotation2d.fromRadians(0));
-    private static final Pose2d BRANCH_F = new Pose2d(5.291097640991211, 2.9955556392669678, Rotation2d.fromRadians(0));
-    private static final Pose2d BRANCH_G = new Pose2d(5.7663140296936035, 3.8684024810791016, Rotation2d.fromDegrees(180));
-    private static final Pose2d BRANCH_H = new Pose2d(5.7663140296936035, 4.183597087860107, Rotation2d.fromDegrees(180));
-    private static final Pose2d BRANCH_I = new Pose2d(5.257153511047363, 5.032198429107666, Rotation2d.fromRadians(-2.0607541294074148));
-    private static final Pose2d BRANCH_J = new Pose2d(4.9662041664123535, 5.214041709899902, Rotation2d.fromRadians(-2.0607541294074148));
-    private static final Pose2d BRANCH_K = new Pose2d(4.020619869232178, 5.238287448883057, Rotation2d.fromRadians(-1.0612036211998666));
-    private static final Pose2d BRANCH_L = new Pose2d(3.71754789352417, 5.044321537017822, Rotation2d.fromRadians(-1.0612036211998666));
+    private static final Pose2d BLUE_BRANCH_A = new Pose2d(3.2095999717712402, 4.149653434753418, Rotation2d.fromDegrees(0));
+    private static final Pose2d BLUE_BRANCH_B = new Pose2d(3.2095999717712402, 3.861128807067871, Rotation2d.fromDegrees(0));
+    private static final Pose2d BLUE_BRANCH_C = new Pose2d(3.7248220443725586, 2.9955556392669678, Rotation2d.fromRadians(0));
+    private static final Pose2d BLUE_BRANCH_D = new Pose2d(4.0133466720581055, 2.8306846618652344, Rotation2d.fromRadians(0));
+    private static final Pose2d BLUE_BRANCH_E = new Pose2d(5.023182392120361, 2.8306844234466553, Rotation2d.fromRadians(0));
+    private static final Pose2d BLUE_BRANCH_F = new Pose2d(5.291097640991211, 2.9955556392669678, Rotation2d.fromRadians(0));
+    private static final Pose2d BLUE_BRANCH_G = new Pose2d(5.7663140296936035, 3.8684024810791016, Rotation2d.fromDegrees(180));
+    private static final Pose2d BLUE_BRANCH_H = new Pose2d(5.7663140296936035, 4.183597087860107, Rotation2d.fromDegrees(180));
+    private static final Pose2d BLUE_BRANCH_I = new Pose2d(5.257153511047363, 5.032198429107666, Rotation2d.fromRadians(-2.0607541294074148));
+    private static final Pose2d BLUE_BRANCH_J = new Pose2d(4.9662041664123535, 5.214041709899902, Rotation2d.fromRadians(-2.0607541294074148));
+    private static final Pose2d BLUE_BRANCH_K = new Pose2d(4.020619869232178, 5.238287448883057, Rotation2d.fromRadians(-1.0612036211998666));
+    private static final Pose2d BLUE_BRANCH_L = new Pose2d(3.71754789352417, 5.044321537017822, Rotation2d.fromRadians(-1.0612036211998666));
 
-    private List<Pose2d> branchPoses = List.of(
-            BRANCH_A, BRANCH_B, BRANCH_C, BRANCH_D, BRANCH_E, BRANCH_F, BRANCH_G, BRANCH_H, BRANCH_I,
-            BRANCH_J, BRANCH_K, BRANCH_L
-    );
+    private static final Pose2d RED_BRANCH_A = new Pose2d(14.325063705444336, 3.849005937576294, Rotation2d.fromDegrees(0));
+    private static final Pose2d RED_BRANCH_B = new Pose2d(14.288695335388184, 4.176323413848877, Rotation2d.fromDegrees(0));
+    private static final Pose2d RED_BRANCH_C = new Pose2d(13.791657447814941, 5.037047863006592, Rotation2d.fromRadians(0));
+    private static final Pose2d RED_BRANCH_D = new Pose2d(13.561323165893555, 5.170399188995361, Rotation2d.fromRadians(0));
+    private static final Pose2d RED_BRANCH_E = new Pose2d(12.603615760803223, 5.194644927978516, Rotation2d.fromRadians(0));
+    private static final Pose2d RED_BRANCH_F = new Pose2d(12.349035263061523, 5.000679016113281, Rotation2d.fromRadians(0));
+    private static final Pose2d RED_BRANCH_G = new Pose2d(11.815628051757812, 4.2248148918151855, Rotation2d.fromDegrees(180));
+    private static final Pose2d RED_BRANCH_H = new Pose2d(11.815628051757812, 3.861128568649292, Rotation2d.fromDegrees(180));
+    private static final Pose2d RED_BRANCH_I = new Pose2d(12.312665939331055, 3.048895835876465, Rotation2d.fromRadians(-2.0607541294074148));
+    private static final Pose2d RED_BRANCH_J = new Pose2d(12.57936954498291, 2.8791756629943848, Rotation2d.fromRadians(-2.0607541294074148));
+    private static final Pose2d RED_BRANCH_K = new Pose2d(13.488585472106934, 2.8549299240112305, Rotation2d.fromRadians(-1.0612036211998666));
+    private static final Pose2d RED_BRANCH_L = new Pose2d(13.815902709960938, 3.0246503353118896, Rotation2d.fromRadians(-1.0612036211998666));
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -468,7 +476,9 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(superStructure.followPositions(() -> robotMode));
+        driverController.rightBumper().whileTrue(Commands.sequence(superStructure.followPositions(() -> robotMode),
+                Commands.repeatingSequence(
+                        Commands.deferredProxy(() -> commandFactory.driveToClosestBranch(getBranchPoses(), getClosestBranch(drivetrain.getPose()))))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
@@ -507,7 +517,23 @@ public class RobotContainer {
         return runOnce(() -> this.robotMode = robotMode);
     }
 
-    private int getClosestBranch(Pose2d robotPose) {
+    public List<Pose2d> getBranchPoses() {
+        List<Pose2d> redBranchPoses = List.of(RED_BRANCH_A, RED_BRANCH_B, RED_BRANCH_C, RED_BRANCH_D,
+                RED_BRANCH_E, RED_BRANCH_F, RED_BRANCH_G, RED_BRANCH_H, RED_BRANCH_I, RED_BRANCH_J,
+                RED_BRANCH_K, RED_BRANCH_L);
+        List<Pose2d> blueBranchPoses = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B, BLUE_BRANCH_C, BLUE_BRANCH_D,
+                BLUE_BRANCH_E, BLUE_BRANCH_F, BLUE_BRANCH_G, BLUE_BRANCH_H, BLUE_BRANCH_I, BLUE_BRANCH_J,
+                BLUE_BRANCH_K, BLUE_BRANCH_L);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.get() == DriverStation.Alliance.Red) {
+            return redBranchPoses;
+        } else {
+            return blueBranchPoses;
+        }
+    }
+
+    public int getClosestBranch(Pose2d robotPose) {
+        List<Pose2d> branchPoses = getBranchPoses();
         double distance = Double.MAX_VALUE;
         int closestBranchIndex = 0;
         for (int index = 0; index < branchPoses.size(); index++) {
