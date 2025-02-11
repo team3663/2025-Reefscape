@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -23,7 +25,31 @@ public class Constants {
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
 
-    public static final double MAX_DRIVE_VELOCITY_MPS = 5.0;
+    public static final Pose2d BLUE_BRANCH_A = new Pose2d(3.2095999717712402, 4.149653434753418, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_BRANCH_B = new Pose2d(3.2095999717712402, 3.861128807067871, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_BRANCH_C = new Pose2d(3.7248220443725586, 2.9955556392669678, Rotation2d.fromRadians(0));
+    public static final Pose2d BLUE_BRANCH_D = new Pose2d(4.0133466720581055, 2.8306846618652344, Rotation2d.fromRadians(0));
+    public static final Pose2d BLUE_BRANCH_E = new Pose2d(5.023182392120361, 2.8306844234466553, Rotation2d.fromRadians(0));
+    public static final Pose2d BLUE_BRANCH_F = new Pose2d(5.291097640991211, 2.9955556392669678, Rotation2d.fromRadians(0));
+    public static final Pose2d BLUE_BRANCH_G = new Pose2d(5.7663140296936035, 3.8684024810791016, Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_BRANCH_H = new Pose2d(5.7663140296936035, 4.183597087860107, Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_BRANCH_I = new Pose2d(5.257153511047363, 5.032198429107666, Rotation2d.fromRadians(-2.0607541294074148));
+    public static final Pose2d BLUE_BRANCH_J = new Pose2d(4.9662041664123535, 5.214041709899902, Rotation2d.fromRadians(-2.0607541294074148));
+    public static final Pose2d BLUE_BRANCH_K = new Pose2d(4.020619869232178, 5.238287448883057, Rotation2d.fromRadians(-1.0612036211998666));
+    public static final Pose2d BLUE_BRANCH_L = new Pose2d(3.71754789352417, 5.044321537017822, Rotation2d.fromRadians(-1.0612036211998666));
+
+    public static final Pose2d RED_BRANCH_A = new Pose2d(14.325063705444336, 3.849005937576294, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_BRANCH_B = new Pose2d(14.288695335388184, 4.176323413848877, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_BRANCH_C = new Pose2d(13.791657447814941, 5.037047863006592, Rotation2d.fromRadians(0));
+    public static final Pose2d RED_BRANCH_D = new Pose2d(13.561323165893555, 5.170399188995361, Rotation2d.fromRadians(0));
+    public static final Pose2d RED_BRANCH_E = new Pose2d(12.603615760803223, 5.194644927978516, Rotation2d.fromRadians(0));
+    public static final Pose2d RED_BRANCH_F = new Pose2d(12.349035263061523, 5.000679016113281, Rotation2d.fromRadians(0));
+    public static final Pose2d RED_BRANCH_G = new Pose2d(11.815628051757812, 4.2248148918151855, Rotation2d.fromDegrees(180));
+    public static final Pose2d RED_BRANCH_H = new Pose2d(11.815628051757812, 3.861128568649292, Rotation2d.fromDegrees(180));
+    public static final Pose2d RED_BRANCH_I = new Pose2d(12.312665939331055, 3.048895835876465, Rotation2d.fromRadians(-2.0607541294074148));
+    public static final Pose2d RED_BRANCH_J = new Pose2d(12.57936954498291, 2.8791756629943848, Rotation2d.fromRadians(-2.0607541294074148));
+    public static final Pose2d RED_BRANCH_K = new Pose2d(13.488585472106934, 2.8549299240112305, Rotation2d.fromRadians(-1.0612036211998666));
+    public static final Pose2d RED_BRANCH_L = new Pose2d(13.815902709960938, 3.0246503353118896, Rotation2d.fromRadians(-1.0612036211998666));
 
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!

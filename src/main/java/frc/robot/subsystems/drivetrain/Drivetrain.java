@@ -11,8 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
-import frc.robot.config.C2024RobotFactory;
 
 import java.util.function.DoubleSupplier;
 
@@ -67,12 +65,16 @@ public class Drivetrain extends SubsystemBase {
         return inputs.pose;
     }
 
-    public ChassisSpeeds getRobotSpeeds(){
+    public ChassisSpeeds getRobotSpeeds() {
         return inputs.chassisSpeeds;
     }
 
-    public RobotConfig getRobotConfig(){
+    public RobotConfig getRobotConfig() {
         return constants.robotConfig;
+    }
+
+    public double getMaxDriveVelocityMPS() {
+        return constants.maxDriveVelocityMPS;
     }
 
     public AutoFactory getAutoFactory() {
@@ -121,6 +123,7 @@ public class Drivetrain extends SubsystemBase {
     public record Constants(
             double maxLinearVelocity,
             double maxAngularVelocity,
+            double maxDriveVelocityMPS,
             RobotConfig robotConfig
     ) {
     }

@@ -41,8 +41,9 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @SafeVarargs
     public CTREDrivetrainIO(
-            double ROBOT_WEIGHT_KG,
-            double ROBOT_MOI,
+            double robotWeightKG,
+            double robotMOI,
+            double maxDriveVelocityMPS,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants
     ) {
@@ -50,11 +51,11 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
         );
 
-        moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, Constants.MAX_DRIVE_VELOCITY_MPS,
-                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(4), moduleConstants[0].DriveMotorGearRatio,
+        moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, maxDriveVelocityMPS,
+                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
                 moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 4);
 
-        robotConfig = new RobotConfig(ROBOT_WEIGHT_KG, ROBOT_MOI, moduleConfig, drivetrain.getModuleLocations());
+        robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -73,7 +74,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         }
 
         constants = new Drivetrain.Constants(maxModuleVelocity,
-                maxModuleVelocity / maxDriveBaseRadius, robotConfig);
+                maxModuleVelocity / maxDriveBaseRadius, maxDriveVelocityMPS, robotConfig);
     }
 
     @Override

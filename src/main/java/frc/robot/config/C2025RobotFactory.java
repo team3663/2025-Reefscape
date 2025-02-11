@@ -41,8 +41,10 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
 
-    private static final double CURRENT_LIMIT = 6.0;
+    private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
     private static final double ROBOT_WEIGHT_KG = 61.235;
+    public static final double MAX_DRIVE_VELOCITY_MPS = 5.0;
+
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -146,7 +148,8 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, 6.0,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
+                MAX_DRIVE_VELOCITY_MPS,
                 DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
@@ -161,8 +164,8 @@ public class C2025RobotFactory implements RobotFactory {
     public ClimberIO createClimberIo() {
         return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
     }
-    
-    @Override 
+
+    @Override
     public ElevatorIO createElevatorIo() {
         return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
     }

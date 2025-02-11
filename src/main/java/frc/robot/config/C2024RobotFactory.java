@@ -30,8 +30,10 @@ public class C2024RobotFactory implements RobotFactory {
     private static final double BACK_MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - INTAKE_X_OFFSET - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
 
-    private static final double CURRENT_LIMIT = 60;
+    private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
     private static final double ROBOT_WEIGHT_KG = 61.235;
+    public static final double MAX_DRIVE_VELOCITY_MPS = 5.0;
+
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -138,7 +140,8 @@ public class C2024RobotFactory implements RobotFactory {
                 false, true, false
         );
 
-        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, 6.0,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
+                MAX_DRIVE_VELOCITY_MPS,
                 DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
