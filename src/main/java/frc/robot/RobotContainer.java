@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
@@ -440,7 +441,7 @@ public class RobotContainer {
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
-        grabber.onDetected(led.intakeFlash());
+        new Trigger(grabber::getGamePieceDetected).debounce(0.5).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));

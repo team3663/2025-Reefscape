@@ -32,6 +32,10 @@ public class Grabber extends SubsystemBase {
         return inputs.currentAppliedVoltage;
     }
 
+    public boolean getGamePieceDetected() {
+        return inputs.gamePieceDetected;
+    }
+
     public boolean getGamePieceNotDetected() {
         return !inputs.gamePieceDetected;
     }
@@ -66,12 +70,5 @@ public class Grabber extends SubsystemBase {
                     io.setTargetVoltage(targetVoltage);
                 }, this::stopInternal
         ).until(() -> inputs.gamePieceDetected);
-    }
-
-    public void onDetected(Command command) {
-        new EventLoop().bind(() -> {
-            if (!inputs.gamePieceDetectedPrevious && inputs.gamePieceDetected)
-                command.schedule();
-        });
     }
 }
