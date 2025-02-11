@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
-    private static final double SHOULDER_BUFFER = Units.inchesToMeters(4.0);
-    private static final double WRIST_BUFFER = Units.inchesToMeters(4.0);
+    private static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
+    private static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
 
     private static final double ELEVATOR_DEFAULT_POSITION = 0;
     private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
@@ -95,7 +95,7 @@ public class SuperStructure extends SubsystemBase {
                 elevator.getConstants().minimumPosition(),
                 Math.max(
                         -(arm.getConstants().shoulderLength() + SHOULDER_BUFFER) * Math.sin(shoulderAngle),
-                        arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) - (arm.getConstants().wristLength() + WRIST_BUFFER)
+                        - arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) - (arm.getConstants().wristLength() + WRIST_BUFFER)
                                 * Math.sin(shoulderAngle + wristAngle)));
     }
 
@@ -109,10 +109,10 @@ public class SuperStructure extends SubsystemBase {
 
     private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double targetElevatorPos) {
         double minimumAllowablePos = arm.getConstants().minimumShoulderAngle();
-        if (((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+        if ( Math.abs((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
             minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
-        if (((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+        if (Math.abs((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
             minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
         return minimumAllowablePos;
