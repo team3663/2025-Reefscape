@@ -436,9 +436,10 @@ public class RobotContainer {
 
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
-                Commands.repeatingSequence(
-                        Commands.deferredProxy(() -> commandFactory.driveToClosestBranch(getClosestBranch(drivetrain.getPose()))))));
+        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode)));
+//                ,
+//                Commands.repeatingSequence(
+//                        Commands.deferredProxy(() -> commandFactory.driveToClosestBranch(getClosestBranch(drivetrain.getPose()))))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
