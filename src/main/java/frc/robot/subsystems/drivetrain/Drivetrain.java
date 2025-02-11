@@ -6,10 +6,13 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.vision.VisionMeasurement;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Second;
@@ -67,6 +70,13 @@ public class Drivetrain extends SubsystemBase {
         return autoFactory;
     }
 
+    public void addVisionMeasurements(List<VisionMeasurement> measurements) {
+        Translation2d currentPosition = inputs.pose.getTranslation();
+
+        for (VisionMeasurement measurement : measurements) {
+            io.addVisionMeasurement(measurement.timestamp, measurement.estimatedPose, measurement.stdDevs);
+        }
+    }
 
     @Override
     public void periodic() {
