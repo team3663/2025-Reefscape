@@ -4,12 +4,15 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 
 public class C2025ElevatorIO implements ElevatorIO {
@@ -24,6 +27,7 @@ public class C2025ElevatorIO implements ElevatorIO {
     private final TalonFX motor2;
 
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
+    private final VoltageOut sysIdRequest = new VoltageOut(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
     public C2025ElevatorIO(TalonFX motor, TalonFX motor2) {
@@ -86,5 +90,10 @@ public class C2025ElevatorIO implements ElevatorIO {
     @Override
     public void setTargetPosition(double position) {
         motor.setControl(positionRequest.withPosition(position / PULLEY_CIRCUMFERENCE));
+    }
+
+    @Override
+    public void runSysId(Voltage voltage){
+        motor.setControl(sysIdRequest.withOutput(voltage));
     }
 }

@@ -1,12 +1,16 @@
 package frc.robot.subsystems.climber;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
@@ -21,6 +25,7 @@ public class Climber extends SubsystemBase {
     private final ClimberIO io;
     private final Constants constants;
     private final ClimberInputs inputs = new ClimberInputs();
+    private final SysIdRoutine sysIdRoutine;
 
     private boolean zeroed = false;
     private double targetPosition = 0.0;
@@ -30,6 +35,18 @@ public class Climber extends SubsystemBase {
     public Climber(ClimberIO io) {
         this.io = io;
         this.constants = io.getConstants();
+
+        // Creating a SysId Routine
+        sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.of(0.25).per(Second),
+                        Volts.of(4),
+                        null,
+                        (state) -> SignalLogger.writeString("state", state.toString())),
+                new SysIdRoutine.Mechanism(
+                        io::runSysId,
+                        null,
+                        this));
     }
 
     @Override
@@ -39,6 +56,14 @@ public class Climber extends SubsystemBase {
 
     public boolean atTargetPosition() {
         return Math.abs(inputs.currentPosition - targetPosition) < POSITION_THRESHOLD;
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 
     public Command stop() {

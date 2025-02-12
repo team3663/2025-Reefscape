@@ -1,12 +1,16 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
@@ -16,12 +20,38 @@ public class Arm extends SubsystemBase {
     private final ArmIO io;
     private final ArmInputs inputs = new ArmInputs();
     private final Constants constants;
+    private final SysIdRoutine sysIdRoutineShoulder;
+    private final SysIdRoutine sysIdRoutineWrist;
+
     private double targetShoulderPosition = 0.0;
     private double targetWristPosition = 0.0;
 
     public Arm(ArmIO io) {
         this.io = io;
         constants = io.getConstants();
+
+        // Creating a SysId Routine
+        sysIdRoutineShoulder = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.of(0.25).per(Second),
+                        Volts.of(4),
+                        null,
+                        (state) -> SignalLogger.writeString("state", state.toString())),
+                new SysIdRoutine.Mechanism(
+                        io::sysIdShoulder,
+                        null,
+                        this));
+
+        sysIdRoutineWrist = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.of(0.25).per(Second),
+                        Volts.of(4),
+                        null,
+                        (state) -> SignalLogger.writeString("state", state.toString())),
+                new SysIdRoutine.Mechanism(
+                        io::sysIdWrist,
+                        null,
+                        this));
     }
 
     public Constants getConstants() {
@@ -39,6 +69,22 @@ public class Arm extends SubsystemBase {
 
     public double getTargetWristPosition() {
         return targetWristPosition;
+    }
+
+    public Command sysIdQuasistaticShoulder(SysIdRoutine.Direction direction) {
+        return sysIdRoutineShoulder.quasistatic(direction);
+    }
+
+    public Command sysIdDynamicShoulder(SysIdRoutine.Direction direction) {
+        return sysIdRoutineShoulder.dynamic(direction);
+    }
+
+    public Command sysIdQuasistaticWrist(SysIdRoutine.Direction direction) {
+        return sysIdRoutineWrist.quasistatic(direction);
+    }
+
+    public Command sysIdDynamicWrist(SysIdRoutine.Direction direction) {
+        return sysIdRoutineWrist.dynamic(direction);
     }
 
     public Command stop() {
