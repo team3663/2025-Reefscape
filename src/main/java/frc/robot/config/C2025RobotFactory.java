@@ -31,6 +31,8 @@ import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.subsystems.grabber.GrabberInputs;
 import frc.robot.subsystems.led.LedCandleIo;
 import frc.robot.subsystems.led.LedIo;
+import frc.robot.subsystems.vision.LimelightIO;
+import frc.robot.subsystems.vision.VisionIO;
 
 public class C2025RobotFactory implements RobotFactory {
     private static final CANBus DRIVETRAIN_CAN_BUS = new CANBus("3663");
@@ -177,5 +179,10 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public LedIo createLedIo() {
         return new LedCandleIo(new CANdle(2));
+    }
+
+    @Override
+    public VisionIO createVisionIo() {
+        return new LimelightIO();
     }
 }

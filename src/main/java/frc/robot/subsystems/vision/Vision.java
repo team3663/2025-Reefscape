@@ -30,7 +30,7 @@ public class Vision extends SubsystemBase {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(10.0, 10.0, 10.0));
     }
 
-    private Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
+    public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
        this.ios = ios;
        this.fieldLayout = fieldLayout;
 

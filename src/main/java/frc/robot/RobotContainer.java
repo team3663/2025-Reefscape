@@ -10,6 +10,8 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,6 +33,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
 import java.util.*;
@@ -45,6 +48,7 @@ public class RobotContainer {
     private final Grabber grabber;
     private final Climber climber;
     private final Led led;
+    private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
@@ -65,9 +69,12 @@ public class RobotContainer {
         grabber = new Grabber(robotFactory.createGrabberIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
+        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
         superStructure = new SuperStructure(elevator, arm);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
+
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
 
         configureBindings();
 

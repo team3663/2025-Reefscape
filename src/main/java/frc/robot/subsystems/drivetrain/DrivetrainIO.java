@@ -2,8 +2,11 @@ package frc.robot.subsystems.drivetrain;
 
 import choreo.trajectory.SwerveSample;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 
@@ -47,6 +50,9 @@ public interface DrivetrainIO {
                 5.0,
                 Units.rotationsPerMinuteToRadiansPerSecond(60.0),
                 new RobotConfig(null,null,null,null, null));
+    }
+
+    default void addVisionMeasurement(double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
     }
 
     /**

@@ -9,10 +9,13 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.Matrix;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Voltage;
@@ -122,11 +125,11 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     }
 
     @Override
-    public void driveFieldOriented(double xVelocity, double yVeolcity, double angularVeolcity) {
+    public void driveFieldOriented(double xVelocity, double yVelocity, double angularVelocity) {
         drivetrain.setControl(fieldOrientedRequest
                 .withVelocityX(xVelocity)
-                .withVelocityY(yVeolcity)
-                .withRotationalRate(angularVeolcity));
+                .withVelocityY(yVelocity)
+                .withRotationalRate(angularVelocity));
     }
 
     @Override
@@ -150,6 +153,11 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 .withVelocityY(yVelocity)
                 .withRotationalRate(angularVelocity)
         );
+    }
+
+    @Override
+    public void addVisionMeasurement(double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
+        drivetrain.addVisionMeasurement(pose, timestamp, stdDevs);
     }
 
     @Override

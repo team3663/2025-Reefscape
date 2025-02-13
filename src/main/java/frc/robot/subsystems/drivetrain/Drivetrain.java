@@ -17,10 +17,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.vision.VisionMeasurement;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
@@ -121,6 +124,11 @@ public class Drivetrain extends SubsystemBase {
         return autoFactory;
     }
 
+    public void addVisionMeasurements(List<VisionMeasurement> measurements) {
+        for (VisionMeasurement measurement : measurements) {
+            io.addVisionMeasurement(measurement.timestamp, measurement.estimatedPose, measurement.stdDevs);
+        }
+    }
 
     @Override
     public void periodic() {
