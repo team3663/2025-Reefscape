@@ -8,13 +8,20 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -28,6 +35,8 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
+
+import java.util.*;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
@@ -430,9 +439,10 @@ public class RobotContainer {
         return routine;
     }
 
-
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(superStructure.followPositions(() -> robotMode));
+        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
+                Commands.repeatingSequence(
+                        Commands.deferredProxy(() -> commandFactory.pathToPoseCommand(getClosestBranch(drivetrain.getPose()))))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
@@ -471,6 +481,20 @@ public class RobotContainer {
 
     private Command setRobotMode(RobotMode robotMode) {
         return runOnce(() -> this.robotMode = robotMode);
+    }
+
+    public List<Pose2d> getBranchPoses() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            return Constants.redBranchPoses;
+        } else {
+            return Constants.blueBranchPoses;
+        }
+    }
+
+    public Pose2d getClosestBranch(Pose2d robotPose) {
+        List<Pose2d> branchPoses = getBranchPoses();
+        return robotPose.nearest(branchPoses);
     }
 
     private double getDrivetrainXVelocity() {

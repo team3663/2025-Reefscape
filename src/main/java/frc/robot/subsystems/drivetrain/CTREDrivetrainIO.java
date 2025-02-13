@@ -10,12 +10,17 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.Constants;
 import frc.robot.Robot;
 
 public class CTREDrivetrainIO implements DrivetrainIO {
@@ -23,6 +28,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final Drivetrain.Constants constants;
 
     private final SwerveRequest.FieldCentric fieldOrientedRequest = new SwerveRequest.FieldCentric();
+    private final SwerveRequest.ApplyRobotSpeeds applyRobotSpeedsRequest = new SwerveRequest.ApplyRobotSpeeds();
     private final SwerveRequest.Idle stopRequest = new SwerveRequest.Idle();
     private final SwerveRequest.SysIdSwerveTranslation sysIdTranslationRequest = new SwerveRequest.SysIdSwerveTranslation();
 
@@ -32,15 +38,26 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
 
-
     @SafeVarargs
     public CTREDrivetrainIO(
+            double robotWeightKG,
+            double robotMOI,
             SwerveDrivetrainConstants drivetrainConstants,
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants
     ) {
         this.drivetrain = new SwerveDrivetrain<>(
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
         );
+        RobotConfig robotConfig;
+        ModuleConfig moduleConfig;
+
+        //TODO FIX!!!
+        moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, 5.0,
+                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
+                moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 4);
+
+        robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
+
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.registerTelemetry(state -> lastState = state.clone());
@@ -58,7 +75,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         }
 
         constants = new Drivetrain.Constants(maxModuleVelocity,
-                maxModuleVelocity / maxDriveBaseRadius);
+                maxModuleVelocity / maxDriveBaseRadius, robotConfig);
     }
 
     @Override
@@ -83,6 +100,8 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
+
+        ChassisSpeeds.fromRobotRelativeSpeeds(state.Speeds, state.Pose.getRotation());
     }
 
     @Override
@@ -111,6 +130,12 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVelocity)
                 .withRotationalRate(angularVelocity));
+    }
+
+    @Override
+    public void driveRobotRelative(ChassisSpeeds robotSpeeds){
+        drivetrain.setControl(applyRobotSpeedsRequest
+                .withSpeeds(robotSpeeds));
     }
 
     @Override
