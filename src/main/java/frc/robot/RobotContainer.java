@@ -483,17 +483,8 @@ public class RobotContainer {
         return runOnce(() -> this.robotMode = robotMode);
     }
 
-    public List<Pose2d> getBranchPoses() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return Constants.redBranchPoses;
-        } else {
-            return Constants.blueBranchPoses;
-        }
-    }
-
     public Pose2d getClosestBranch(Pose2d robotPose) {
-        List<Pose2d> branchPoses = getBranchPoses();
+        List<Pose2d> branchPoses = Constants.blueBranchPoses;
         return robotPose.nearest(branchPoses);
     }
 
