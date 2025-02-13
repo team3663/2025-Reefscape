@@ -149,7 +149,6 @@ public class C2025RobotFactory implements RobotFactory {
         );
 
         return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
-                MAX_DRIVE_VELOCITY_MPS,
                 DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);

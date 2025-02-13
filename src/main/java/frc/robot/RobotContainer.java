@@ -8,10 +8,15 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -27,7 +32,9 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.utility.ControllerHelper;
+
 import java.util.*;
+
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -50,15 +57,6 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
-
-    static final List<Pose2d> redBranchPoses = List.of(Constants.RED_BRANCH_A, Constants.RED_BRANCH_B, Constants.RED_BRANCH_C,
-            Constants.RED_BRANCH_D, Constants.RED_BRANCH_E, Constants.RED_BRANCH_F, Constants.RED_BRANCH_G,
-            Constants.RED_BRANCH_H, Constants.RED_BRANCH_I, Constants.RED_BRANCH_J, Constants.RED_BRANCH_K,
-            Constants.RED_BRANCH_L);
-    static final List<Pose2d> blueBranchPoses = List.of(Constants.BLUE_BRANCH_A, Constants.BLUE_BRANCH_B,
-            Constants.BLUE_BRANCH_C, Constants.BLUE_BRANCH_D, Constants.BLUE_BRANCH_E, Constants.BLUE_BRANCH_F,
-            Constants.BLUE_BRANCH_G, Constants.BLUE_BRANCH_H, Constants.BLUE_BRANCH_I, Constants.BLUE_BRANCH_J,
-            Constants.BLUE_BRANCH_K, Constants.BLUE_BRANCH_L);
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -434,12 +432,10 @@ public class RobotContainer {
         return routine;
     }
 
-
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode)));
-//                ,
-//                Commands.repeatingSequence(
-//                        Commands.deferredProxy(() -> commandFactory.driveToClosestBranch(getClosestBranch(drivetrain.getPose()))))));
+        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
+                Commands.repeatingSequence(
+                        Commands.deferredProxy(() -> commandFactory.pathToPoseCommand(getClosestBranch(drivetrain.getPose()))))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
@@ -483,9 +479,9 @@ public class RobotContainer {
     public List<Pose2d> getBranchPoses() {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return redBranchPoses;
+            return Constants.redBranchPoses;
         } else {
-            return blueBranchPoses;
+            return Constants.blueBranchPoses;
         }
     }
 
