@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
@@ -115,6 +116,11 @@ public class C2025ArmIO implements ArmIO {
     }
 
     @Override
+    public void sysIdShoulder(Voltage voltage){
+        shoulderMotor.setControl(voltageRequest.withOutput(voltage));
+    }
+
+    @Override
     public void stopWrist() {
         wristMotor.setControl(stopRequest);
     }
@@ -130,6 +136,11 @@ public class C2025ArmIO implements ArmIO {
     }
     @Override
     public void setWristTargetVoltage(double voltage){
+        wristMotor.setControl(voltageRequest.withOutput(voltage));
+    }
+
+    @Override
+    public void sysIdWrist(Voltage voltage){
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 }
