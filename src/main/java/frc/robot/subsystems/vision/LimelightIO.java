@@ -3,43 +3,52 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
 @Logged
 public class LimelightIO implements VisionIO {
+
     private final String cameraName;
-    private final Transform3d cameraTransform;
-    VisionMeasurement currentMeasurement = new VisionMeasurement(Pose2d.kZero, 0, VecBuilder.fill(0,0,0));
-    public LimelightIO(String cameraName, Transform3d cameraTransform){
-        this.cameraName = cameraName;
-        this.cameraTransform = cameraTransform;
+
+    public LimelightIO(String name, Transform3d transform){
+        this.cameraName = name;
+
+        // Tell the limelight were on the robot it is located.
+        Rotation3d rotation = transform.getRotation();
+        LimelightHelpers.setCameraPose_RobotSpace( name,
+                                                    transform.getX(),
+                                                    transform.getY(),
+                                                    transform.getZ(),
+                                                    rotation.getX(),
+                                                    rotation.getY(),
+                                                    rotation.getZ());
     }
 
-    public void updateInputs(VisionInputs visionInputs) {
+    public void updateInputs(VisionInputs visionInputs, double currentYaw) {
         // Assume pose will not be updated.
         visionInputs.poseUpdated = false;
 
-        //  Need the robot's current yaw as an input to vision calculations
-        //TODO get compass from drivetrain
-        double yawDegrees = 0;
-
-        LimelightHelpers.SetRobotOrientation(cameraName, yawDegrees, 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(currentYaw), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
-        boolean doRejectUpdate = false;
-        if (mt2.tagCount == 0)
-        {
-            doRejectUpdate = true;
-        }
+        // If no tags were seen then return without doing anything.
+        if ( mt2.tagCount == 0)
+            return;
 
-        if(!doRejectUpdate)
-        {
-            currentMeasurement.estimatedPose = mt2.pose;
-            currentMeasurement.timestamp = mt2.timestampSeconds;
-            currentMeasurement.stdDevs = VecBuilder.fill(0,0,0);
-        }
+        visionInputs.estimatedPose = mt2.pose;
+        visionInputs.timestampSeconds = mt2.timestampSeconds;
 
+        // Extract list list of AprilTag Ids see in this pose estimate.
+        int[] targetIds = new int[mt2.rawFiducials.length];
+        int index = 0;
+        for (LimelightHelpers.RawFiducial tag: mt2.rawFiducials ) {
+            targetIds[index++] = tag.id;
+        }
+        visionInputs.targetIds = targetIds;
+        visionInputs.poseUpdated = true;
     }
 }

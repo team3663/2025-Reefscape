@@ -43,8 +43,11 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
+        // TODO Need to get robot's current yaw from IMU
+        double currentYaw = 0;
+
         for (int i = 0; i < ios.length; i++) {
-            ios[i].updateInputs(visionInputs[i]);
+            ios[i].updateInputs(visionInputs[i], currentYaw);
         }
 
         List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();

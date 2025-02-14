@@ -35,9 +35,10 @@ public class Constants {
         public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
     }
 
-    //Vision camera constants
+    // Vision camera constants
+    // Roll, pitch & yaw values are in radians
+    // X, Y & Z translation values are in meters
     public static final String LEFT_CAMERA_NAME = "limelight-l";
-    public static final String RIGHT_CAMERA_NAME = "limelight-r";
     public static final double LEFT_CAMERA_ROLL = 0.0;
     public static final double LEFT_CAMERA_PITCH = 0.0;
     public static final double LEFT_CAMERA_YAW = 0.0;
@@ -45,6 +46,7 @@ public class Constants {
     public static final double LEFT_CAMERA_Y = 0.0;
     public static final double LEFT_CAMERA_Z = 0.0;
 
+    public static final String RIGHT_CAMERA_NAME = "limelight-r";
     public static final double RIGHT_CAMERA_ROLL = 0.0;
     public static final double RIGHT_CAMERA_PITCH = 0.0;
     public static final double RIGHT_CAMERA_YAW = 0.0;

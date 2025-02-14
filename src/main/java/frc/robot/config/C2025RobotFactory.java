@@ -175,9 +175,18 @@ public class C2025RobotFactory implements RobotFactory {
     }
 
     @Override
-    public VisionIO createVisionIo() {
-        Rotation3d rotation = new Rotation3d(Constants.LEFT_CAMERA_ROLL, Constants.LEFT_CAMERA_PITCH, Constants.LEFT_CAMERA_YAW);
-        Transform3d transform = new Transform3d(Constants.LEFT_CAMERA_X, Constants.LEFT_CAMERA_Y, Constants.LEFT_CAMERA_Z, rotation);
-        return new LimelightIO(Constants.LEFT_CAMERA_NAME, transform);
+    public VisionIO[] createVisionIo() {
+
+        Rotation3d leftRotation = new Rotation3d(Constants.LEFT_CAMERA_ROLL, Constants.LEFT_CAMERA_PITCH, Constants.LEFT_CAMERA_YAW);
+        Transform3d leftTransform = new Transform3d(Constants.LEFT_CAMERA_X, Constants.LEFT_CAMERA_Y, Constants.LEFT_CAMERA_Z, leftRotation);
+
+        Rotation3d rightRotation = new Rotation3d(Constants.RIGHT_CAMERA_ROLL, Constants.RIGHT_CAMERA_PITCH, Constants.RIGHT_CAMERA_YAW);
+        Transform3d rightTransform = new Transform3d(Constants.RIGHT_CAMERA_X, Constants.RIGHT_CAMERA_Y, Constants.RIGHT_CAMERA_Z, rightRotation);
+
+        return new VisionIO[]{
+                new LimelightIO(Constants.LEFT_CAMERA_NAME, leftTransform),
+                new LimelightIO(Constants.RIGHT_CAMERA_NAME, rightTransform),
+
+        };
     }
 }
