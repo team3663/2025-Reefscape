@@ -35,6 +35,7 @@ public class LimelightIO implements VisionIO {
 
         // When the robot is disabled then seed the limelight's IMU with data from the Pigeon but once
         // the robot is enabled then switch to the Limelight's internal IMU.
+        // TODO Would be better to find a way to do this only when the RobotState changes.
         if (RobotState.isDisabled()) {
             // Seed the limelights IMU with yaw values from external IMU (Pigeon)
             LimelightHelpers.SetIMUMode(cameraName, 1);
@@ -43,10 +44,10 @@ public class LimelightIO implements VisionIO {
             LimelightHelpers.SetIMUMode(cameraName, 2);
         }
 
-        // Give the Limelight our current robot yaw as provided by the IMU.
+        // Give the Limelight our current robot yaw as provided by the Pigeon.
         LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(currentYaw), 0, 0, 0, 0, 0);
 
-        // Get a new post estimate
+        // Get a new pose estimate
         LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
         // If no tags were seen then return without doing anything.
@@ -56,7 +57,7 @@ public class LimelightIO implements VisionIO {
         visionInputs.estimatedPose = estimate.pose;
         visionInputs.timestampSeconds = estimate.timestampSeconds;
 
-        // Extract list list of AprilTag Ids see in this pose estimate.
+        // Extract list of AprilTag Ids see in this pose estimate.
         int[] targetIds = new int[estimate.rawFiducials.length];
         int index = 0;
         for (LimelightHelpers.RawFiducial tag: estimate.rawFiducials ) {

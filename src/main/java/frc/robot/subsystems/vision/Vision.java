@@ -46,6 +46,11 @@ public class Vision extends SubsystemBase {
         // TODO Need to get robot's current yaw from IMU
         double currentYaw = 0;
 
+        // TODO I could be useful to get some additional info from the vision cameras and log it, some possibilities are...
+        //  - Vision pipeline frame rate.
+        //  - Coprocessor temperature
+        //  - Current yaw value from internal IMU
+
         for (int i = 0; i < ios.length; i++) {
             ios[i].updateInputs(visionInputs[i], currentYaw);
         }
