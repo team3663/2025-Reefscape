@@ -9,7 +9,9 @@ public enum RobotMode {
     ALGAE_PROCESSOR(0.5, 0.5, 0.5),
     ALGAE_NET(0.6, 0.6, 0.6),
     ALGAE_REMOVE_LOWER(0.7, 0.7, 0.7),
-    ALGAE_REMOVE_UPPER(0.8, 0.8, 0.8);
+    ALGAE_REMOVE_UPPER(0.8, 0.8, 0.8),
+    CORAL_STATION(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE, Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE);
+
 
     private final double elevatorHeight;
     private final double shoulderAngle;
