@@ -38,6 +38,7 @@ public class Constants {
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
     // X, Y & Z translation values are in meters
+    // TODO Get real values from CAD/Mech.
     public static final String LEFT_CAMERA_NAME = "limelight-l";
     public static final double LEFT_CAMERA_ROLL = 0.0;
     public static final double LEFT_CAMERA_PITCH = 0.0;
