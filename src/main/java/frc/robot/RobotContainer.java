@@ -29,6 +29,8 @@ import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
+import javax.sound.midi.Sequence;
+
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -39,7 +41,7 @@ public class RobotContainer {
     private final Grabber grabber;
     private final Climber climber;
     private final Led led;
-    private final Vision vision;
+//    private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
@@ -60,12 +62,12 @@ public class RobotContainer {
         grabber = new Grabber(robotFactory.createGrabberIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
-        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
+//        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
         superStructure = new SuperStructure(elevator, arm);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
+//        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
 
         configureBindings();
 
@@ -93,6 +95,7 @@ public class RobotContainer {
         autoChooser.addRoutine("TwoCoralIJ", this::twoCoralIJ);
         autoChooser.addRoutine("TwoCoralKL", this::twoCoralKL);
         autoChooser.addRoutine("ThreeCoralJKL", this::threeCoralJKL);
+        autoChooser.addRoutine("ThreeCoralGFE", this::threeCoralGFE);
 
         // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
@@ -177,6 +180,31 @@ public class RobotContainer {
         return routine;
     }
 
+    private AutoRoutine threeCoralGFE() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoralGFE");
+
+        AutoTrajectory Start = routine.trajectory("FacePlantG");
+        AutoTrajectory GWCS = routine.trajectory("G-WCS");
+        AutoTrajectory WCSF = routine.trajectory("WCS-F");
+        AutoTrajectory FWCS = routine.trajectory("F-WCS");
+        AutoTrajectory WCSE = routine.trajectory("WCS-E");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(GWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        GWCS.done().onTrue(Commands.parallel(WCSF.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSF.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        FWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
     private AutoRoutine threeCoralJKL() {
         AutoRoutine routine = autoFactory.newRoutine("threeCoralEDC");
 
@@ -236,12 +264,13 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(KLWCS.cmd());
-        KLWCS.done().onTrue(LWCSL.cmd());
+        Start.done().onTrue(Commands.parallel(KLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        KLWCS.done().onTrue(Commands.parallel(LWCSL.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -256,12 +285,13 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(ILWCS.cmd());
-        ILWCS.done().onTrue(LWCSJ.cmd());
+        Start.done().onTrue(Commands.parallel(ILWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        ILWCS.done().onTrue(Commands.parallel(LWCSJ.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -276,12 +306,13 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(DWCS.cmd());
-        DWCS.done().onTrue(WCSC.cmd());
+        Start.done().onTrue(Commands.parallel(DWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        DWCS.done().onTrue(Commands.parallel(WCSC.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -296,12 +327,13 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(BLDCS.cmd());
-        BLDCS.done().onTrue(LDCSA.cmd());
+        Start.done().onTrue(Commands.parallel(BLDCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        BLDCS.done().onTrue(Commands.parallel(LDCSA.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -314,11 +346,12 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         facePlantHTraj.resetOdometry(),
-                        Commands.waitSeconds(2).andThen(
-                                facePlantHTraj.cmd()
+                        Commands.waitSeconds(2).andThen(Commands.parallel(
+                                facePlantHTraj.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                         )
                 )
         );
+
         return routine;
     }
 
@@ -336,15 +369,17 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
-        Start.done().onTrue(FWCS.cmd());
-        FWCS.done().onTrue(WCSC.cmd());
-        WCSC.done().onTrue(CWCS.cmd());
-        CWCS.done().onTrue(WCSD.cmd());
-        WCSD.done().onTrue(DWCS.cmd());
-        DWCS.done().onTrue(WCSE.cmd());
+
+        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        FWCS.done().onTrue(Commands.parallel(WCSC.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSC.done().onTrue(Commands.parallel(CWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        CWCS.done().onTrue(Commands.parallel(WCSD.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSD.done().onTrue(Commands.parallel(DWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        DWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -363,16 +398,17 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(ILWCS.cmd());
-        ILWCS.done().onTrue(LWCSL.cmd());
-        LWCSL.done().onTrue(LLWCS.cmd());
-        LLWCS.done().onTrue(LWCSK.cmd());
-        LWCSK.done().onTrue(KLWCS.cmd());
-        KLWCS.done().onTrue(LWCSJ.cmd());
+        Start.done().onTrue(Commands.parallel(ILWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        ILWCS.done().onTrue(Commands.parallel(LWCSL.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        LWCSL.done().onTrue(Commands.parallel(LLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        LLWCS.done().onTrue(Commands.parallel(LWCSK.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        LWCSK.done().onTrue(Commands.parallel(KLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        KLWCS.done().onTrue(Commands.parallel(LWCSJ.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -393,17 +429,19 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
-        Start.done().onTrue(FWCS.cmd());
-        FWCS.done().onTrue(WCSB.cmd());
-        WCSB.done().onTrue(BWCS.cmd());
-        BWCS.done().onTrue(WCSC.cmd());
-        WCSC.done().onTrue(CWCS.cmd());
-        CWCS.done().onTrue(WCSD.cmd());
-        WCSD.done().onTrue(DWCS.cmd());
-        DWCS.done().onTrue(WCSE.cmd());
+
+        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        FWCS.done().onTrue(Commands.parallel(WCSB.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSB.done().onTrue(Commands.parallel(BWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        BWCS.done().onTrue(Commands.parallel(WCSC.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSC.done().onTrue(Commands.parallel(CWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        CWCS.done().onTrue(Commands.parallel(WCSD.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        WCSD.done().onTrue(Commands.parallel(DWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        DWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -426,19 +464,19 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> robotMode),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
                         Start.cmd()
                 )
         );
 
-        Start.done().onTrue(ILWCS.cmd());
-        ILWCS.done().onTrue(LWCSA.cmd());
-        LWCSA.done().onTrue(ALWCS.cmd());
-        ALWCS.done().onTrue(LWCSL.cmd());
-        LWCSL.done().onTrue(LLWCS.cmd());
-        LLWCS.done().onTrue(LWCSK.cmd());
-        LWCSK.done().onTrue(KLWCS.cmd());
-        KLWCS.done().onTrue(LWCSJ.cmd());
+        Start.done().onTrue(Commands.parallel(ILWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        ILWCS.done().onTrue(Commands.parallel(LWCSA.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        LWCSA.done().onTrue(Commands.parallel(ALWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        ALWCS.done().onTrue(Commands.parallel(LWCSL.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        LWCSL.done().onTrue(Commands.parallel(LLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        LLWCS.done().onTrue(Commands.parallel(LWCSK.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        LWCSK.done().onTrue(Commands.parallel(KLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        KLWCS.done().onTrue(Commands.parallel(LWCSJ.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
