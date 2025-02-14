@@ -48,7 +48,7 @@ public class RobotContainer {
     private final Grabber grabber;
     private final Climber climber;
     private final Led led;
-    private final Vision vision;
+    //private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
@@ -69,12 +69,12 @@ public class RobotContainer {
         grabber = new Grabber(robotFactory.createGrabberIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
-        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
+        //vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
         superStructure = new SuperStructure(elevator, arm);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
+        //vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
 
         configureBindings();
 
@@ -447,7 +447,12 @@ public class RobotContainer {
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
+        driverController.leftBumper().whileTrue(Commands.parallel(commandFactory.goToCoralStationAndIntake(),
+                Commands.repeatingSequence(
+                        Commands.deferredProxy(() -> commandFactory.pathToPoseCommand(getClosestCoralStationPosition(
+                                drivetrain.getPose()
+                        ))))
+        ));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
 
@@ -486,6 +491,11 @@ public class RobotContainer {
     public Pose2d getClosestBranch(Pose2d robotPose) {
         List<Pose2d> branchPoses = Constants.blueBranchPoses;
         return robotPose.nearest(branchPoses);
+    }
+
+    public Pose2d getClosestCoralStationPosition(Pose2d robotPose) {
+        List<Pose2d> coralStationPoses = Constants.coralStationPoses;
+        return robotPose.nearest(coralStationPoses);
     }
 
     private double getDrivetrainXVelocity() {

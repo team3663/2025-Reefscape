@@ -68,20 +68,21 @@ public class CommandFactory {
     }
 
     /**
-     * Takes in the closest branch to the robot and creates a PathPlanner path to that pose
+     * Makes a Pathplanner path to a given pose from the robot's current position
      *
-     * @param branchPose requires a Pose2d of the branch closest to the robot's current position
+     * @param targetPose requires a Pose2d of where you want the robot to go
      */
-    public static Command pathToPoseCommand(Pose2d branchPose) {
+    public static Command pathToPoseCommand(Pose2d targetPose) {
         PathConstraints constraints = new PathConstraints(5.0,
                 5.0, 2 * Math.PI,
                 4 * Math.PI);
 
         Command alignToBranch = AutoBuilder.pathfindToPose(
-                branchPose,
+                targetPose,
                 constraints,
                 0.0);
 
         return alignToBranch;
     }
+
 }

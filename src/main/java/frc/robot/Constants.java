@@ -40,10 +40,18 @@ public class Constants {
     public static final Pose2d BLUE_BRANCH_K = new Pose2d(4.020619869232178, 5.238287448883057, Rotation2d.fromRadians(2.1785979220562233));
     public static final Pose2d BLUE_BRANCH_L = new Pose2d(3.71754789352417, 5.044321537017822, Rotation2d.fromRadians((2.1785979220562233)));
 
-    static final List<Pose2d> blueBranchPoses = List.of(Constants.BLUE_BRANCH_A, Constants.BLUE_BRANCH_B,
-            Constants.BLUE_BRANCH_C, Constants.BLUE_BRANCH_D, Constants.BLUE_BRANCH_E, Constants.BLUE_BRANCH_F,
-            Constants.BLUE_BRANCH_G, Constants.BLUE_BRANCH_H, Constants.BLUE_BRANCH_I, Constants.BLUE_BRANCH_J,
-            Constants.BLUE_BRANCH_K, Constants.BLUE_BRANCH_L);
+    public static final Pose2d WALL_SIDE_CORAL_STATION = new Pose2d(1.6524484157562256, 7.5020751953125, Rotation2d.fromRadians(2.2011979827768244));
+    public static final Pose2d DRIVER_SIDE_CORAL_STATION = new Pose2d(0.5996723175048828, 6.717278480529785, Rotation2d.fromRadians(2.2011979827768244));
+    public static final Pose2d PROCESSOR_SIDE_WALL_SIDE_CORAL_STATION = new Pose2d(1.6639333963394165, 0.5604525804519653, Rotation2d.fromRadians(-2.2404352392387104));
+    public static final Pose2d PROCESSOR_SIDE_DRIVER_SIDE_CORAL_STATION = new Pose2d(0.6226420998573303, 1.276340365409851, Rotation2d.fromRadians(-2.2404352392387104));
+
+    static final List<Pose2d> blueBranchPoses = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B,
+            BLUE_BRANCH_C, BLUE_BRANCH_D, BLUE_BRANCH_E, BLUE_BRANCH_F,
+            BLUE_BRANCH_G, BLUE_BRANCH_H, BLUE_BRANCH_I, BLUE_BRANCH_J,
+            BLUE_BRANCH_K, BLUE_BRANCH_L);
+
+    static final List<Pose2d> coralStationPoses = List.of(WALL_SIDE_CORAL_STATION, DRIVER_SIDE_CORAL_STATION,
+            PROCESSOR_SIDE_DRIVER_SIDE_CORAL_STATION, PROCESSOR_SIDE_WALL_SIDE_CORAL_STATION);
 
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
