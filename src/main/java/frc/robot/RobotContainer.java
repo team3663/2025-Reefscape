@@ -83,19 +83,24 @@ public class RobotContainer {
         // Add options to the shooter
         autoChooser.addRoutine("FacePlantG", this::facePlantG);
         autoChooser.addRoutine("FacePlantH", this::facePlantH);
-        autoChooser.addRoutine("FourCoral", this::fourCoral);
-        autoChooser.addRoutine("BehindTheBack", this::behindTheBack);
-        autoChooser.addRoutine("FlippedBehindTheBack", this::flippedBehindTheBack);
-        autoChooser.addRoutine("Flipped4Coral", this::flipped4Coral);
-        autoChooser.addRoutine("FiveCoral", this::fiveCoral);
-        autoChooser.addRoutine("FlippedFiveCoral", this::flippedFiveCoral);
-        autoChooser.addRoutine("TwoCoralFE", this::twoCoralFE);
+
         autoChooser.addRoutine("TwoCoralDC", this::twoCoralDC);
-        autoChooser.addRoutine("ThreeCoralEDC", this::threeCoralEDC);
+        autoChooser.addRoutine("TwoCoralFE", this::twoCoralFE);
         autoChooser.addRoutine("TwoCoralIJ", this::twoCoralIJ);
         autoChooser.addRoutine("TwoCoralKL", this::twoCoralKL);
-        autoChooser.addRoutine("ThreeCoralJKL", this::threeCoralJKL);
+
+        autoChooser.addRoutine("BehindTheBackAB", this::behindTheBackAB);
+        autoChooser.addRoutine("BehindTheBackFlippedBA", this::behindTheBackFlippedBA);
+
+        autoChooser.addRoutine("ThreeCoralEDC", this::threeCoralEDC);
         autoChooser.addRoutine("ThreeCoralGFE", this::threeCoralGFE);
+        autoChooser.addRoutine("ThreeCoralJKL", this::threeCoralJKL);
+
+        autoChooser.addRoutine("FourCoralFCDE", this::fourCoralFCDE);
+        autoChooser.addRoutine("FourCoralFlippedILKJ", this::fourCoralFlippedILKJ);
+
+        autoChooser.addRoutine("FiveCoralFBCDE", this::fiveCoralFBCDE);
+        autoChooser.addRoutine("FiveCoralFlippedIALKJ", this::fiveCoralFlippedIALKJ);
 
         // Getting the auto factory
         autoFactory = drivetrain.getAutoFactory();
@@ -132,8 +137,110 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine behindTheBack() {
-        AutoRoutine routine = autoFactory.newRoutine("BehindTheBack");
+    private AutoRoutine facePlantH() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlantH");
+
+        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        facePlantHTraj.resetOdometry(),
+                        Commands.waitSeconds(2).andThen(Commands.parallel(
+                                facePlantHTraj.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
+                        )
+                )
+        );
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralDC() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoralDC");
+
+        AutoTrajectory Start = routine.trajectory("PStart-D");
+        AutoTrajectory DWCS = routine.trajectory("D-WCS");
+        AutoTrajectory WCSC = routine.trajectory("WCS-C");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(DWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        DWCS.done().onTrue(Commands.parallel(WCSC.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralFE() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoralFE");
+
+        AutoTrajectory Start = routine.trajectory("PStart-F");
+        AutoTrajectory FWCS = routine.trajectory("F-WCS");
+        AutoTrajectory WCSE = routine.trajectory("WCS-E");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_STATION)));
+        FWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralIJ() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoralIJ");
+
+        AutoTrajectory Start = routine.trajectory("LStart-I");
+        AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
+        AutoTrajectory LWCSJ = routine.trajectory("LWCS-J");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(ILWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        ILWCS.done().onTrue(Commands.parallel(LWCSJ.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
+    private AutoRoutine twoCoralKL() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoralKL");
+
+        AutoTrajectory Start = routine.trajectory("LStart-K");
+        AutoTrajectory KLWCS = routine.trajectory("K-LWCS");
+        AutoTrajectory LWCSL = routine.trajectory("LWCS-L");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(KLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        KLWCS.done().onTrue(Commands.parallel(LWCSL.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
+    private AutoRoutine behindTheBackAB() {
+        AutoRoutine routine = autoFactory.newRoutine("BehindTheBackAB");
 
         AutoTrajectory Start = routine.trajectory("PStart-A");
         AutoTrajectory ADCS = routine.trajectory("A-DCS");
@@ -154,8 +261,29 @@ public class RobotContainer {
         return routine;
     }
 
+    private AutoRoutine behindTheBackFlippedBA() {
+        AutoRoutine routine = autoFactory.newRoutine("BehindTheBackFlippedBA");
+
+        AutoTrajectory Start = routine.trajectory("LStart-B");
+        AutoTrajectory BLDCS = routine.trajectory("B-LDCS");
+        AutoTrajectory LDCSA = routine.trajectory("LDCS-A");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Start.resetOdometry(),
+                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
+                        Start.cmd()
+                )
+        );
+
+        Start.done().onTrue(Commands.parallel(BLDCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        BLDCS.done().onTrue(Commands.parallel(LDCSA.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+
+        return routine;
+    }
+
     private AutoRoutine threeCoralEDC() {
-        AutoRoutine routine = autoFactory.newRoutine("threeCoralEDC");
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoralEDC");
 
         AutoTrajectory Start = routine.trajectory("PStart-E");
         AutoTrajectory EWCS = routine.trajectory("E-WCS");
@@ -206,7 +334,7 @@ public class RobotContainer {
     }
 
     private AutoRoutine threeCoralJKL() {
-        AutoRoutine routine = autoFactory.newRoutine("threeCoralEDC");
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoralJKL");
 
         AutoTrajectory Start = routine.trajectory("LStart-J");
         AutoTrajectory JLWCS = routine.trajectory("J-LWCS");
@@ -231,131 +359,8 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine twoCoralFE() {
-        AutoRoutine routine = autoFactory.newRoutine("twoCoralFE");
-
-        AutoTrajectory Start = routine.trajectory("PStart-F");
-        AutoTrajectory FWCS = routine.trajectory("F-WCS");
-        AutoTrajectory WCSE = routine.trajectory("WCS-E");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Start.resetOdometry(),
-                        Commands.parallel(
-                                Start.cmd(),
-                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
-                )
-        );
-
-        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_STATION)));
-        FWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_LEVEL_4)));
-
-        return routine;
-    }
-
-    private AutoRoutine twoCoralKL() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoralKL");
-
-        AutoTrajectory Start = routine.trajectory("LStart-K");
-        AutoTrajectory KLWCS = routine.trajectory("K-LWCS");
-        AutoTrajectory LWCSL = routine.trajectory("LWCS-L");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
-                )
-        );
-
-        Start.done().onTrue(Commands.parallel(KLWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        KLWCS.done().onTrue(Commands.parallel(LWCSL.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-
-        return routine;
-    }
-
-    private AutoRoutine twoCoralIJ() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoralIJ");
-
-        AutoTrajectory Start = routine.trajectory("LStart-I");
-        AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
-        AutoTrajectory LWCSJ = routine.trajectory("LWCS-J");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
-                )
-        );
-
-        Start.done().onTrue(Commands.parallel(ILWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        ILWCS.done().onTrue(Commands.parallel(LWCSJ.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-
-        return routine;
-    }
-
-    private AutoRoutine twoCoralDC() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoralDC");
-
-        AutoTrajectory Start = routine.trajectory("PStart-D");
-        AutoTrajectory DWCS = routine.trajectory("D-WCS");
-        AutoTrajectory WCSC = routine.trajectory("WCS-C");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
-                )
-        );
-
-        Start.done().onTrue(Commands.parallel(DWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        DWCS.done().onTrue(Commands.parallel(WCSC.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-
-        return routine;
-    }
-
-    private AutoRoutine flippedBehindTheBack() {
-        AutoRoutine routine = autoFactory.newRoutine("FlippedBehindTheBack");
-
-        AutoTrajectory Start = routine.trajectory("LStart-B");
-        AutoTrajectory BLDCS = routine.trajectory("B-LDCS");
-        AutoTrajectory LDCSA = routine.trajectory("LDCS-A");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
-                )
-        );
-
-        Start.done().onTrue(Commands.parallel(BLDCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        BLDCS.done().onTrue(Commands.parallel(LDCSA.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-
-        return routine;
-    }
-
-    private AutoRoutine facePlantH() {
-        AutoRoutine routine = autoFactory.newRoutine("FacePlantH");
-
-        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        facePlantHTraj.resetOdometry(),
-                        Commands.waitSeconds(2).andThen(Commands.parallel(
-                                facePlantHTraj.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
-                        )
-                )
-        );
-
-        return routine;
-    }
-
-    private AutoRoutine fourCoral() {
-        AutoRoutine routine = autoFactory.newRoutine("ActualAuto");
+    private AutoRoutine fourCoralFCDE() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoralFCDE");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
@@ -383,8 +388,8 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine flipped4Coral() {
-        AutoRoutine routine = autoFactory.newRoutine("Flipped4Coral");
+    private AutoRoutine fourCoralFlippedILKJ() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoralFlippedILKJ");
 
         AutoTrajectory Start = routine.trajectory("LStart-I");
         AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
@@ -412,8 +417,8 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine fiveCoral() {
-        AutoRoutine routine = autoFactory.newRoutine("FiveCoral");
+    private AutoRoutine fiveCoralFBCDE() {
+        AutoRoutine routine = autoFactory.newRoutine("FiveCoralFBCDE");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
@@ -445,8 +450,8 @@ public class RobotContainer {
         return routine;
     }
 
-    private AutoRoutine flippedFiveCoral() {
-        AutoRoutine routine = autoFactory.newRoutine("FlippedFiveCoral");
+    private AutoRoutine fiveCoralFlippedIALKJ() {
+        AutoRoutine routine = autoFactory.newRoutine("FiveCoralFlippedIALKJ");
 
         AutoTrajectory Start = routine.trajectory("LStart-I");
         AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
@@ -479,7 +484,6 @@ public class RobotContainer {
 
         return routine;
     }
-
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(superStructure.followPositions(() -> robotMode));
