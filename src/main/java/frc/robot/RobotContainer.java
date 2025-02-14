@@ -231,9 +231,8 @@ public class RobotContainer {
         return routine;
     }
 
-
     private AutoRoutine twoCoralFE() {
-        AutoRoutine routine = autoFactory.newRoutine("twoCoralEF");
+        AutoRoutine routine = autoFactory.newRoutine("twoCoralFE");
 
         AutoTrajectory Start = routine.trajectory("PStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
