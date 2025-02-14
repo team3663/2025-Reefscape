@@ -29,8 +29,6 @@ import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
-import javax.sound.midi.Sequence;
-
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -41,7 +39,7 @@ public class RobotContainer {
     private final Grabber grabber;
     private final Climber climber;
     private final Led led;
-//    private final Vision vision;
+    //private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
@@ -62,12 +60,12 @@ public class RobotContainer {
         grabber = new Grabber(robotFactory.createGrabberIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
-//        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
+        //vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
         superStructure = new SuperStructure(elevator, arm);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 
-//        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
+        //vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements).ignoringDisable(true));
 
         configureBindings();
 
@@ -362,7 +360,7 @@ public class RobotContainer {
     private AutoRoutine fourCoralFCDE() {
         AutoRoutine routine = autoFactory.newRoutine("FourCoralFCDE");
 
-        AutoTrajectory Start = routine.trajectory("PStart-F");
+        AutoTrajectory Start = routine.trajectory("POStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
         AutoTrajectory WCSC = routine.trajectory("WCS-C");
         AutoTrajectory CWCS = routine.trajectory("C-WCS");
@@ -391,7 +389,7 @@ public class RobotContainer {
     private AutoRoutine fourCoralFlippedILKJ() {
         AutoRoutine routine = autoFactory.newRoutine("FourCoralFlippedILKJ");
 
-        AutoTrajectory Start = routine.trajectory("LStart-I");
+        AutoTrajectory Start = routine.trajectory("LOStart-I");
         AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
         AutoTrajectory LWCSL = routine.trajectory("LWCS-L");
         AutoTrajectory LLWCS = routine.trajectory("L-LWCS");
@@ -420,7 +418,7 @@ public class RobotContainer {
     private AutoRoutine fiveCoralFBCDE() {
         AutoRoutine routine = autoFactory.newRoutine("FiveCoralFBCDE");
 
-        AutoTrajectory Start = routine.trajectory("PStart-F");
+        AutoTrajectory Start = routine.trajectory("POStart-F");
         AutoTrajectory FWCS = routine.trajectory("F-WCS");
         AutoTrajectory WCSB = routine.trajectory("WCS-B");
         AutoTrajectory BWCS = routine.trajectory("B-WCS");
@@ -453,7 +451,7 @@ public class RobotContainer {
     private AutoRoutine fiveCoralFlippedIALKJ() {
         AutoRoutine routine = autoFactory.newRoutine("FiveCoralFlippedIALKJ");
 
-        AutoTrajectory Start = routine.trajectory("LStart-I");
+        AutoTrajectory Start = routine.trajectory("LOStart-I");
         AutoTrajectory ILWCS = routine.trajectory("I-LWCS");
         AutoTrajectory LWCSA = routine.trajectory("LWCS-A");
         AutoTrajectory ALWCS = routine.trajectory("A-LWCS");
