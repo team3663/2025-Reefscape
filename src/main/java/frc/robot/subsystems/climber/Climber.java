@@ -113,7 +113,7 @@ public class Climber extends SubsystemBase {
         // Run the Elevator backwards until stopped and then stop
         return runEnd(() -> {
             io.setTargetVoltage(-1.0);
-            targetPosition = 0.0;
+            targetPosition = constants.minimumPosition;
         }, io::stop)
                 // While doing that wait until the elevator stops (Hit the hard stop)
                 // Also stop the previous command when this one stops (It hit the hard stop and reset position)
