@@ -6,13 +6,20 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.RobotMode;
+import frc.robot.subsystems.drivetrain.Drivetrain;
+import frc.robot.subsystems.drivetrain.DrivetrainInputs;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 @Logged
 public class Vision extends SubsystemBase {
@@ -23,6 +30,8 @@ public class Vision extends SubsystemBase {
     private final AprilTagFieldLayout fieldLayout;
     private final VisionInputs[] visionInputs;
 
+    // current yaw of robot as provided by the pigeon
+    private Rotation2d currentYaw;
     private List<VisionMeasurement> acceptedMeasurements = Collections.emptyList();
 
     static {
@@ -43,16 +52,8 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // TODO Need to get robot's current yaw from IMU
-        double currentYaw = 0;
-
-        // TODO I could be useful to get some additional info from the vision cameras and log it, some possibilities are...
-        //  - Vision pipeline frame rate.
-        //  - Coprocessor temperature
-        //  - Current yaw value from internal IMU
-
         for (int i = 0; i < ios.length; i++) {
-            ios[i].updateInputs(visionInputs[i], currentYaw);
+            ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
         }
 
         List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
@@ -93,8 +94,10 @@ public class Vision extends SubsystemBase {
     /**
      * @return Command that consumes vision measurements
      */
-    public Command consumeVisionMeasurements(Consumer<List<VisionMeasurement>> visionMeasurementConsumer) {
-        return run(() -> visionMeasurementConsumer.accept(acceptedMeasurements));
+    public Command consumeVisionMeasurements(Consumer<List<VisionMeasurement>> visionMeasurementConsumer,
+                                             Supplier<Rotation2d> yawSupplier){
+        return run(() -> { visionMeasurementConsumer.accept(acceptedMeasurements);
+                        currentYaw = yawSupplier.get(); } );
     }
 }
 

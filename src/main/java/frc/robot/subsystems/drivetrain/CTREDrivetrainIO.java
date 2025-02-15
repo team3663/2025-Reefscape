@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Voltage;
@@ -80,6 +81,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.odometryPeriod = state.OdometryPeriod;
 
         inputs.pose = state.Pose;
+        inputs.yaw = new Rotation2d(drivetrain.getPigeon2().getYaw().getValue());
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
