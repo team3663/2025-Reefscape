@@ -8,8 +8,6 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -26,7 +24,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
@@ -162,8 +159,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -189,8 +187,8 @@ public class RobotContainer {
                 )
         );
 
-        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_STATION)));
-        FWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(()-> RobotMode.CORAL_LEVEL_4)));
+        Start.done().onTrue(Commands.parallel(FWCS.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
+        FWCS.done().onTrue(Commands.parallel(WCSE.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
 
         return routine;
     }
@@ -205,8 +203,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -226,8 +225,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -269,8 +269,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -318,8 +319,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -371,8 +373,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -400,8 +403,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -431,8 +435,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 
@@ -466,8 +471,9 @@ public class RobotContainer {
         routine.active().onTrue(
                 Commands.sequence(
                         Start.resetOdometry(),
-                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4),
-                        Start.cmd()
+                        Commands.parallel(
+                                Start.cmd(),
+                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                 )
         );
 

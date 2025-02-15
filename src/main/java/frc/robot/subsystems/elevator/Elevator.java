@@ -25,7 +25,6 @@ public class Elevator extends SubsystemBase {
     private final Constants constants;
     private final SysIdRoutine sysIdRoutine;
 
-
     private boolean zeroed = false;
     private double targetPosition = 0.0;
 
@@ -96,16 +95,24 @@ public class Elevator extends SubsystemBase {
 
     public Command goToPosition(double position) {
         return run(() -> {
-            io.setTargetPosition(position);
-            targetPosition = position;
+            if (zeroed) {
+                targetPosition = getValidPosition(position);
+                io.setTargetPosition(targetPosition);
+            }
         }).until(this::atTargetPosition);
     }
 
     public Command followPosition(DoubleSupplier position) {
         return runEnd(() -> {
-            targetPosition = position.getAsDouble();
-            io.setTargetPosition(targetPosition);
+            if (zeroed) {
+                targetPosition = getValidPosition(position.getAsDouble());
+                io.setTargetPosition(targetPosition);
+            }
         }, io::stop);
+    }
+
+    private double getValidPosition(double position) {
+        return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
     }
 
     public Command zero() {
