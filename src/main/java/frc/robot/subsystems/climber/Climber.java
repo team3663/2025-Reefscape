@@ -27,7 +27,7 @@ public class Climber extends SubsystemBase {
     private final ClimberInputs inputs = new ClimberInputs();
     private final SysIdRoutine sysIdRoutine;
 
-    private boolean zeroed = false;
+    private boolean wristZeroed = false;
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
 
@@ -85,8 +85,10 @@ public class Climber extends SubsystemBase {
     public Command goToPosition(double position) {
         return runEnd(
                 () -> {
-                    io.setTargetPosition(position);
-                    targetPosition = position;
+                    if (wristZeroed) {
+                        targetPosition = getValidPosition(position);
+                        io.setTargetPosition(targetPosition);
+                    }
                 }, io::stop
         ).until(this::atTargetPosition);
     }
@@ -94,11 +96,17 @@ public class Climber extends SubsystemBase {
     public Command followPosition(DoubleSupplier position) {
         return runEnd(
                 () -> {
-                    targetPosition = position.getAsDouble();
-                    io.setTargetPosition(targetPosition);
+                    if (wristZeroed) {
+                        targetPosition = getValidPosition(position.getAsDouble());
+                        io.setTargetPosition(targetPosition);
+                    }
                 },
                 io::stop
         );
+    }
+
+    private double getValidPosition(double position) {
+        return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
     }
 
     public Command zero() {
@@ -107,10 +115,10 @@ public class Climber extends SubsystemBase {
                 // While doing that wait until the elevator stops (Hit the hard stop)
                 // Also stop the previous command when this one stops (It hit the hard stop and reset position)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
-                        // Then reset the elevator position and set zeroed to true
+                        // Then reset the elevator position and set wristZeroed to true
                         .andThen(() -> {
                             io.resetPosition();
-                            zeroed = true;
+                            wristZeroed = true;
                         })
                         // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet
                         .beforeStarting(waitSeconds(WAIT_TIME)));
@@ -125,6 +133,7 @@ public class Climber extends SubsystemBase {
     }
 
     public record Constants(
-            double maximumPosition
+            double maximumPosition,
+            double minimumPosition
     ) {}
 }

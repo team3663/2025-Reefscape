@@ -107,33 +107,41 @@ public class Arm extends SubsystemBase {
     public boolean atTargetPositions() {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
+
     public boolean atPositions(double shoulderPosition, double wristPosition) {
         return this.shoulderAtPosition(shoulderPosition, POSITION_THRESHOLD) && this.wristAtPosition(wristPosition, POSITION_THRESHOLD);
     }
 
     public Command goToPositions(double shoulderPosition, double wristPosition) {
         return runEnd(() -> {
-                    // Shoulder
-                    targetShoulderPosition = shoulderPosition;
-                    io.setShoulderTargetPosition(shoulderPosition);
+            // Shoulder
+            targetShoulderPosition = getValidPositionShoulder(shoulderPosition);
+            io.setShoulderTargetPosition(targetShoulderPosition);
 
-                    // Wrist
-                    targetWristPosition = wristPosition;
-                    io.setWristTargetPosition(wristPosition);
-                }, this::stop
-        ).until(this::atTargetPositions);
+            // Wrist
+            targetWristPosition = getValidPositionWrist(wristPosition);
+            io.setWristTargetPosition(wristPosition);
+        }, this::stop).until(this::atTargetPositions);
     }
 
     public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return runEnd(() -> {
             // Shoulder
-            targetShoulderPosition = shoulderPosition.getAsDouble();
+            targetShoulderPosition = getValidPositionShoulder(shoulderPosition.getAsDouble());
             io.setShoulderTargetPosition(targetShoulderPosition);
 
             // Wrist
-            targetWristPosition = wristPosition.getAsDouble();
+            targetWristPosition = getValidPositionWrist(wristPosition.getAsDouble());
             io.setWristTargetPosition(targetWristPosition);
         }, this::stop);
+    }
+
+    private double getValidPositionShoulder(double position) {
+        return Math.max(constants.minimumShoulderAngle, Math.min(constants.maximumShoulderAngle, position));
+    }
+
+    private double getValidPositionWrist(double position) {
+        return Math.max(constants.minimumWristAngle, Math.min(constants.maximumWristAngle, position));
     }
 
     public double getShoulderPosition() {
