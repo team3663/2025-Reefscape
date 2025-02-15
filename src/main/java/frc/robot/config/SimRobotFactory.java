@@ -18,5 +18,5 @@ public class SimRobotFactory extends C2025RobotFactory {
     }
 
     @Override
-    public VisionIO[] createVisionIo() { return new VisionIO[] {}; }
+    public VisionIO[] createVisionIo() { return new VisionIO[0]; }
 }

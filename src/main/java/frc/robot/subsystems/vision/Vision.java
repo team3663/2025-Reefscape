@@ -12,13 +12,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.RobotMode;
-import frc.robot.subsystems.drivetrain.Drivetrain;
-import frc.robot.subsystems.drivetrain.DrivetrainInputs;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 @Logged
@@ -40,13 +36,16 @@ public class Vision extends SubsystemBase {
     }
 
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
-       this.ios = ios;
-       this.fieldLayout = fieldLayout;
+        this.ios = ios;
+        this.fieldLayout = fieldLayout;
 
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
             visionInputs[i] = new VisionInputs();
         }
+
+        // Register the command we use to detect when the robot is enabled/disabled.
+        RobotModeTriggers.disabled().onChange(updateRobotState());
     }
 
     @Override
@@ -95,9 +94,24 @@ public class Vision extends SubsystemBase {
      * @return Command that consumes vision measurements
      */
     public Command consumeVisionMeasurements(Consumer<List<VisionMeasurement>> visionMeasurementConsumer,
-                                             Supplier<Rotation2d> yawSupplier){
-        return run(() -> { visionMeasurementConsumer.accept(acceptedMeasurements);
-                        currentYaw = yawSupplier.get(); } );
+                                             Supplier<Rotation2d> yawSupplier) {
+        return run(() -> {
+            visionMeasurementConsumer.accept(acceptedMeasurements);
+            currentYaw = yawSupplier.get();
+        });
+    }
+
+    /**
+     * @return Command that is called to let us detect changes in the RobotState
+     */
+    public Command updateRobotState() {
+
+        // Let all of our IOs know that there has been a change in the robot state.
+        return runOnce(() -> {
+            for (VisionIO io : ios) {
+                io.robotStateChanged();
+            }
+        });
     }
 }
 
