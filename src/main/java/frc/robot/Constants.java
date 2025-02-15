@@ -22,6 +22,8 @@ public class Constants {
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
 
+    public static final double DEBOUNCE_TIME = 0.5;
+
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
         // Coral Station
