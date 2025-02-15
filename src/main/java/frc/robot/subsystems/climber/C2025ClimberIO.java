@@ -14,13 +14,14 @@ import com.ctre.phoenix6.signals.S2StateValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 
 public class C2025ClimberIO implements ClimberIO {
     // TODO: Get real values from CAD
-    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0);
+    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0, -1.0);
 
     private final TalonFX motor;
     private final CANcoder coder;
@@ -98,6 +99,11 @@ public class C2025ClimberIO implements ClimberIO {
 
     @Override
     public void setTargetVoltage(double voltage) {
+        motor.setControl(voltageRequest.withOutput(voltage));
+    }
+
+    @Override
+    public void runSysId(Voltage voltage){
         motor.setControl(voltageRequest.withOutput(voltage));
     }
 
