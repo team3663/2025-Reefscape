@@ -27,7 +27,7 @@ public class Climber extends SubsystemBase {
     private final ClimberInputs inputs = new ClimberInputs();
     private final SysIdRoutine sysIdRoutine;
 
-    private boolean wristZeroed = false;
+    private boolean zeroed = false;
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
 
@@ -85,7 +85,7 @@ public class Climber extends SubsystemBase {
     public Command goToPosition(double position) {
         return runEnd(
                 () -> {
-                    if (wristZeroed) {
+                    if (zeroed) {
                         targetPosition = getValidPosition(position);
                         io.setTargetPosition(targetPosition);
                     }
@@ -96,7 +96,7 @@ public class Climber extends SubsystemBase {
     public Command followPosition(DoubleSupplier position) {
         return runEnd(
                 () -> {
-                    if (wristZeroed) {
+                    if (zeroed) {
                         targetPosition = getValidPosition(position.getAsDouble());
                         io.setTargetPosition(targetPosition);
                     }
@@ -118,7 +118,7 @@ public class Climber extends SubsystemBase {
                         // Then reset the elevator position and set wristZeroed to true
                         .andThen(() -> {
                             io.resetPosition();
-                            wristZeroed = true;
+                            zeroed = true;
                         })
                         // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet
                         .beforeStarting(waitSeconds(WAIT_TIME)));
