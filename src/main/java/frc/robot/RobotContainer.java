@@ -498,12 +498,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(commandFactory.alignToReef(robotMode));
+        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        driverController.leftBumper().whileTrue(commandFactory.alignToCoralStation(robotMode));
+        driverController.leftBumper().whileTrue(commandFactory.alignToCoralStation());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 

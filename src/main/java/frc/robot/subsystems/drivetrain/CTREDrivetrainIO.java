@@ -97,8 +97,6 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
-
-        ChassisSpeeds.fromRobotRelativeSpeeds(state.Speeds, state.Pose.getRotation());
     }
 
     @Override
@@ -130,7 +128,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     }
 
     @Override
-    public void driveRobotRelative(ChassisSpeeds robotSpeeds){
+    public void driveRobotRelative(ChassisSpeeds robotSpeeds) {
         drivetrain.setControl(applyRobotSpeedsRequest
                 .withSpeeds(robotSpeeds));
     }

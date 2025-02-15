@@ -12,6 +12,7 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
@@ -79,13 +80,13 @@ public class CommandFactory {
                 .andThen(grabber.withVoltageUntilDetected(-1.0));
     }
 
-    public Command alignToReef(RobotMode robotMode){
-        return Commands.parallel(superStructure.followPositions(() -> robotMode),
+    public Command alignToReef(Supplier<RobotMode> robotMode){
+        return Commands.parallel(superStructure.followPositions(robotMode),
                 Commands.repeatingSequence(
                         Commands.defer(() -> drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain))));
     }
 
-    public Command alignToCoralStation(RobotMode robotMode){
+    public Command alignToCoralStation(){
          return Commands.parallel(this.goToCoralStationAndIntake(),
                 Commands.repeatingSequence(
                         Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
