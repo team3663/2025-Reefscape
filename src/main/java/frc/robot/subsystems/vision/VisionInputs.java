@@ -9,4 +9,5 @@ public class VisionInputs {
     public double timestampSeconds;
     public int[] targetIds;
     public boolean poseUpdated;
+    public double IMUYaw;
 }

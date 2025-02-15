@@ -63,11 +63,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetPosition, POSITION_THRESHOLD);
+        return atPosition(targetPosition);
     }
 
-    public boolean atPosition(double position, double threshold) {
-        return Math.abs(inputs.currentPositionMotor1 - position) < threshold;
+    public boolean atPosition(double position) {
+        return Math.abs(inputs.currentPositionMotor1 - position) < POSITION_THRESHOLD;
     }
 
     public double getTargetPosition() {
@@ -131,7 +131,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public record Constants(
-            double minimumPosition, double maximumPosition
-    ) {
-    }
+            double minimumPosition,
+            double maximumPosition
+    ) {}
 }

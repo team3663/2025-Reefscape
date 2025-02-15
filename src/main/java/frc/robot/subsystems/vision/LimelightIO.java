@@ -1,37 +1,75 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotState;
 import frc.robot.LimelightHelpers;
 
 @Logged
 public class LimelightIO implements VisionIO {
+    private static final int LIMELIGHT_IMU_EXTERNAL = 0;
+    private static final int LIMELIGHT_IMU_FUSED = 1;
+    private static final int LIMELIGHT_IMU_INTERNAL = 2;
 
-    VisionMeasurement currentMeasurement = new VisionMeasurement(Pose2d.kZero, 0, VecBuilder.fill(0,0,0));
+    private final String cameraName;
 
-    public void updateInputs(VisionInputs visionInputs) {
+    public LimelightIO(String name, Transform3d transform) {
+        this.cameraName = name;
+
+        // Initially the Limelight IMU should be in FUSED mode, it will change when robot is enabled.
+        LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
+
+        // Tell the limelight were on the robot it is located.
+        Rotation3d rotation = transform.getRotation();
+        LimelightHelpers.setCameraPose_RobotSpace(name,
+                transform.getX(),
+                transform.getY(),
+                transform.getZ(),
+                rotation.getX(),
+                rotation.getY(),
+                rotation.getZ());
+    }
+
+    public void updateInputs(VisionInputs visionInputs, double currentYaw) {
         // Assume pose will not be updated.
         visionInputs.poseUpdated = false;
 
-        //  Need the robot's current yaw as an input to vision calculations
-        double yawDegrees = 0;
+        // Give the Limelight our current robot yaw as provided by the Pigeon.
+        LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(currentYaw), 0, 0, 0, 0, 0);
 
-        LimelightHelpers.SetRobotOrientation("limelight", yawDegrees, 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        // reading the yaw from the limelights internal IMU
+        LimelightHelpers.IMUData imuData = LimelightHelpers.getIMUData(cameraName);
+        visionInputs.IMUYaw = imuData.Yaw;
 
-        boolean doRejectUpdate = false;
-        if (mt2.tagCount == 0)
-        {
-            doRejectUpdate = true;
+        // Get a new pose estimate
+        LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+
+        // If no tags were seen then return without doing anything.
+        if (estimate.tagCount == 0)
+            return;
+
+        visionInputs.estimatedPose = estimate.pose;
+        visionInputs.timestampSeconds = estimate.timestampSeconds;
+
+        // Extract list of AprilTag Ids see in this pose estimate.
+        int[] targetIds = new int[estimate.rawFiducials.length];
+        int index = 0;
+        for (LimelightHelpers.RawFiducial tag : estimate.rawFiducials) {
+            targetIds[index++] = tag.id;
         }
+        visionInputs.targetIds = targetIds;
+        visionInputs.poseUpdated = true;
+    }
 
-        if(!doRejectUpdate)
-        {
-            currentMeasurement.estimatedPose = mt2.pose;
-            currentMeasurement.timestamp = mt2.timestampSeconds;
-            currentMeasurement.stdDevs = VecBuilder.fill(0,0,0);
+    public void robotStateChanged() {
+        // When the robot is disabled then seed the limelight's IMU with data from the Pigeon but once
+        // the robot is enabled then switch to the Limelight's internal IMU.
+        if (RobotState.isDisabled()) {
+            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
+        } else {
+            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_INTERNAL);
         }
-
     }
 }
