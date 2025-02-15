@@ -23,6 +23,7 @@ public class Arm extends SubsystemBase {
     private final SysIdRoutine sysIdRoutineShoulder;
     private final SysIdRoutine sysIdRoutineWrist;
 
+    private boolean wristZeroed = false;
     private double targetShoulderPosition = 0.0;
     private double targetWristPosition = 0.0;
 
@@ -107,33 +108,45 @@ public class Arm extends SubsystemBase {
     public boolean atTargetPositions() {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
+
     public boolean atPositions(double shoulderPosition, double wristPosition) {
         return this.shoulderAtPosition(shoulderPosition, POSITION_THRESHOLD) && this.wristAtPosition(wristPosition, POSITION_THRESHOLD);
     }
 
     public Command goToPositions(double shoulderPosition, double wristPosition) {
         return runEnd(() -> {
-                    // Shoulder
-                    targetShoulderPosition = shoulderPosition;
-                    io.setShoulderTargetPosition(shoulderPosition);
+            // Shoulder
+            targetShoulderPosition = getValidPositionShoulder(shoulderPosition);
+            io.setShoulderTargetPosition(targetShoulderPosition);
 
-                    // Wrist
-                    targetWristPosition = wristPosition;
-                    io.setWristTargetPosition(wristPosition);
-                }, this::stop
-        ).until(this::atTargetPositions);
+            // Wrist
+            if (wristZeroed) {
+                targetWristPosition = getValidPositionWrist(wristPosition);
+                io.setWristTargetPosition(wristPosition);
+            }
+        }, this::stop).until(this::atTargetPositions);
     }
 
     public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return runEnd(() -> {
             // Shoulder
-            targetShoulderPosition = shoulderPosition.getAsDouble();
+            targetShoulderPosition = getValidPositionShoulder(shoulderPosition.getAsDouble());
             io.setShoulderTargetPosition(targetShoulderPosition);
 
             // Wrist
-            targetWristPosition = wristPosition.getAsDouble();
-            io.setWristTargetPosition(targetWristPosition);
+            if (wristZeroed) {
+                targetWristPosition = getValidPositionWrist(wristPosition.getAsDouble());
+                io.setWristTargetPosition(targetWristPosition);
+            }
         }, this::stop);
+    }
+
+    private double getValidPositionShoulder(double position) {
+        return Math.max(constants.minimumShoulderAngle, Math.min(constants.maximumShoulderAngle, position));
+    }
+
+    private double getValidPositionWrist(double position) {
+        return Math.max(constants.minimumWristAngle, Math.min(constants.maximumWristAngle, position));
     }
 
     public double getShoulderPosition() {
@@ -169,11 +182,16 @@ public class Arm extends SubsystemBase {
     }
 
     public Command zeroWrist() {
-        return runEnd(() -> io.setWristTargetVoltage(-1.0),
-                io::stopWrist)
+        return runEnd(() -> {
+            io.setWristTargetVoltage(-1.0);
+            io.setShoulderTargetPosition(Units.degreesToRadians(90));
+        }, io::stopWrist)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentWristVelocity) < 0.01)
                         .beforeStarting(waitSeconds(0.25))
-                        .andThen(io::resetWristPosition));
+                        .andThen(() -> {
+                            io.resetWristPosition();
+                            wristZeroed = true;
+                        }));
     }
 
     public record Constants(double shoulderLength, double minimumShoulderAngle, double maximumShoulderAngle,

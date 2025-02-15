@@ -21,7 +21,7 @@ import frc.robot.Robot;
 
 public class C2025ClimberIO implements ClimberIO {
     // TODO: Get real values from CAD
-    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0);
+    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0, -1.0);
 
     private final TalonFX motor;
     private final CANcoder coder;

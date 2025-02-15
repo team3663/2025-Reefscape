@@ -85,8 +85,10 @@ public class Climber extends SubsystemBase {
     public Command goToPosition(double position) {
         return runEnd(
                 () -> {
-                    io.setTargetPosition(position);
-                    targetPosition = position;
+                    if (zeroed) {
+                        targetPosition = getValidPosition(position);
+                        io.setTargetPosition(targetPosition);
+                    }
                 }, io::stop
         ).until(this::atTargetPosition);
     }
@@ -94,11 +96,17 @@ public class Climber extends SubsystemBase {
     public Command followPosition(DoubleSupplier position) {
         return runEnd(
                 () -> {
-                    targetPosition = position.getAsDouble();
-                    io.setTargetPosition(targetPosition);
+                    if (zeroed) {
+                        targetPosition = getValidPosition(position.getAsDouble());
+                        io.setTargetPosition(targetPosition);
+                    }
                 },
                 io::stop
         );
+    }
+
+    private double getValidPosition(double position) {
+        return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
     }
 
     public Command zero() {
@@ -107,7 +115,7 @@ public class Climber extends SubsystemBase {
                 // While doing that wait until the elevator stops (Hit the hard stop)
                 // Also stop the previous command when this one stops (It hit the hard stop and reset position)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
-                        // Then reset the elevator position and set zeroed to true
+                        // Then reset the elevator position and set wristZeroed to true
                         .andThen(() -> {
                             io.resetPosition();
                             zeroed = true;
@@ -125,6 +133,7 @@ public class Climber extends SubsystemBase {
     }
 
     public record Constants(
-            double maximumPosition
+            double maximumPosition,
+            double minimumPosition
     ) {}
 }
