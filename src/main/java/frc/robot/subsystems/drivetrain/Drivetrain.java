@@ -112,10 +112,6 @@ public class Drivetrain extends SubsystemBase {
     public Pose2d getPose() {
         return inputs.pose;
     }
-
-    public Rotation2d robotDirection() {
-        return new Translation2d(inputs.pose.getX(), inputs.pose.getY()).getAngle();
-    }
     
     public Rotation2d getYaw() {
         return inputs.yaw;

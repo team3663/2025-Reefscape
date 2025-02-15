@@ -498,19 +498,12 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
-                Commands.repeatingSequence(
-                        Commands.defer(() -> drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain)))));
+        driverController.rightBumper().whileTrue(commandFactory.alignToReef(robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        driverController.leftBumper().whileTrue(Commands.parallel(commandFactory.goToCoralStationAndIntake(),
-                Commands.repeatingSequence(
-                        Commands.deferredProxy(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
-                                drivetrain.getPose()
-                        ))))
-        ));
+        driverController.leftBumper().whileTrue(commandFactory.alignToCoralStation(robotMode));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
@@ -547,24 +540,6 @@ public class RobotContainer {
 
     private Command setRobotMode(RobotMode robotMode) {
         return runOnce(() -> this.robotMode = robotMode);
-    }
-
-    public Pose2d getClosestBranch(Pose2d robotPose) {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return robotPose.nearest(Constants.RED_BRANCH_POSES);
-        } else {
-            return robotPose.nearest(Constants.BLUE_BRANCH_POSES);
-        }
-    }
-
-    public Pose2d getClosestCoralStationPosition(Pose2d robotPose) {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return robotPose.nearest(Constants.RED_CORAL_STATION_POSES);
-        } else {
-            return robotPose.nearest(Constants.BLUE_CORAL_STATION_POSES);
-        }
     }
 
     private double getDrivetrainXVelocity() {
