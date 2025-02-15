@@ -171,6 +171,8 @@ public class Arm extends SubsystemBase {
         return runEnd(() -> {
             io.setWristTargetVoltage(-1.0);
             io.setShoulderTargetPosition(Units.degreesToRadians(90));
+            targetWristPosition = constants.minimumWristAngle;
+            targetShoulderPosition = Units.degreesToRadians(90);
         }, io::stopWrist)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentWristVelocity) < 0.01)
                         .beforeStarting(waitSeconds(0.25))
