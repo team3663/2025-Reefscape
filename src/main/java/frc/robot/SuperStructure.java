@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
 
-
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -31,6 +31,7 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
+    private final BooleanSupplier haveAlgae;
 
     private final Mechanism2d mechanism;
     private final MechanismLigament2d targetElevatorMechanism;
@@ -40,9 +41,10 @@ public class SuperStructure extends SubsystemBase {
     private final MechanismLigament2d currentShoulderMechanism;
     private final MechanismLigament2d currentWristMechanism;
 
-    public SuperStructure(Elevator elevator, Arm arm) {
+    public SuperStructure(Elevator elevator, Arm arm, BooleanSupplier haveAlgae) {
         this.elevator = elevator;
         this.arm = arm;
+        this.haveAlgae = haveAlgae;
 
         mechanism = new Mechanism2d(
                 2.0 * (arm.getConstants().shoulderLength() + arm.getConstants().wristLength()),
@@ -144,18 +146,20 @@ public class SuperStructure extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-                arm.followPositions(
-                        () -> Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),
-                        () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
+                arm.followPositions(() -> shoulderHaveAlgaePosition(Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()))), () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()))),
-                run(() -> {
-                })
-        );
+                run(() -> {}));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
-                        .until(() -> elevator.atTargetPosition() && arm.atTargetPositions());
+        return Commands.parallel(
+                elevator.goToPosition(elevatorPosition),
+                arm.goToPositions(shoulderHaveAlgaePosition(shoulderPosition), wristPosition),
+                runOnce(() -> {}));
+    }
+
+    private double shoulderHaveAlgaePosition(double shoulderPosition) {
+        return haveAlgae.getAsBoolean() ? Math.min(shoulderPosition, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : shoulderPosition;
     }
 
     /**
