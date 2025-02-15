@@ -8,17 +8,10 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -33,7 +26,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
 import java.util.*;
@@ -442,14 +434,14 @@ public class RobotContainer {
     private void configureBindings() {
         driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
                 Commands.repeatingSequence(
-                        Commands.deferredProxy(() -> commandFactory.pathToPoseCommand(getClosestBranch(drivetrain.getPose()))))));
+                        Commands.defer(() -> commandFactory.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain)))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
         driverController.leftBumper().whileTrue(Commands.parallel(commandFactory.goToCoralStationAndIntake(),
                 Commands.repeatingSequence(
-                        Commands.deferredProxy(() -> commandFactory.pathToPoseCommand(getClosestCoralStationPosition(
+                        Commands.deferredProxy(() -> commandFactory.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
                                 drivetrain.getPose()
                         ))))
         ));
@@ -489,13 +481,21 @@ public class RobotContainer {
     }
 
     public Pose2d getClosestBranch(Pose2d robotPose) {
-        List<Pose2d> branchPoses = Constants.blueBranchPoses;
-        return robotPose.nearest(branchPoses);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            return robotPose.nearest(Constants.redBranchPoses);
+        } else {
+            return robotPose.nearest(Constants.blueBranchPoses);
+        }
     }
 
     public Pose2d getClosestCoralStationPosition(Pose2d robotPose) {
-        List<Pose2d> coralStationPoses = Constants.coralStationPoses;
-        return robotPose.nearest(coralStationPoses);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+            return robotPose.nearest(Constants.redCoralStationPoses);
+        } else {
+            return robotPose.nearest(Constants.blueCoralStationPoses);
+        }
     }
 
     private double getDrivetrainXVelocity() {
