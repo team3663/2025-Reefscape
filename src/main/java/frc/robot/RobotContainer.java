@@ -497,7 +497,7 @@ public class RobotContainer {
 
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
-        driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
+        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());

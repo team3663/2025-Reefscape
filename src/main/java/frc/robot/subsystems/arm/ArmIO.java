@@ -23,11 +23,7 @@ public interface ArmIO {
     default void setShoulderTargetVoltage(double voltage) {
     }
 
-    default void resetShoulderPosition() {
-    }
-
-    default void sysIdShoulder(Voltage voltage){
-
+    default void sysIdShoulder(Voltage voltage) {
     }
 
     default void stopWrist() {
@@ -40,10 +36,9 @@ public interface ArmIO {
     default void setWristTargetVoltage(double voltage) {
     }
 
-    default void resetWristPosition() {
+    default void resetWristPosition(double position) {
     }
 
-    default void sysIdWrist(Voltage voltage){
-
+    default void sysIdWrist(Voltage voltage) {
     }
 }

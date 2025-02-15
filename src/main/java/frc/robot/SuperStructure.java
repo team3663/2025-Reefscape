@@ -169,7 +169,7 @@ public class SuperStructure extends SubsystemBase {
             if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
                 return robotMode.get().getElevatorHeight();
-            else return elevator.getPosition();
+            else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
             if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD))
@@ -183,5 +183,14 @@ public class SuperStructure extends SubsystemBase {
 
     public Command goToDefaultPositions() {
         return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
+    }
+
+    public Command zero() {
+        return Commands.parallel(
+                arm.zeroWrist(),
+                elevator.zero(),
+                runOnce(() -> {
+                })
+        );
     }
 }

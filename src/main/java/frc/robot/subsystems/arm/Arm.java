@@ -99,13 +99,6 @@ public class Arm extends SubsystemBase {
         );
     }
 
-    public Command resetPositions() {
-        return runOnce(() -> {
-            io.resetShoulderPosition();
-            io.resetWristPosition();
-        });
-    }
-
     public boolean atTargetPositions() {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
@@ -174,11 +167,6 @@ public class Arm extends SubsystemBase {
         return Math.abs(inputs.currentWristPosition - position) < threshold;
     }
 
-    public Command resetWristPosition() {
-        return runOnce(io::resetWristPosition);
-    }
-
-
     public Command zeroWrist() {
         return runEnd(() -> {
             io.setWristTargetVoltage(-1.0);
@@ -187,7 +175,7 @@ public class Arm extends SubsystemBase {
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentWristVelocity) < 0.01)
                         .beforeStarting(waitSeconds(0.25))
                         .andThen(() -> {
-                            io.resetWristPosition();
+                            io.resetWristPosition(constants.minimumWristAngle());
                             wristZeroed = true;
                         }));
     }
