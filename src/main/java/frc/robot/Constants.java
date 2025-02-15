@@ -28,6 +28,8 @@ public class Constants {
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
 
+    public static final double DEBOUNCE_TIME = 0.5;
+
     public static final double yOffset = 158.5;
     public static final double xBranchDistanceFromCenter = 31.625;
     public static final double yBranchDistanceFromCenter = 6.5;
@@ -85,7 +87,7 @@ public class Constants {
 
     static final List<Pose2d> redCoralStationPoses = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
-    
+
     private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset){
         if (adding) {
             return new Pose2d(Units.inchesToMeters(Math.hypot(xBranchDistanceFromCenter, yBranchDistanceFromCenter) *
@@ -113,5 +115,8 @@ public class Constants {
         // Shoulder Safe variables
         public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
         public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
+
+        // Shoulder max angle when we have an algae
+        public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
     }
 }

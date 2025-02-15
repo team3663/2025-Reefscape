@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -27,6 +28,7 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
+    private final BooleanSupplier haveAlgae;
 
     private final Mechanism2d mechanism;
     private final MechanismLigament2d targetElevatorMechanism;
@@ -36,9 +38,10 @@ public class SuperStructure extends SubsystemBase {
     private final MechanismLigament2d currentShoulderMechanism;
     private final MechanismLigament2d currentWristMechanism;
 
-    public SuperStructure(Elevator elevator, Arm arm) {
+    public SuperStructure(Elevator elevator, Arm arm, BooleanSupplier haveAlgae) {
         this.elevator = elevator;
         this.arm = arm;
+        this.haveAlgae = haveAlgae;
 
         mechanism = new Mechanism2d(
                 2.0 * (arm.getConstants().shoulderLength() + arm.getConstants().wristLength()),
@@ -112,7 +115,7 @@ public class SuperStructure extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-                arm.followPositions(shoulderPosition, wristPosition),
+                arm.followPositions(() -> shoulderHaveAlgaePosition(shoulderPosition.getAsDouble()), wristPosition),
                 elevator.followPosition(elevatorPosition),
                 run(() -> {}));
     }
@@ -120,8 +123,12 @@ public class SuperStructure extends SubsystemBase {
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
         return Commands.parallel(
                 elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderPosition, wristPosition),
+                arm.goToPositions(shoulderHaveAlgaePosition(shoulderPosition), wristPosition),
                 runOnce(() -> {}));
+    }
+
+    private double shoulderHaveAlgaePosition(double shoulderPosition) {
+        return haveAlgae.getAsBoolean() ? Math.min(shoulderPosition, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : shoulderPosition;
     }
 
     /**
@@ -135,7 +142,7 @@ public class SuperStructure extends SubsystemBase {
             if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
                 return robotMode.get().getElevatorHeight();
-            else return elevator.getPosition();
+            else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
             if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD))
@@ -149,5 +156,14 @@ public class SuperStructure extends SubsystemBase {
 
     public Command goToDefaultPositions() {
         return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
+    }
+
+    public Command zero() {
+        return Commands.parallel(
+                arm.zeroWrist(),
+                elevator.zero(),
+                runOnce(() -> {
+                })
+        );
     }
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 
 public interface ArmIO {
     default Arm.Constants getConstants() {
@@ -22,7 +23,7 @@ public interface ArmIO {
     default void setShoulderTargetVoltage(double voltage) {
     }
 
-    default void resetShoulderPosition() {
+    default void sysIdShoulder(Voltage voltage) {
     }
 
     default void stopWrist() {
@@ -35,6 +36,9 @@ public interface ArmIO {
     default void setWristTargetVoltage(double voltage) {
     }
 
-    default void resetWristPosition() {
+    default void resetWristPosition(double position) {
+    }
+
+    default void sysIdWrist(Voltage voltage) {
     }
 }
