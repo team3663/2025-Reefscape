@@ -552,18 +552,18 @@ public class RobotContainer {
     public Pose2d getClosestBranch(Pose2d robotPose) {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return robotPose.nearest(Constants.redBranchPoses);
+            return robotPose.nearest(Constants.RED_BRANCH_POSES);
         } else {
-            return robotPose.nearest(Constants.blueBranchPoses);
+            return robotPose.nearest(Constants.BLUE_BRANCH_POSES);
         }
     }
 
     public Pose2d getClosestCoralStationPosition(Pose2d robotPose) {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return robotPose.nearest(Constants.redCoralStationPoses);
+            return robotPose.nearest(Constants.RED_CORAL_STATION_POSES);
         } else {
-            return robotPose.nearest(Constants.blueCoralStationPoses);
+            return robotPose.nearest(Constants.BLUE_CORAL_STATION_POSES);
         }
     }
 

@@ -12,9 +12,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -30,7 +27,6 @@ import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
 import frc.robot.subsystems.grabber.GrabberIO;
-import frc.robot.subsystems.grabber.GrabberInputs;
 import frc.robot.subsystems.led.LedCandleIo;
 import frc.robot.subsystems.led.LedIo;
 import frc.robot.subsystems.vision.LimelightIO;
@@ -47,8 +43,6 @@ public class C2025RobotFactory implements RobotFactory {
 
     private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
     private static final double ROBOT_WEIGHT_KG = 61.235;
-    public static final double MAX_DRIVE_VELOCITY_MPS = 5.0;
-
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())

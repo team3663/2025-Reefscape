@@ -30,37 +30,39 @@ public class Constants {
 
     public static final double DEBOUNCE_TIME = 0.5;
 
-    public static final double yOffset = 158.5;
-    public static final double xBranchDistanceFromCenter = 31.625;
-    public static final double yBranchDistanceFromCenter = 6.5;
+    public static final double REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
+    public static final double REEF_BLUE_POSE_X_OFFSET = Units.inchesToMeters(176.75);
+    public static final double REEF_RED_POSE_X_OFFSET = Units.inchesToMeters(514.125);
+    public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
+    public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(21.125), 0, Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(5), 0, Rotation2d.fromDegrees(180));
 
-    public static final Pose2d BLUE_BRANCH_A = getBranchPose(3, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_B = getBranchPose(3, true, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_C = getBranchPose(4, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_D = getBranchPose(4, true, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_E = getBranchPose(5, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_F = getBranchPose(5, true, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_G = getBranchPose(0, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_H = getBranchPose(0, true, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_I = getBranchPose(1, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_J = getBranchPose(1, true, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_K = getBranchPose(2, false, 176.75, yOffset);
-    public static final Pose2d BLUE_BRANCH_L = getBranchPose(2, true, 176.75, yOffset);
+    public static final Pose2d BLUE_BRANCH_A = getBranchPose(3, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_B = getBranchPose(3, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_C = getBranchPose(4, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_D = getBranchPose(4, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_E = getBranchPose(5, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_F = getBranchPose(5, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_G = getBranchPose(0, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_H = getBranchPose(0, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_I = getBranchPose(1, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_J = getBranchPose(1, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_K = getBranchPose(2, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d BLUE_BRANCH_L = getBranchPose(2, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
 
-    public static final Pose2d RED_BRANCH_A = getBranchPose(0, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_B = getBranchPose(0, false, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_C = getBranchPose(1, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_D = getBranchPose(1, false, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_E = getBranchPose(2, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_F = getBranchPose(2, false, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_G = getBranchPose(3, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_H = getBranchPose(3, false, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_I = getBranchPose(4, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_J = getBranchPose(4, false, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_K = getBranchPose(5, true, 514.125, yOffset);
-    public static final Pose2d RED_BRANCH_L = getBranchPose(5, false, 514.125, yOffset);
+    public static final Pose2d RED_BRANCH_A = getBranchPose(0, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_B = getBranchPose(0, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_C = getBranchPose(1, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_D = getBranchPose(1, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_E = getBranchPose(2, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_F = getBranchPose(2, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_G = getBranchPose(3, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_H = getBranchPose(3, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_I = getBranchPose(4, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_J = getBranchPose(4, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_K = getBranchPose(5, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
+    public static final Pose2d RED_BRANCH_L = getBranchPose(5, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
 
     public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.6382254362106323, 7.540848731994629, Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5229208469390869, 6.728616237640381, Rotation2d.fromDegrees(306));
@@ -72,35 +74,35 @@ public class Constants {
     public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5559024810791016), 6.728616237640381, Rotation2d.fromDegrees(234));
     public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 1.5863468647003174), 7.540848731994629, Rotation2d.fromDegrees(234));
 
-    static final List<Pose2d> blueBranchPoses = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B,
+    public static final List<Pose2d> BLUE_BRANCH_POSES = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B,
             BLUE_BRANCH_C, BLUE_BRANCH_D, BLUE_BRANCH_E, BLUE_BRANCH_F,
             BLUE_BRANCH_G, BLUE_BRANCH_H, BLUE_BRANCH_I, BLUE_BRANCH_J,
             BLUE_BRANCH_K, BLUE_BRANCH_L);
 
-    static final List<Pose2d> redBranchPoses = List.of(RED_BRANCH_A, RED_BRANCH_B,
+    public static final List<Pose2d> RED_BRANCH_POSES = List.of(RED_BRANCH_A, RED_BRANCH_B,
             RED_BRANCH_C, RED_BRANCH_D, RED_BRANCH_E, RED_BRANCH_F,
             RED_BRANCH_G, RED_BRANCH_H, RED_BRANCH_I, RED_BRANCH_J,
             RED_BRANCH_K, RED_BRANCH_L);
 
-    static final List<Pose2d> blueCoralStationPoses = List.of(BLUE_LEFT_NEAR_SIDE_CORAL_STATION, BLUE_LEFT_FAR_SIDE_CORAL_STATION,
+    public static final List<Pose2d> BLUE_CORAL_STATION_POSES = List.of(BLUE_LEFT_NEAR_SIDE_CORAL_STATION, BLUE_LEFT_FAR_SIDE_CORAL_STATION,
             BLUE_RIGHT_NEAR_SIDE_CORAL_STATION, BLUE_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    static final List<Pose2d> redCoralStationPoses = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
+    public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
     private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset){
         if (adding) {
-            return new Pose2d(Units.inchesToMeters(Math.hypot(xBranchDistanceFromCenter, yBranchDistanceFromCenter) *
-                    Math.cos(((Math.PI / 3) * number) + Math.asin(yBranchDistanceFromCenter / xBranchDistanceFromCenter)) + xOffset),
-                    Units.inchesToMeters(Math.hypot(xBranchDistanceFromCenter, yBranchDistanceFromCenter) * Math.sin(((Math.PI / 3) * number) +
-                            Math.asin(yBranchDistanceFromCenter / xBranchDistanceFromCenter)) + yOffset),
+            return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
+                    Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin(((Math.PI / 3) * number) +
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         }
         else {
-            return new Pose2d(Units.inchesToMeters(Math.hypot(xBranchDistanceFromCenter, yBranchDistanceFromCenter) *
-                    Math.cos(((Math.PI / 3) * number) - Math.asin(yBranchDistanceFromCenter / xBranchDistanceFromCenter)) + xOffset),
-                    Units.inchesToMeters(Math.hypot(xBranchDistanceFromCenter, yBranchDistanceFromCenter) * Math.sin((Math.PI / 3) * number -
-                            Math.asin(yBranchDistanceFromCenter / xBranchDistanceFromCenter)) + yOffset),
+            return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
+                    Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin((Math.PI / 3) * number -
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         }
     }

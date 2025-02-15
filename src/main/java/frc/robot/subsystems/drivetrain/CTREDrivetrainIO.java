@@ -49,15 +49,10 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         this.drivetrain = new SwerveDrivetrain<>(
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
         );
-        RobotConfig robotConfig;
-        ModuleConfig moduleConfig;
-
-        //TODO FIX!!!
-        moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, 5.0,
+        ModuleConfig moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, 5.0,
                 Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
                 moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 4);
-
-        robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
+        RobotConfig robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
