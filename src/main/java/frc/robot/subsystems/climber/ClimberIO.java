@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.elevator.Elevator;
 
 public interface ClimberIO {
@@ -10,6 +11,10 @@ public interface ClimberIO {
     }
 
     default void setTargetVoltage(double voltage) {
+    }
+
+    default void runSysId(Voltage voltage){
+
     }
 
     default void resetPosition() {
