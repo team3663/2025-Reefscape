@@ -58,7 +58,7 @@ public class RobotContainer {
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         //vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape), robotFactory.createVisionIo());
-        superStructure = new SuperStructure(elevator, arm);
+        superStructure = new SuperStructure(elevator, arm, () -> grabber.getGamePieceDetected() && robotMode.isAlgaeMode());
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 

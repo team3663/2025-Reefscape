@@ -34,4 +34,8 @@ public enum RobotMode {
     public double getShoulderAngle() {
         return shoulderAngle;
     }
+
+    public boolean isAlgaeMode() {
+        return this.toString().contains("ALGAE");
+    }
 }
