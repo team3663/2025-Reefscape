@@ -146,16 +146,15 @@ public class SuperStructure extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-                arm.followPositions(() -> shoulderHaveAlgaePosition(Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()))), () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
+                arm.followPositions(() -> shoulderHaveAlgaePosition(Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()))),
+                        () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()))),
                 run(() -> {}));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return Commands.parallel(
-                elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderHaveAlgaePosition(shoulderPosition), wristPosition),
-                runOnce(() -> {}));
+        return followPositions(()-> elevatorPosition, ()-> shoulderPosition, ()-> wristPosition)
+                .until(()-> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
     private double shoulderHaveAlgaePosition(double shoulderPosition) {
@@ -170,13 +169,13 @@ public class SuperStructure extends SubsystemBase {
      */
     public Command followPositions(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> {
-            if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
+            if (elevator.atPosition(robotMode.get().getElevatorHeight()) ||
                     arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
                 return robotMode.get().getElevatorHeight();
             else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
-            if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD))
+            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
                 return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
             return robotMode.get().getShoulderAngle();
         };
