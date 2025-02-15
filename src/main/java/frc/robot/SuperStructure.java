@@ -20,12 +20,6 @@ import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
-    private static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
-    private static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
-
-    private static final double ELEVATOR_DEFAULT_POSITION = 0;
-    private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
-    private static final double WRIST_DEFAULT_ANGLE = 0;
 
     @NotLogged
     private final Elevator elevator;
@@ -96,13 +90,13 @@ public class SuperStructure extends SubsystemBase {
         return Math.max(
                 elevator.getConstants().minimumPosition(),
                 Math.max(
-                        -(arm.getConstants().shoulderLength() + SHOULDER_BUFFER) * Math.sin(shoulderAngle),
-                        - arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) - (arm.getConstants().wristLength() + WRIST_BUFFER)
+                        -(arm.getConstants().shoulderLength() + Constants.SHOULDER_BUFFER) * Math.sin(shoulderAngle),
+                        -arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) - (arm.getConstants().wristLength() + Constants.WRIST_BUFFER)
                                 * Math.sin(shoulderAngle + wristAngle)));
     }
 
     private double getMinimumAllowableWristAngle(double elevatorPosition, double shoulderAngle) {
-        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - WRIST_BUFFER) / arm.getConstants().wristLength();
+        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
         if (Math.abs(length) <= 1.0) {
             return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
         }
@@ -111,11 +105,11 @@ public class SuperStructure extends SubsystemBase {
 
     private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double targetElevatorPos) {
         double minimumAllowablePos = arm.getConstants().minimumShoulderAngle();
-        if ( Math.abs((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
-            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+        if (Math.abs((currentElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
-        if (Math.abs((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
-            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((targetElevatorPos - SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+        if (Math.abs((targetElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((targetElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
         }
         return minimumAllowablePos;
     }
@@ -149,12 +143,13 @@ public class SuperStructure extends SubsystemBase {
                 arm.followPositions(() -> shoulderHaveAlgaePosition(Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()))),
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()))),
-                run(() -> {}));
+                run(() -> {
+                }));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return followPositions(()-> elevatorPosition, ()-> shoulderPosition, ()-> wristPosition)
-                .until(()-> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
+        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
+                .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
     private double shoulderHaveAlgaePosition(double shoulderPosition) {
@@ -185,7 +180,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command goToDefaultPositions() {
-        return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
+        return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
     }
 
     public Command zero() {

@@ -37,7 +37,17 @@ public class Constants {
 
         // Shoulder max angle when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
+
+        // Default positions and angles
+        public static final double ELEVATOR_DEFAULT_POSITION = 0;
+        public static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
+        public static final double WRIST_DEFAULT_ANGLE = 0;
     }
+
+    // Arm buffers
+    public static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
+    public static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
+
 
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
