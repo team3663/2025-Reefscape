@@ -59,42 +59,4 @@ public class CommandFactory {
                 .andThen(grabber.withVoltageUntilDetected(-1.0));
     }
 
-    /**
-     * Makes a Pathplanner path to a given reef branch pose from the robot's current position
-     *
-     * @param targetPose requires a Pose2d of where you want the robot to go
-     */
-    public static Command pathToReefPoseCommand(Pose2d targetPose) {
-        PathConstraints constraints = new PathConstraints(5.0,
-                5.0, 2 * Math.PI,
-                4 * Math.PI);
-
-        targetPose = targetPose.plus(Constants.ROBOT_REEF_OFFSET);
-        Command alignToBranch = AutoBuilder.pathfindToPose(
-                targetPose,
-                constraints,
-                0.0);
-
-        return alignToBranch;
-    }
-
-    /**
-     * Makes a Pathplanner path to a given coral station pose from the robot's current position
-     *
-     * @param targetPose requires a Pose2d of where you want the robot to go
-     */
-    public static Command pathToCoralStationPoseCommand(Pose2d targetPose) {
-        PathConstraints constraints = new PathConstraints(5.0,
-                5.0, 2 * Math.PI,
-                4 * Math.PI);
-
-        targetPose = targetPose.plus(Constants.ROBOT_CORAL_STATION_OFFSET);
-        Command alignToBranch = AutoBuilder.pathfindToPose(
-                targetPose,
-                constraints,
-                0.0);
-
-        return alignToBranch;
-    }
-
 }

@@ -497,14 +497,14 @@ public class RobotContainer {
     private void configureBindings() {
         driverController.rightBumper().whileTrue(Commands.parallel(superStructure.followPositions(() -> robotMode),
                 Commands.repeatingSequence(
-                        Commands.defer(() -> commandFactory.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain)))));
+                        Commands.defer(() -> drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain)))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
         driverController.leftBumper().whileTrue(Commands.parallel(commandFactory.goToCoralStationAndIntake(),
                 Commands.repeatingSequence(
-                        Commands.deferredProxy(() -> commandFactory.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
+                        Commands.deferredProxy(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
                                 drivetrain.getPose()
                         ))))
         ));

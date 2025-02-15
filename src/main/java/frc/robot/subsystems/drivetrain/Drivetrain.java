@@ -8,6 +8,7 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.VisionMeasurement;
 
 import java.util.List;
@@ -161,6 +163,44 @@ public class Drivetrain extends SubsystemBase {
                 },
                 // end()
                 io::stop);
+    }
+
+    /**
+     * Makes a Pathplanner path to a given coral station pose from the robot's current position
+     *
+     * @param targetPose requires a Pose2d of where you want the robot to go
+     */
+    public Command pathToCoralStationPoseCommand(Pose2d targetPose) {
+        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
+                5.0, this.getConstants().maxAngularVelocity,
+                4 * Math.PI);
+
+        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_CORAL_STATION_OFFSET);
+        Command alignToBranch = AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0);
+
+        return alignToBranch;
+    }
+
+    /**
+     * Makes a Pathplanner path to a given reef branch pose from the robot's current position
+     *
+     * @param targetPose requires a Pose2d of where you want the robot to go
+     */
+    public Command pathToReefPoseCommand(Pose2d targetPose) {
+        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
+                5.0, this.getConstants().maxAngularVelocity,
+                4 * Math.PI);
+
+        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_REEF_OFFSET);
+        Command alignToBranch = AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0);
+
+        return alignToBranch;
     }
 
     public record Constants(
