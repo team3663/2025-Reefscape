@@ -115,6 +115,10 @@ public class Drivetrain extends SubsystemBase {
         return new Translation2d(inputs.pose.getX(), inputs.pose.getY()).getAngle();
     }
     
+    public Rotation2d getYaw() {
+        return inputs.yaw;
+    }
+  
     public AutoFactory getAutoFactory() {
         return autoFactory;
     }
@@ -162,6 +166,7 @@ public class Drivetrain extends SubsystemBase {
                 // end()
                 io::stop);
     }
+
 
     public record Constants(
             double maxLinearVelocity,
