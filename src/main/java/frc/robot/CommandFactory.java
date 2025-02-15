@@ -65,7 +65,7 @@ public class CommandFactory {
      * @param targetPose requires a Pose2d of where you want the robot to go
      */
     public static Command pathToReefPoseCommand(Pose2d targetPose) {
-        PathConstraints constraints = new PathConstraints(Drivetrain.getMaxDriveVelocityMPS(),
+        PathConstraints constraints = new PathConstraints(5.0,
                 5.0, 2 * Math.PI,
                 4 * Math.PI);
 
@@ -84,7 +84,7 @@ public class CommandFactory {
      * @param targetPose requires a Pose2d of where you want the robot to go
      */
     public static Command pathToCoralStationPoseCommand(Pose2d targetPose) {
-        PathConstraints constraints = new PathConstraints(Drivetrain.getMaxDriveVelocityMPS(),
+        PathConstraints constraints = new PathConstraints(5.0,
                 5.0, 2 * Math.PI,
                 4 * Math.PI);
 

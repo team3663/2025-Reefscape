@@ -114,11 +114,7 @@ public class Drivetrain extends SubsystemBase {
     public Rotation2d robotDirection() {
         return new Translation2d(inputs.pose.getX(), inputs.pose.getY()).getAngle();
     }
-
-    public double getMaxDriveVelocityMPS() {
-        return constants.maxLinearVelocity;
-    }
-
+    
     public AutoFactory getAutoFactory() {
         return autoFactory;
     }
