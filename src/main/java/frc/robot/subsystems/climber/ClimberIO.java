@@ -23,7 +23,8 @@ public interface ClimberIO {
     default void stop() {
         setTargetVoltage(0.0);
     }
+
     default Climber.Constants getConstants() {
-        return new Climber.Constants(0);
+        return new Climber.Constants(0, 0);
     }
 }
