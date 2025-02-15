@@ -22,6 +22,7 @@ public class Constants {
     public static final Slot0Configs MK4I_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(50);
 
+    public static final double DEBOUNCE_TIME = 0.5;
 
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
@@ -33,6 +34,9 @@ public class Constants {
         // Shoulder Safe variables
         public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
         public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
+
+        // Shoulder max angle when we have an algae
+        public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
     }
 
     // Vision camera constants

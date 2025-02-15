@@ -52,6 +52,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
+    private boolean haveAlgae;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -61,7 +62,7 @@ public class RobotContainer {
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded), robotFactory.createVisionIo());
-        superStructure = new SuperStructure(elevator, arm);
+        superStructure = new SuperStructure(elevator, arm, () -> haveAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
 
@@ -500,12 +501,15 @@ public class RobotContainer {
 
         driverController.leftBumper().whileTrue(commandFactory.goToCoralStationAndIntake());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
-        driverController.start().onTrue(Commands.parallel(arm.zeroWrist(), elevator.zero(), climber.zero()));
+        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
-        new Trigger(grabber::getGamePieceDetected).debounce(0.5).onTrue(led.intakeFlash());
+        new Trigger(grabber::getGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
+
+        new Trigger(() -> grabber.getGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
+        new Trigger(() -> grabber.getGamePieceNotDetected()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = false));
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
