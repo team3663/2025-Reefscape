@@ -182,8 +182,10 @@ public class Arm extends SubsystemBase {
     }
 
     public Command zeroWrist() {
-        return runEnd(() -> io.setWristTargetVoltage(-1.0),
-                io::stopWrist)
+        return runEnd(() -> {
+            io.setWristTargetVoltage(-1.0);
+            io.setShoulderTargetPosition(Units.degreesToRadians(90));
+        }, io::stopWrist)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentWristVelocity) < 0.01)
                         .beforeStarting(waitSeconds(0.25))
                         .andThen(() -> {
