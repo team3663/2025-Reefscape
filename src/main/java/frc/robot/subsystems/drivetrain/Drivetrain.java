@@ -3,16 +3,30 @@ package frc.robot.subsystems.drivetrain;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.DriveFeedforwards;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.VisionMeasurement;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
 import static edu.wpi.first.units.Units.Second;
@@ -56,6 +70,39 @@ public class Drivetrain extends SubsystemBase {
                         io::driveSysIdTranslation,
                         null,
                         this));
+        RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                () -> inputs.pose, // Robot pose supplier
+                io::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                () -> inputs.chassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                io::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                constants.robotConfig, // The robot configuration
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    } else {
+                        return false;
+                    }
+                },
+                this // Reference to this subsystem to set requirements
+        );
     }
 
     public Constants getConstants() {
@@ -65,7 +112,7 @@ public class Drivetrain extends SubsystemBase {
     public Pose2d getPose() {
         return inputs.pose;
     }
-
+    
     public Rotation2d getYaw() {
         return inputs.yaw;
     }
@@ -118,10 +165,49 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
+    /**
+     * Makes a Pathplanner path to a given coral station pose from the robot's current position
+     *
+     * @param targetPose requires a Pose2d of where you want the robot to go
+     */
+    public Command pathToCoralStationPoseCommand(Pose2d targetPose) {
+        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
+                5.0, this.getConstants().maxAngularVelocity,
+                4 * Math.PI);
+
+        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_CORAL_STATION_OFFSET);
+        Command alignToBranch = AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0);
+
+        return alignToBranch;
+    }
+
+    /**
+     * Makes a Pathplanner path to a given reef branch pose from the robot's current position
+     *
+     * @param targetPose requires a Pose2d of where you want the robot to go
+     */
+    public Command pathToReefPoseCommand(Pose2d targetPose) {
+        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
+                5.0, this.getConstants().maxAngularVelocity,
+                4 * Math.PI);
+
+        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_REEF_OFFSET);
+        Command alignToBranch = AutoBuilder.pathfindToPose(
+                targetPose,
+                constraints,
+                0.0);
+
+        return alignToBranch;
+    }
+
 
     public record Constants(
             double maxLinearVelocity,
-            double maxAngularVelocity
+            double maxAngularVelocity,
+            RobotConfig robotConfig
     ) {
     }
 }

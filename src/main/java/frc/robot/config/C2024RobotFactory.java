@@ -25,6 +25,9 @@ public class C2024RobotFactory implements RobotFactory {
     private static final double BACK_MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - INTAKE_X_OFFSET - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
 
+    private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
+    private static final double ROBOT_WEIGHT_KG = 61.235;
+
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
             .withPigeon2Id(0)
@@ -88,7 +91,6 @@ public class C2024RobotFactory implements RobotFactory {
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
     private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(-234.84);
 
-
     @Override
     public DrivetrainIO createDrivetrainIo() {
         // Configuring front left module
@@ -131,7 +133,8 @@ public class C2024RobotFactory implements RobotFactory {
                 false, true, false
         );
 
-        return new CTREDrivetrainIO(DRIVETRAIN_CONSTANTS,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
+                DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
     }

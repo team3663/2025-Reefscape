@@ -28,7 +28,6 @@ import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
 import frc.robot.subsystems.grabber.GrabberIO;
-import frc.robot.subsystems.grabber.GrabberInputs;
 import frc.robot.subsystems.led.LedCandleIo;
 import frc.robot.subsystems.led.LedIo;
 import frc.robot.subsystems.vision.LimelightIO;
@@ -42,6 +41,9 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double FRAME_Y_LENGTH = Units.inchesToMeters(27.0);
     private static final double MODULE_X_OFFSET = FRAME_X_LENGTH / 2.0 - MODULE_WHEEL_INSET;
     private static final double MODULE_Y_OFFSET = FRAME_Y_LENGTH / 2.0 - MODULE_WHEEL_INSET;
+
+    private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
+    private static final double ROBOT_WEIGHT_KG = 61.235;
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -145,7 +147,8 @@ public class C2025RobotFactory implements RobotFactory {
                 false, false, false
         );
 
-        return new CTREDrivetrainIO(DRIVETRAIN_CONSTANTS,
+        return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
+                DRIVETRAIN_CONSTANTS,
                 frontLeftConfig, frontRightConfig,
                 backLeftConfig, backRightConfig);
     }
@@ -159,8 +162,8 @@ public class C2025RobotFactory implements RobotFactory {
     public ClimberIO createClimberIo() {
         return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
     }
-    
-    @Override 
+
+    @Override
     public ElevatorIO createElevatorIo() {
         return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
     }
