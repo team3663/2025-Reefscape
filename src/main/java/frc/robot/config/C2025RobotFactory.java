@@ -81,27 +81,27 @@ public class C2025RobotFactory implements RobotFactory {
             .withSpeedAt12Volts(MAX_DRIVE_VELOCITY);
 
     // Front Left
-    private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 1;
-    private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 2;
-    private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 1;
+    private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 2;
+    private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 1;
+    private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 2;
     private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     // Front Right
-    private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 3;
-    private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 4;
-    private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 2;
+    private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 4;
+    private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 3;
+    private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 4;
     private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     // Back Left
-    private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 5;
-    private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 6;
-    private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 3;
+    private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 6;
+    private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 5;
+    private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 6;
     private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
     // Back Right
-    private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 7;
-    private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 8;
-    private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 4;
+    private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 8;
+    private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 7;
+    private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 8;
     private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
 
 
@@ -155,27 +155,27 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public ArmIO createArmIo() {
-        return new C2025ArmIO(new TalonFX(11), new TalonFX(12), new CANcoder(0));
+        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
     }
 
     @Override
     public ClimberIO createClimberIo() {
-        return new C2025ClimberIO(new TalonFX(13), new CANdi(0), new CANcoder(0));
+        return new C2025ClimberIO(new TalonFX(11), new CANdi(0), new CANcoder(0));
     }
 
     @Override
     public ElevatorIO createElevatorIo() {
-        return new C2025ElevatorIO(new TalonFX(16), new TalonFX(17));
+        return new C2025ElevatorIO(new TalonFX(9), new TalonFX(10));
     }
 
     @Override
     public GrabberIO createGrabberIo() {
-        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(1));
+        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
     }
 
     @Override
     public LedIo createLedIo() {
-        return new LedCandleIo(new CANdle(2));
+        return new LedCandleIo(new CANdle(1));
     }
 
     @Override
