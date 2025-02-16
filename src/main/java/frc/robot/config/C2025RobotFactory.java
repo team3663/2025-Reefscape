@@ -80,29 +80,31 @@ public class C2025RobotFactory implements RobotFactory {
             .withWheelRadius(Constants.MK4N_WHEEL_RADIUS)
             .withSpeedAt12Volts(MAX_DRIVE_VELOCITY);
 
+
+    // offsets are found with gears to the right
     // Front Left
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 2;
-    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRotations(108.28125);
 
     // Front Right
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 4;
     private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 3;
     private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 4;
-    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(142.55859);
 
     // Back Left
     private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 6;
     private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 5;
     private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 6;
-    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRotations(292.32422);
 
     // Back Right
     private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 8;
     private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 7;
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 8;
-    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRadians(0.0);
+    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(-177.89063);
 
 
     @Override
@@ -114,7 +116,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_FRONT_LEFT_ENCODER_ID,
                 DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET,
                 MODULE_X_OFFSET, MODULE_Y_OFFSET,
-                false, false, false
+                false, true, false
         );
 
         // Configuring front right module
@@ -124,7 +126,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_ID,
                 DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET,
                 MODULE_X_OFFSET, -MODULE_Y_OFFSET,
-                false, false, false
+                false, true, false
         );
 
         // Configuring back left module
@@ -134,7 +136,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_BACK_LEFT_ENCODER_ID,
                 DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET,
                 -MODULE_X_OFFSET, MODULE_Y_OFFSET,
-                false, false, false
+                false, true, false
         );
 
         // Configuring back right module
@@ -144,7 +146,7 @@ public class C2025RobotFactory implements RobotFactory {
                 DRIVETRAIN_BACK_RIGHT_ENCODER_ID,
                 DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET,
                 -MODULE_X_OFFSET, -MODULE_Y_OFFSET,
-                false, false, false
+                false, true, false
         );
 
         return new CTREDrivetrainIO(ROBOT_WEIGHT_KG, ROBOT_MOMENT_OF_INERTIA,
@@ -153,44 +155,44 @@ public class C2025RobotFactory implements RobotFactory {
                 backLeftConfig, backRightConfig);
     }
 
-    @Override
-    public ArmIO createArmIo() {
-        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
-    }
-
-    @Override
-    public ClimberIO createClimberIo() {
-        return new C2025ClimberIO(new TalonFX(11), new CANdi(0), new CANcoder(0));
-    }
-
-    @Override
-    public ElevatorIO createElevatorIo() {
-        return new C2025ElevatorIO(new TalonFX(9), new TalonFX(10));
-    }
-
-    @Override
-    public GrabberIO createGrabberIo() {
-        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
-    }
-
-    @Override
-    public LedIo createLedIo() {
-        return new LedCandleIo(new CANdle(1));
-    }
-
-    @Override
-    public VisionIO[] createVisionIo() {
-
-        Rotation3d leftRotation = new Rotation3d(Constants.LEFT_CAMERA_ROLL, Constants.LEFT_CAMERA_PITCH, Constants.LEFT_CAMERA_YAW);
-        Transform3d leftTransform = new Transform3d(Constants.LEFT_CAMERA_X, Constants.LEFT_CAMERA_Y, Constants.LEFT_CAMERA_Z, leftRotation);
-
-        Rotation3d rightRotation = new Rotation3d(Constants.RIGHT_CAMERA_ROLL, Constants.RIGHT_CAMERA_PITCH, Constants.RIGHT_CAMERA_YAW);
-        Transform3d rightTransform = new Transform3d(Constants.RIGHT_CAMERA_X, Constants.RIGHT_CAMERA_Y, Constants.RIGHT_CAMERA_Z, rightRotation);
-
-        return new VisionIO[]{
-                new LimelightIO(Constants.LEFT_CAMERA_NAME, leftTransform),
-                new LimelightIO(Constants.RIGHT_CAMERA_NAME, rightTransform),
-
-        };
-    }
+//    @Override
+//    public ArmIO createArmIo() {
+//        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
+//    }
+//
+//    @Override
+//    public ClimberIO createClimberIo() {
+//        return new C2025ClimberIO(new TalonFX(11), new CANdi(0), new CANcoder(0));
+//    }
+//
+//    @Override
+//    public ElevatorIO createElevatorIo() {
+//        return new C2025ElevatorIO(new TalonFX(9), new TalonFX(10));
+//    }
+//
+//    @Override
+//    public GrabberIO createGrabberIo() {
+//        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
+//    }
+//
+//    @Override
+//    public LedIo createLedIo() {
+//        return new LedCandleIo(new CANdle(1));
+//    }
+//
+//    @Override
+//    public VisionIO[] createVisionIo() {
+//
+//        Rotation3d leftRotation = new Rotation3d(Constants.LEFT_CAMERA_ROLL, Constants.LEFT_CAMERA_PITCH, Constants.LEFT_CAMERA_YAW);
+//        Transform3d leftTransform = new Transform3d(Constants.LEFT_CAMERA_X, Constants.LEFT_CAMERA_Y, Constants.LEFT_CAMERA_Z, leftRotation);
+//
+//        Rotation3d rightRotation = new Rotation3d(Constants.RIGHT_CAMERA_ROLL, Constants.RIGHT_CAMERA_PITCH, Constants.RIGHT_CAMERA_YAW);
+//        Transform3d rightTransform = new Transform3d(Constants.RIGHT_CAMERA_X, Constants.RIGHT_CAMERA_Y, Constants.RIGHT_CAMERA_Z, rightRotation);
+//
+//        return new VisionIO[]{
+//                new LimelightIO(Constants.LEFT_CAMERA_NAME, leftTransform),
+//                new LimelightIO(Constants.RIGHT_CAMERA_NAME, rightTransform),
+//
+//        };
+//    }
 }
