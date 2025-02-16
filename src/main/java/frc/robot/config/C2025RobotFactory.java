@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
@@ -166,7 +167,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public GrabberIO createGrabberIo() {
-        return new C2025GrabberIO(new TalonFX(14), new CANdi(1));
+        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(1));
     }
 
     @Override
