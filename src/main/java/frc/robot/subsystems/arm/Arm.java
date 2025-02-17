@@ -169,7 +169,7 @@ public class Arm extends SubsystemBase {
 
     public Command zeroWrist() {
         return runEnd(() -> {
-            io.setWristTargetVoltage(-1.0);
+            io.setWristTargetVoltage(-1.5);
             io.setShoulderTargetPosition(Units.degreesToRadians(90));
             targetWristPosition = constants.minimumWristAngle;
             targetShoulderPosition = Units.degreesToRadians(90);

@@ -96,10 +96,11 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private double getMinimumAllowableWristAngle(double elevatorPosition, double shoulderAngle) {
-        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
-        if (Math.abs(length) <= 1.0) {
-            return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
-        }
+//        TODO Kaitlin fix this equation
+//        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
+//        if (Math.abs(length) <= 1.0) {
+//            return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
+//        }
         return arm.getConstants().minimumWristAngle();
     }
 
@@ -170,8 +171,8 @@ public class SuperStructure extends SubsystemBase {
             else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
-            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
-                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
+//            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
+//                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
             return robotMode.get().getShoulderAngle();
         };
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();

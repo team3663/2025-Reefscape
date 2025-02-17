@@ -155,10 +155,10 @@ public class C2025RobotFactory implements RobotFactory {
                 backLeftConfig, backRightConfig);
     }
 
-//    @Override
-//    public ArmIO createArmIo() {
-//        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
-//    }
+    @Override
+    public ArmIO createArmIo() {
+        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
+    }
 //
 //    @Override
 //    public ClimberIO createClimberIo() {
