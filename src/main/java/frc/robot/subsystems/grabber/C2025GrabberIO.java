@@ -32,7 +32,7 @@ public class C2025GrabberIO implements GrabberIO {
         this.gamePieceDetector = gamePieceDetector;
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         motor.getConfigurator().apply(motorConfig);
     }

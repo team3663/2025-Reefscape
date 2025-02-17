@@ -170,10 +170,10 @@ public class C2025RobotFactory implements RobotFactory {
 //        return new C2025ElevatorIO(new TalonFX(9), new TalonFX(10));
 //    }
 //
-//    @Override
-//    public GrabberIO createGrabberIo() {
-//        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
-//    }
+    @Override
+    public GrabberIO createGrabberIo() {
+        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
+    }
 //
 //    @Override
 //    public LedIo createLedIo() {
