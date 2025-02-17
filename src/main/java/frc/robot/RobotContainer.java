@@ -141,7 +141,7 @@ public class RobotContainer {
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
-        new Trigger(() -> grabber.isGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
+        new Trigger(() -> grabber.getGamePieceDetected()).and(robotMode::isAlgaeMode).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
         new Trigger(() -> grabber.getGamePieceNotDetected()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = false));
 
         // Operator Controller Robot Mode
