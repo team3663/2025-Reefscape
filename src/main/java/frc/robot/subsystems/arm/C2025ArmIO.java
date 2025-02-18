@@ -45,6 +45,11 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.CurrentLimits.SupplyCurrentLimit = 40;
         shoulderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
+        // SysID gave us the following values, but I don't think these are right...
+        // kV = 0.10508
+        // KA = 0.004985
+        // kS = 0.13898
+
         shoulderConfig.Slot0.kV = 7.3636;
         shoulderConfig.Slot0.kA = 0.0;
         shoulderConfig.Slot0.kP = 50.0;

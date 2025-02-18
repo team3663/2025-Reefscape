@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
         // Creating a SysId Routine
         sysIdRoutineShoulder = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        Volts.of(0.25).per(Second),
+                        Volts.of(0.1).per(Second),
                         Volts.of(4),
                         null,
                         (state) -> SignalLogger.writeString("state", state.toString())),
