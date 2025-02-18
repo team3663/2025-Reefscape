@@ -42,6 +42,8 @@ public class C2025ArmIO implements ArmIO {
         // Shoulder motor config
         TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
         shoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        shoulderConfig.CurrentLimits.SupplyCurrentLimit = 40;
+        shoulderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         shoulderConfig.Slot0.kV = 7.3636;
         shoulderConfig.Slot0.kA = 0.0;
@@ -66,6 +68,8 @@ public class C2025ArmIO implements ArmIO {
         wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         wristConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         wristConfig.Feedback.SensorToMechanismRatio = WRIST_GEAR_RATIO;
+        wristConfig.CurrentLimits.SupplyCurrentLimit = 30;
+        wristConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         wristConfig.Slot0.kV = 3.0;
         wristConfig.Slot0.kA = 0.0;
