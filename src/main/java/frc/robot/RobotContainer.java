@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
@@ -78,7 +79,7 @@ public class RobotContainer {
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
         led.setDefaultCommand(led.signalCommand(() -> robotMode));
-        superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
+//        superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
 
         // Creates Auto Chooser
         autoChooser = new AutoChooser();
@@ -151,11 +152,16 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
-        // Driver Controller Robot Mode
+//         Driver Controller Robot Mode
         driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
         driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
         driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
         driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+
+//        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
+//        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
 
         driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
         driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
