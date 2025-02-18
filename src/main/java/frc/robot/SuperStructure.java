@@ -171,8 +171,8 @@ public class SuperStructure extends SubsystemBase {
             else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
-//            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
-//                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
+            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
+                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
             return robotMode.get().getShoulderAngle();
         };
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();

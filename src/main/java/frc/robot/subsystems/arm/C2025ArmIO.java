@@ -56,7 +56,8 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.Feedback.RotorToSensorRatio = SHOULDER_GEAR_RATIO;
 
         shoulderConfig.MotionMagic.MotionMagicAcceleration = 4.0;
-        shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 2.0;
+        shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 1.63;
+        shoulderConfig.MotionMagic.MotionMagicJerk = 10.0;
 
         shoulderMotor.getConfigurator().apply(shoulderConfig);
 
@@ -73,8 +74,9 @@ public class C2025ArmIO implements ArmIO {
         wristConfig.Slot0.kD = 0.0;
         wristConfig.Slot0.kS = 0.2;
 
-        wristConfig.MotionMagic.MotionMagicAcceleration = 10;
+        wristConfig.MotionMagic.MotionMagicAcceleration = 15;
         wristConfig.MotionMagic.MotionMagicCruiseVelocity = 4;
+        wristConfig.MotionMagic.MotionMagicJerk = 100.0;
 
         wristMotor.getConfigurator().apply(wristConfig);
     }

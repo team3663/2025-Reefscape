@@ -65,9 +65,7 @@ public class CommandFactory {
      * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
      */
     public Command releaseGamePiece() {
-        return runEnd(() -> {
-            grabber.withVoltage(-1.0);
-        }, grabber::stop).until(grabber::getGamePieceNotDetected);
+        return grabber.withVoltage(1.0);
     }
 
     /**
@@ -77,7 +75,7 @@ public class CommandFactory {
         return superStructure.goToPositions(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
                         Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
                         Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE)
-                .andThen(grabber.withVoltageUntilDetected(-1.0));
+                .andThen(grabber.withVoltageUntilDetected(1.0));
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode){

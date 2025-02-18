@@ -11,7 +11,7 @@ public enum RobotMode {
     ALGAE_PROCESSOR(0.5, Units.degreesToRadians(120), Units.degreesToRadians(17.5), true),
     ALGAE_NET(0.6, Units.degreesToRadians(140), Units.degreesToRadians(35), true),
     ALGAE_REMOVE_LOWER(0.7, Units.degreesToRadians(160), Units.degreesToRadians(52.5), true),
-    ALGAE_REMOVE_UPPER(0.8, Units.degreesToRadians(180), Units.degreesToRadians(70), true),
+    ALGAE_REMOVE_UPPER(1.55, Units.degreesToRadians(180), Units.degreesToRadians(70), true),
     CORAL_STATION(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE, Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE, false);
 
 

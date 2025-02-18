@@ -86,25 +86,25 @@ public class C2025RobotFactory implements RobotFactory {
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 2;
-    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRotations(108.28125);
+    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRotations(100.195);
 
     // Front Right
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 4;
     private static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_ID = 3;
     private static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_ID = 4;
-    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(142.55859);
+    private static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(205.1357);
 
     // Back Left
     private static final int DRIVETRAIN_BACK_LEFT_STEER_ID = 6;
     private static final int DRIVETRAIN_BACK_LEFT_DRIVE_ID = 5;
     private static final int DRIVETRAIN_BACK_LEFT_ENCODER_ID = 6;
-    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRotations(292.32422);
+    private static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = Units.degreesToRotations(69.785);
 
     // Back Right
     private static final int DRIVETRAIN_BACK_RIGHT_STEER_ID = 8;
     private static final int DRIVETRAIN_BACK_RIGHT_DRIVE_ID = 7;
     private static final int DRIVETRAIN_BACK_RIGHT_ENCODER_ID = 8;
-    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(-177.89063);
+    private static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = Units.degreesToRotations(-177.715);
 
 
     @Override
@@ -164,12 +164,12 @@ public class C2025RobotFactory implements RobotFactory {
 //    public ClimberIO createClimberIo() {
 //        return new C2025ClimberIO(new TalonFX(11), new CANdi(0), new CANcoder(0));
 //    }
-//
-//    @Override
-//    public ElevatorIO createElevatorIo() {
-//        return new C2025ElevatorIO(new TalonFX(9), new TalonFX(10));
-//    }
-//
+
+    @Override
+    public ElevatorIO createElevatorIo() {
+        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
+    }
+
     @Override
     public GrabberIO createGrabberIo() {
         return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
