@@ -51,6 +51,8 @@ public class Robot extends TimedRobot {
 
         robotContainer = new RobotContainer(robotFactory);
 
+        SignalLogger.setPath("/media/sda1/");
+
         Epilogue.configure(config -> {
         });
         Epilogue.bind(this);

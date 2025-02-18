@@ -6,6 +6,7 @@ package frc.robot;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
@@ -158,6 +159,8 @@ public class RobotContainer {
         driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
         driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
 
+//        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
+//        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
 //        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
 //        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
 //        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
