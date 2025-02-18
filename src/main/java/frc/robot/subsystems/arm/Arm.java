@@ -112,7 +112,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atPositions(double shoulderPosition, double wristPosition) {
-        return this.shoulderAtPosition(shoulderPosition, POSITION_THRESHOLD) && this.wristAtPosition(wristPosition, POSITION_THRESHOLD);
+        return this.shoulderAtPosition(shoulderPosition) && this.wristAtPosition(wristPosition);
     }
 
     public Command goToPositions(double shoulderPosition, double wristPosition) {
@@ -156,11 +156,15 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atShoulderTargetPosition() {
-        return shoulderAtPosition(targetShoulderPosition, POSITION_THRESHOLD);
+        return shoulderAtPosition(targetShoulderPosition);
     }
 
     public boolean shoulderAtPosition(double position, double threshold) {
         return Math.abs(inputs.currentShoulderPosition - position) < threshold;
+    }
+
+    public boolean shoulderAtPosition(double position) {
+        return shoulderAtPosition(position, POSITION_THRESHOLD);
     }
 
     public double getWristPosition() {
@@ -168,11 +172,15 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atWristTargetPosition() {
-        return wristAtPosition(targetWristPosition, POSITION_THRESHOLD);
+        return wristAtPosition(targetWristPosition);
     }
 
     public boolean wristAtPosition(double position, double threshold) {
         return Math.abs(inputs.currentWristPosition - position) < threshold;
+    }
+
+    public boolean wristAtPosition(double position) {
+        return wristAtPosition(position, POSITION_THRESHOLD);
     }
 
     public Command zeroWrist() {
