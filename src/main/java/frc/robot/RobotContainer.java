@@ -126,7 +126,7 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
-                .whileTrue(commandFactory.releaseGamePiece());
+                .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));
 
         driverController.leftBumper().whileTrue(commandFactory.alignToCoralStation());
         driverController.back().onTrue(drivetrain.resetFieldOriented());

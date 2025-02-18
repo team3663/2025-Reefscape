@@ -64,8 +64,8 @@ public class CommandFactory {
     /**
      * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
      */
-    public Command releaseGamePiece() {
-        return grabber.withVoltage(1.0);
+    public Command releaseGamePiece(Supplier<RobotMode> robotMode) {
+        return grabber.followVoltage(() -> robotMode.get().isRunGrabberReverse() ? -2.0 : 2.0);
     }
 
     /**
