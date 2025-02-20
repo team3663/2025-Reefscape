@@ -10,9 +10,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -131,9 +131,9 @@ public class RobotContainer {
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
-        new Trigger(grabber::getGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
+        new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
-        new Trigger(() -> grabber.getGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
+        new Trigger(() -> grabber.isGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
         new Trigger(() -> grabber.getGamePieceNotDetected()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = false));
 
         // Operator Controller Robot Mode

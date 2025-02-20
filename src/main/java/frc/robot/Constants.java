@@ -90,15 +90,14 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset){
+    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset) {
         if (adding) {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
                     Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin(((Math.PI / 3) * number) +
                             Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
-        }
-        else {
+        } else {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
                     Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin((Math.PI / 3) * number -
@@ -110,13 +109,14 @@ public class Constants {
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
         // Coral Station
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.0;
-        public static final double CORAL_STATION_SHOULDER_ANGLE = 0.0;
-        public static final double CORAL_STATION_WRIST_ANGLE = 0.0;
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.3;
+        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(124.98);
+        public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-55.1);
 
         // Shoulder Safe variables
-        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
-        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
+        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90.0);
+        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(25.0);
+        public static final double SHOULDER_SAFE_BUFFER = Units.degreesToRadians(3.0);
 
         // Shoulder max angle when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);

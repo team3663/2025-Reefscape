@@ -9,13 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
 
 public class C2025ElevatorIO implements ElevatorIO {
     private static final Elevator.Constants CONSTANTS = new Elevator.Constants(0.0, 1.55);
@@ -45,7 +40,7 @@ public class C2025ElevatorIO implements ElevatorIO {
 
         config.Slot0.kV = 0.456;
         config.Slot0.kA = 0.0;
-        config.Slot0.kP = 8.0;
+        config.Slot0.kP = 7.0;
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
         config.Slot0.kG = 0.35;
@@ -105,7 +100,7 @@ public class C2025ElevatorIO implements ElevatorIO {
     }
 
     @Override
-    public void runSysId(Voltage voltage){
+    public void runSysId(Voltage voltage) {
         motor.setControl(sysIdRequest.withOutput(voltage));
     }
 }

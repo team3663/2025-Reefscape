@@ -31,7 +31,7 @@ public class Grabber extends SubsystemBase {
         return inputs.currentAppliedVoltage;
     }
 
-    public boolean getGamePieceDetected() {
+    public boolean isGamePieceDetected() {
         return inputs.gamePieceDetected;
     }
 
@@ -61,13 +61,5 @@ public class Grabber extends SubsystemBase {
             targetVoltage = velocity.getAsDouble();
             io.setTargetVoltage(targetVoltage);
         }, this::stopInternal);
-    }
-
-    public Command withVoltageUntilDetected(double voltage) {
-        return runEnd(() -> {
-                    targetVoltage = voltage;
-                    io.setTargetVoltage(targetVoltage);
-                }, this::stopInternal
-        ).until(() -> inputs.gamePieceDetected);
     }
 }

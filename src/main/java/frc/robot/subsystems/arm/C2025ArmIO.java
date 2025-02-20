@@ -42,7 +42,7 @@ public class C2025ArmIO implements ArmIO {
         // Shoulder motor config
         TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
         shoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        shoulderConfig.CurrentLimits.SupplyCurrentLimit = 40;
+        shoulderConfig.CurrentLimits.SupplyCurrentLimit = 60;
         shoulderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         // SysID gave us the following values, but I don't think these are right...
@@ -50,11 +50,11 @@ public class C2025ArmIO implements ArmIO {
         // KA = 0.004985
         // kS = 0.13898
 
-        shoulderConfig.Slot0.kV = 7.3636;
+        shoulderConfig.Slot0.kV = 7.0;
         shoulderConfig.Slot0.kA = 0.0;
         shoulderConfig.Slot0.kP = 50.0;
         shoulderConfig.Slot0.kI = 0.0;
-        shoulderConfig.Slot0.kD = 0.0;
+        shoulderConfig.Slot0.kD = 5.0;
         shoulderConfig.Slot0.kG = 0.25;
         shoulderConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
@@ -62,9 +62,9 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         shoulderConfig.Feedback.RotorToSensorRatio = SHOULDER_GEAR_RATIO;
 
-        shoulderConfig.MotionMagic.MotionMagicAcceleration = 4.0;
+        shoulderConfig.MotionMagic.MotionMagicJerk = 15.0;
+        shoulderConfig.MotionMagic.MotionMagicAcceleration = 3.0;
         shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 1.63;
-        shoulderConfig.MotionMagic.MotionMagicJerk = 10.0;
 
         shoulderMotor.getConfigurator().apply(shoulderConfig);
 
@@ -122,7 +122,7 @@ public class C2025ArmIO implements ArmIO {
     }
 
     @Override
-    public void sysIdShoulder(Voltage voltage){
+    public void sysIdShoulder(Voltage voltage) {
         shoulderMotor.setControl(voltageRequest.withOutput(voltage));
     }
 
@@ -140,13 +140,14 @@ public class C2025ArmIO implements ArmIO {
     public void setWristTargetPosition(double position) {
         wristMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+
     @Override
-    public void setWristTargetVoltage(double voltage){
+    public void setWristTargetVoltage(double voltage) {
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 
     @Override
-    public void sysIdWrist(Voltage voltage){
+    public void sysIdWrist(Voltage voltage) {
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 }

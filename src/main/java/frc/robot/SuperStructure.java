@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -141,9 +142,28 @@ public class SuperStructure extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-                arm.followPositions(() -> shoulderHaveAlgaePosition(Math.max(shoulderPosition.getAsDouble(), getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()))),
+                arm.followPositions(
+                        () -> {
+                            double pos = shoulderHaveAlgaePosition(
+                                    Math.max(shoulderPosition.getAsDouble(),
+                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())));
+
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)))
+                                return MathUtil.clamp(pos, Constants.ArmPositions.SHOULDER_SAFE_ANGLE - Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD
+                                        + Constants.ArmPositions.SHOULDER_SAFE_BUFFER, Constants.ArmPositions.SHOULDER_SAFE_ANGLE +
+                                        Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD - Constants.ArmPositions.SHOULDER_SAFE_BUFFER);
+
+                            return pos;
+                        },
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
-                elevator.followPosition(() -> Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()))),
+                elevator.followPosition(() -> {
+                    if (!elevator.atPosition(elevatorPosition.getAsDouble()) &&
+                            !arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD)) {
+                        return elevator.getTargetPosition();
+                    }
+
+                    return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
+                }),
                 run(() -> {
                 }));
     }
@@ -164,17 +184,8 @@ public class SuperStructure extends SubsystemBase {
      * @return The command to follow the current position based on the Robot Mode
      */
     public Command followPositions(Supplier<RobotMode> robotMode) {
-        DoubleSupplier targetElevatorHeight = () -> {
-            if (elevator.atPosition(robotMode.get().getElevatorHeight()) ||
-                    arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
-                return robotMode.get().getElevatorHeight();
-            else return elevator.getTargetPosition();
-        };
-        DoubleSupplier targetShoulderAngle = () -> {
-            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
-                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
-            return robotMode.get().getShoulderAngle();
-        };
+        DoubleSupplier targetElevatorHeight = () -> robotMode.get().getElevatorHeight();
+        DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);

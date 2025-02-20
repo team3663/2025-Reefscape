@@ -4,14 +4,14 @@ import edu.wpi.first.math.util.Units;
 
 public enum RobotMode {
     // TODO: get the actual values of these variables!!
-    CORAL_LEVEL_1(0.1, Units.degreesToRadians(0), Units.degreesToRadians(-70), false, false),
-    CORAL_LEVEL_2(0.2, Units.degreesToRadians(20), Units.degreesToRadians(-52.5), false, false),
-    CORAL_LEVEL_3(0.3, Units.degreesToRadians(40), Units.degreesToRadians(-35), false, false),
-    CORAL_LEVEL_4(0.4, Units.degreesToRadians(60), Units.degreesToRadians(-17.5), false, false),
-    ALGAE_PROCESSOR(0.5, Units.degreesToRadians(120), Units.degreesToRadians(17.5), true, false),
-    ALGAE_NET(0.6, Units.degreesToRadians(140), Units.degreesToRadians(35), true, false),
-    ALGAE_REMOVE_LOWER(0.7, Units.degreesToRadians(160), Units.degreesToRadians(52.5), true, true),
-    ALGAE_REMOVE_UPPER(1.55, Units.degreesToRadians(180), Units.degreesToRadians(70), true, true),
+    CORAL_LEVEL_1(Units.inchesToMeters(0), Units.degreesToRadians(34.36), Units.degreesToRadians(40.34), false, false),
+    CORAL_LEVEL_2(Units.inchesToMeters(4.1066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), false, false),
+    CORAL_LEVEL_3(Units.inchesToMeters(20.1066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), false, false),
+    CORAL_LEVEL_4(Units.inchesToMeters(58.858), Units.degreesToRadians(39.199), Units.degreesToRadians(-32.871), false, false),
+    ALGAE_PROCESSOR(0, Units.degreesToRadians(90), Units.degreesToRadians(0), true, false),
+    ALGAE_NET(0, Units.degreesToRadians(90), Units.degreesToRadians(0), true, false),
+    ALGAE_REMOVE_LOWER(0, Units.degreesToRadians(90), Units.degreesToRadians(0), true, true),
+    ALGAE_REMOVE_UPPER(Units.inchesToMeters(0), Units.degreesToRadians(90), Units.degreesToRadians(0), true, true),
     CORAL_STATION(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE, Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE, false, false);
 
 
