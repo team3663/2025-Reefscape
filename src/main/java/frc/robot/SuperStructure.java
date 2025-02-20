@@ -164,13 +164,13 @@ public class SuperStructure extends SubsystemBase {
      */
     public Command followPositions(Supplier<RobotMode> robotMode) {
         DoubleSupplier targetElevatorHeight = () -> {
-            if (elevator.atPosition(robotMode.get().getElevatorHeight()) ||
-                    arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
+            if (elevator.atPosition(robotMode.get().getElevatorHeight(), Units.inchesToMeters(4.0)) ||
+                    arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE))
                 return robotMode.get().getElevatorHeight();
             else return elevator.getTargetPosition();
         };
         DoubleSupplier targetShoulderAngle = () -> {
-            if (!elevator.atPosition(robotMode.get().getElevatorHeight()))
+            if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Units.inchesToMeters(4.0)))
                 return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
             return robotMode.get().getShoulderAngle();
         };
