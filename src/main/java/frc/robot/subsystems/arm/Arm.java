@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -136,11 +137,11 @@ public class Arm extends SubsystemBase {
     }
 
     private double getValidPositionShoulder(double position) {
-        return Math.max(constants.minimumShoulderAngle, Math.min(constants.maximumShoulderAngle, position));
+        return MathUtil.clamp(position, constants.minimumShoulderAngle, constants.maximumShoulderAngle);
     }
 
     private double getValidPositionWrist(double position) {
-        return Math.max(constants.minimumWristAngle, Math.min(constants.maximumWristAngle, position));
+        return MathUtil.clamp(position, constants.minimumWristAngle, constants.maximumWristAngle);
     }
 
     public double getShoulderPosition() {
