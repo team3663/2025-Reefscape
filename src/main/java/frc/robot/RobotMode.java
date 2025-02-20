@@ -12,7 +12,6 @@ public enum RobotMode {
     ALGAE_REMOVE_UPPER(0.8, 0.8, 0.8, true),
     CORAL_STATION(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE, Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE, false);
 
-
     private final double elevatorHeight;
     private final double shoulderAngle;
     private final double wristAngle;
