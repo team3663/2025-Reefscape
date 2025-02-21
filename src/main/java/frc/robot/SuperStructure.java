@@ -97,11 +97,10 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private double getMinimumAllowableWristAngle(double elevatorPosition, double shoulderAngle) {
-//        TODO Kaitlin fix this equation
-//        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
-//        if (Math.abs(length) <= 1.0) {
-//            return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
-//        }
+        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
+        if (Math.abs(length) <= 1.0) {
+            return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
+        }
         return arm.getConstants().minimumWristAngle();
     }
 
