@@ -12,6 +12,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -120,15 +121,19 @@ public class RobotContainer {
                 Commands.sequence(
                         autoChooser.selectedCommandScheduler()
                 ));
+
+        SmartDashboard.putBoolean("Auto Alignment Enabled", true);
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode));
+        driverController.rightBumper().whileTrue(
+                Commands.repeatingSequence(Commands.deferredProxy(()->commandFactory.alignToReef(() -> robotMode))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece());
 
-        driverController.leftBumper().whileTrue(commandFactory.alignToCoralStation());
+        driverController.leftBumper().whileTrue(
+                Commands.repeatingSequence(Commands.deferredProxy(()-> commandFactory.alignToCoralStation())));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 

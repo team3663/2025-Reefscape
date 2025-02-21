@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
@@ -80,19 +81,25 @@ public class CommandFactory {
                 .andThen(grabber.withVoltageUntilDetected(-1.0));
     }
 
-    public Command alignToReef(Supplier<RobotMode> robotMode){
-        return Commands.parallel(superStructure.followPositions(robotMode),
-                Commands.repeatingSequence(
-                        Commands.defer(() -> drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())), Set.of(drivetrain))));
+    public Command alignToReef(Supplier<RobotMode> robotMode) {
+        boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
+        if (autoAlignmentEnabled) {
+            return Commands.parallel(superStructure.followPositions(robotMode),
+                    drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())));
+        } else {
+            return Commands.run(() -> superStructure.followPositions(robotMode));
+        }
     }
 
-    public Command alignToCoralStation(){
-         return Commands.parallel(this.goToCoralStationAndIntake(),
-                Commands.repeatingSequence(
-                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
-                                drivetrain.getPose()
-                        )), Set.of(drivetrain)))
-        );
+    public Command alignToCoralStation() {
+        boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
+        if (autoAlignmentEnabled) {
+            return Commands.parallel(this.goToCoralStationAndIntake(),
+                    drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
+                            drivetrain.getPose())));
+        } else {
+            return Commands.run(() -> this.goToCoralStationAndIntake());
+        }
     }
 
 }
