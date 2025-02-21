@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -20,8 +19,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
-import frc.robot.subsystems.climber.C2025ClimberIO;
-import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
@@ -183,15 +180,15 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public VisionIO[] createVisionIo() {
 
-        Rotation3d leftRotation = new Rotation3d(Constants.LEFT_CAMERA_ROLL, Constants.LEFT_CAMERA_PITCH, Constants.LEFT_CAMERA_YAW);
-        Transform3d leftTransform = new Transform3d(Constants.LEFT_CAMERA_X, Constants.LEFT_CAMERA_Y, Constants.LEFT_CAMERA_Z, leftRotation);
+        Rotation3d leftRotation = new Rotation3d(Constants.FRONT_CAMERA_ROLL, Constants.FRONT_CAMERA_PITCH, Constants.FRONT_CAMERA_YAW);
+        Transform3d leftTransform = new Transform3d(Constants.FRONT_CAMERA_X, Constants.FRONT_CAMERA_Y, Constants.FRONT_CAMERA_Z, leftRotation);
 
-        Rotation3d rightRotation = new Rotation3d(Constants.RIGHT_CAMERA_ROLL, Constants.RIGHT_CAMERA_PITCH, Constants.RIGHT_CAMERA_YAW);
-        Transform3d rightTransform = new Transform3d(Constants.RIGHT_CAMERA_X, Constants.RIGHT_CAMERA_Y, Constants.RIGHT_CAMERA_Z, rightRotation);
+        Rotation3d rightRotation = new Rotation3d(Constants.BACK_CAMERA_ROLL, Constants.BACK_CAMERA_PITCH, Constants.BACK_CAMERA_YAW);
+        Transform3d rightTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, rightRotation);
 
         return new VisionIO[]{
-                new LimelightIO(Constants.LEFT_CAMERA_NAME, leftTransform),
-                new LimelightIO(Constants.RIGHT_CAMERA_NAME, rightTransform),
+                new LimelightIO(Constants.FRONT_CAMERA_NAME, leftTransform),
+                new LimelightIO(Constants.BACK_CAMERA_NAME, rightTransform),
 
         };
     }

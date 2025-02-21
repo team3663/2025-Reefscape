@@ -136,19 +136,19 @@ public class Constants {
     // Roll, pitch & yaw values are in radians
     // X, Y & Z translation values are in meters
     // TODO Get real values from CAD/Mech.
-    public static final String LEFT_CAMERA_NAME = "limelight-l";
-    public static final double LEFT_CAMERA_ROLL = 0.0;
-    public static final double LEFT_CAMERA_PITCH = 0.0;
-    public static final double LEFT_CAMERA_YAW = 0.0;
-    public static final double LEFT_CAMERA_X = Units.inchesToMeters(8.125);
-    public static final double LEFT_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
-    public static final double LEFT_CAMERA_Z = Units.inchesToMeters(8.625);
+    public static final String FRONT_CAMERA_NAME = "limelight-l";
+    public static final double FRONT_CAMERA_ROLL = 0.0;
+    public static final double FRONT_CAMERA_PITCH = 0.0;
+    public static final double FRONT_CAMERA_YAW = 0.0;
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(8.125);
+    public static final double FRONT_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
+    public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
 
-    public static final String RIGHT_CAMERA_NAME = "limelight-r";
-    public static final double RIGHT_CAMERA_ROLL = 0.0;
-    public static final double RIGHT_CAMERA_PITCH = 0.0;
-    public static final double RIGHT_CAMERA_YAW = 0.0;
-    public static final double RIGHT_CAMERA_X = Units.inchesToMeters(8.125);
-    public static final double RIGHT_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
-    public static final double RIGHT_CAMERA_Z = Units.inchesToMeters(8.625);
+    public static final String BACK_CAMERA_NAME = "limelight-r";
+    public static final double BACK_CAMERA_ROLL = 0.0;
+    public static final double BACK_CAMERA_PITCH = 0.0;
+    public static final double BACK_CAMERA_YAW = 0.0;
+    public static final double BACK_CAMERA_X = Units.inchesToMeters(8.125);
+    public static final double BACK_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
+    public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }
