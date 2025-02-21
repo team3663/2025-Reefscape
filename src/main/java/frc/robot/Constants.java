@@ -109,9 +109,10 @@ public class Constants {
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
         // Coral Station
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.3;
-        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(124.98);
-        public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-55.1);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(5.811);
+        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(130.0);
+        public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0
+        );
 
         // Shoulder Safe variables
         public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90.0);

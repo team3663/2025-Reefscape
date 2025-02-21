@@ -174,7 +174,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public LedIo createLedIo() {
-        return new LedCandleIo(new CANdle(1));
+        return new LedCandleIo(new CANdle(1, DRIVETRAIN_CAN_BUS.getName()));
     }
 
     @Override

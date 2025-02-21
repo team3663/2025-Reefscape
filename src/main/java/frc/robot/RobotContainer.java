@@ -124,7 +124,8 @@ public class RobotContainer {
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));
 
-        driverController.leftBumper().and(grabber::getGamePieceNotDetected).whileTrue(commandFactory.alignToCoralStation());
+        driverController.leftBumper().whileTrue(
+                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
