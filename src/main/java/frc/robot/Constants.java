@@ -140,15 +140,15 @@ public class Constants {
     public static final double LEFT_CAMERA_ROLL = 0.0;
     public static final double LEFT_CAMERA_PITCH = 0.0;
     public static final double LEFT_CAMERA_YAW = 0.0;
-    public static final double LEFT_CAMERA_X = 0.0;
-    public static final double LEFT_CAMERA_Y = 0.0;
-    public static final double LEFT_CAMERA_Z = 0.0;
+    public static final double LEFT_CAMERA_X = Units.inchesToMeters(8.125);
+    public static final double LEFT_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
+    public static final double LEFT_CAMERA_Z = Units.inchesToMeters(8.625);
 
     public static final String RIGHT_CAMERA_NAME = "limelight-r";
     public static final double RIGHT_CAMERA_ROLL = 0.0;
     public static final double RIGHT_CAMERA_PITCH = 0.0;
     public static final double RIGHT_CAMERA_YAW = 0.0;
-    public static final double RIGHT_CAMERA_X = 0.0;
-    public static final double RIGHT_CAMERA_Y = 0.0;
-    public static final double RIGHT_CAMERA_Z = 0.0;
+    public static final double RIGHT_CAMERA_X = Units.inchesToMeters(8.125);
+    public static final double RIGHT_CAMERA_Y = Units.inchesToMeters(27 / 2 - (27 - 22.625));
+    public static final double RIGHT_CAMERA_Z = Units.inchesToMeters(8.625);
 }

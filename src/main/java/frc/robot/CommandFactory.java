@@ -83,11 +83,12 @@ public class CommandFactory {
                 superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
                         () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
-                grabber.followVoltage(() -> 6.0),
-                Commands.repeatingSequence(
-                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
-                                drivetrain.getPose()
-                        )), Set.of(drivetrain)))
+                grabber.followVoltage(() -> 6.0)
+//                ,
+//                Commands.repeatingSequence(
+//                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
+//                                drivetrain.getPose()
+//                        )), Set.of(drivetrain)))
         ).withDeadline(
                 Commands.waitUntil(() -> grabber.isGamePieceDetected()).andThen(Commands.waitSeconds(0.04))
         );

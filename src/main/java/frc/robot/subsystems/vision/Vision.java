@@ -27,7 +27,7 @@ public class Vision extends SubsystemBase {
     private final VisionInputs[] visionInputs;
 
     // current yaw of robot as provided by the pigeon
-    private Rotation2d currentYaw;
+    private Rotation2d currentYaw = new Rotation2d();
     private List<VisionMeasurement> acceptedMeasurements = Collections.emptyList();
 
     static {

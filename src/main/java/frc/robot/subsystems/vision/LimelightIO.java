@@ -47,7 +47,7 @@ public class LimelightIO implements VisionIO {
         LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
         // If no tags were seen then return without doing anything.
-        if (estimate.tagCount == 0)
+        if (estimate == null || estimate.tagCount == 0)
             return;
 
         visionInputs.estimatedPose = estimate.pose;
