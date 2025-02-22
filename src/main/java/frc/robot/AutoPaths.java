@@ -20,7 +20,6 @@ public class AutoPaths {
     private final CommandFactory commandFactory;
 
 
-
     public AutoPaths(
             Drivetrain drivetrain, Grabber grabber,
             SuperStructure superStructure, AutoFactory autoFactory, Arm arm, CommandFactory commandFactory) {
@@ -28,12 +27,12 @@ public class AutoPaths {
         this.grabber = grabber;
         this.superStructure = superStructure;
         this.autoFactory = autoFactory;
-        this.commandFactory= commandFactory;
+        this.commandFactory = commandFactory;
 
         this.arm = arm;
     }
 
-    public AutoRoutine testAuto(){
+    public AutoRoutine testAuto() {
         AutoRoutine routine = autoFactory.newRoutine("Test Auto");
 
         AutoTrajectory MoveForwardTraj = routine.trajectory("Move Forward");
@@ -65,9 +64,9 @@ public class AutoPaths {
                         Commands.waitSeconds(2).andThen(
                                 Commands.parallel(
                                         facePlantGTraj.cmd()
+                                )
                         )
-                )
-        ));
+                ));
         facePlantGTraj.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         return routine;
     }
@@ -103,7 +102,7 @@ public class AutoPaths {
                 Commands.sequence(
                         start.resetOdometry(),
                         superStructure.resetPositions(),
-                                start.cmd())
+                        start.cmd())
         );
 
         start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
@@ -266,7 +265,8 @@ public class AutoPaths {
         start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         ewcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
         wcsd.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
-        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
         wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         return routine;
     }
@@ -354,7 +354,6 @@ public class AutoPaths {
         wcse.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
 
 
-
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -392,8 +391,6 @@ public class AutoPaths {
         lwcsk.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
         klwcs.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
         lwcsj.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
-
-
 
 
         routine.active().onTrue(
@@ -439,7 +436,6 @@ public class AutoPaths {
         wcse.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
 
 
-
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -482,9 +478,6 @@ public class AutoPaths {
         lwcsk.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
         klwcs.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
         lwcsj.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
-
-
-
 
 
         routine.active().onTrue(
