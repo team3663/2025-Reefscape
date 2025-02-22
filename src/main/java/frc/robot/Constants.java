@@ -18,7 +18,6 @@ public class Constants {
     public static final double MK4N_STEER_FRICTION_VOLTAGE = 0.25;
     public static final Slot0Configs MK4N_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(100.0);
-    public static final double MK4N_WHEEL_RADIUS = Units.inchesToMeters(4.0);
 
     public static final double MK4I_STEER_REDUCTION = (150.0 / 7.0);
     public static final double MK4I_STEER_INERTIA = 0.00001;
@@ -110,7 +109,7 @@ public class Constants {
         // TODO: get the actual values of these variables!!
         // Coral Station
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(5.811);
-        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(130.0);
+        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(135.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0
         );
 
@@ -150,6 +149,6 @@ public class Constants {
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
     public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - (27.0 - 22.625));
-    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(-8.125);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(8.125);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }

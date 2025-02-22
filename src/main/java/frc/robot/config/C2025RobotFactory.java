@@ -74,7 +74,7 @@ public class C2025RobotFactory implements RobotFactory {
             .withSteerMotorClosedLoopOutput(SwerveModuleConstants.ClosedLoopOutputType.Voltage)
             .withSteerMotorGains(Constants.MK4N_STEER_PID_CONSTANTS)
             .withFeedbackSource(SwerveModuleConstants.SteerFeedbackType.FusedCANcoder)
-            .withWheelRadius(Constants.MK4N_WHEEL_RADIUS)
+            .withWheelRadius(Constants.MK4_WHEEL_RADIUS)
             .withSpeedAt12Volts(MAX_DRIVE_VELOCITY);
 
 
