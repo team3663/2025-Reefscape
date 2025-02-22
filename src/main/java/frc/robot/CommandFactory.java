@@ -78,6 +78,12 @@ public class CommandFactory {
         );
     }
 
+    public Command grabCoral(){
+        return grabber.followVoltage(()-> 6.0).until(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04));
+    }
+    public Command placeCoral(){
+        return grabber.followVoltage(()-> 6.0).until(grabber::getGamePieceNotDetected);
+    }
     public Command alignToCoralStation() {
         return Commands.parallel(
                 superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,

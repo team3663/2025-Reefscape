@@ -66,7 +66,7 @@ public class RobotContainer {
         superStructure = new SuperStructure(elevator, arm, () -> haveAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm);
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(),arm, commandFactory);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw).ignoringDisable(true));
 
@@ -158,12 +158,12 @@ public class RobotContainer {
 //        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
 //        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
 
-        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
-        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
-        driverController.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        driverController.b().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        driverController.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        driverController.y().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+//        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
+//        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
+//        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
+//        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
 
 //        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
 //        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
