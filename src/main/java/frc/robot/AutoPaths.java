@@ -266,7 +266,7 @@ public class AutoPaths {
         start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         ewcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
         wcsd.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
-        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
         wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         return routine;
     }
@@ -364,12 +364,13 @@ public class AutoPaths {
                 )
         );
 
-        start.done().onTrue(Commands.parallel(fwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        fwcs.done().onTrue(Commands.parallel(wcsc.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        wcsc.done().onTrue(Commands.parallel(cwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        cwcs.done().onTrue(Commands.parallel(wcsd.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        wcsd.done().onTrue(Commands.parallel(dwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        dwcs.done().onTrue(Commands.parallel(wcse.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        fwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        cwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcsd.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcse.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
 
         return routine;
     }
@@ -404,12 +405,13 @@ public class AutoPaths {
                 )
         );
 
-        start.done().onTrue(Commands.parallel(ilwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        ilwcs.done().onTrue(Commands.parallel(lwcsl.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        lwcsl.done().onTrue(Commands.parallel(llwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        llwcs.done().onTrue(Commands.parallel(lwcsk.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        lwcsk.done().onTrue(Commands.parallel(klwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        klwcs.done().onTrue(Commands.parallel(lwcsj.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        ilwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsl.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        llwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsk.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        klwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsj.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
 
         return routine;
     }
@@ -447,15 +449,15 @@ public class AutoPaths {
                 )
         );
 
-        start.done().onTrue(Commands.parallel(fwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        fwcs.done().onTrue(Commands.parallel(wcsb.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        wcsb.done().onTrue(Commands.parallel(bwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        bwcs.done().onTrue(Commands.parallel(wcsc.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        wcsc.done().onTrue(Commands.parallel(cwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        cwcs.done().onTrue(Commands.parallel(wcsd.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        wcsd.done().onTrue(Commands.parallel(dwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        dwcs.done().onTrue(Commands.parallel(wcse.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-
+        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        fwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcsb.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        bwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        cwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcsd.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        wcse.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
         return routine;
     }
 
@@ -484,6 +486,7 @@ public class AutoPaths {
 
 
 
+
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -493,14 +496,15 @@ public class AutoPaths {
                 )
         );
 
-        start.done().onTrue(Commands.parallel(ilwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        ilwcs.done().onTrue(Commands.parallel(lwcsa.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        lwcsa.done().onTrue(Commands.parallel(alwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        alwcs.done().onTrue(Commands.parallel(lwcsl.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        lwcsl.done().onTrue(Commands.parallel(llwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        llwcs.done().onTrue(Commands.parallel(lwcsk.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
-        lwcsk.done().onTrue(Commands.parallel(klwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        klwcs.done().onTrue(Commands.parallel(lwcsj.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        ilwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsa.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        alwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsl.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        llwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsk.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        klwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+        lwcsj.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
 
         return routine;
     }
