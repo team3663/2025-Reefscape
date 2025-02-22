@@ -80,8 +80,8 @@ public class C2025ElevatorIO implements ElevatorIO {
     }
 
     @Override
-    public void resetPosition() {
-        motor.setPosition(0);
+    public void resetPosition(double position) {
+        motor.setPosition(position / PULLEY_CIRCUMFERENCE);
     }
 
     @Override

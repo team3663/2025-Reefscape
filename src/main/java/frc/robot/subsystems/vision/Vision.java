@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,8 +41,8 @@ public class Vision extends SubsystemBase {
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
 
     static {
-        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(1.0, VecBuilder.fill(1.0, 1.0, 1.0));
-        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(10.0, 10.0, 10.0));
+        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(1.0, VecBuilder.fill(0.05, 0.05, 0.05));
+        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
     }
 
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {

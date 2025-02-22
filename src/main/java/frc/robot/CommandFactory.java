@@ -79,7 +79,7 @@ public class CommandFactory {
     }
 
     public Command grabCoral(){
-        return grabber.followVoltage(()-> 6.0).until(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04));
+        return grabber.followVoltage(()-> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
     }
     public Command placeCoral(){
         return grabber.followVoltage(()-> 6.0).until(grabber::getGamePieceNotDetected);

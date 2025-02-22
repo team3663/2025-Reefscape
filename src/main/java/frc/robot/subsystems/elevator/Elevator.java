@@ -96,7 +96,7 @@ public class Elevator extends SubsystemBase {
 
     public Command resetPosition() {
         return Commands.runOnce(() -> {
-            io.resetPosition();
+            io.resetPosition(constants.minimumPosition + Units.inchesToMeters(0.5));
             zeroed = true;
         });
     }
@@ -134,7 +134,7 @@ public class Elevator extends SubsystemBase {
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocityMotor1) < VELOCITY_THRESHOLD)
                         // Then reset the elevator position and set zeroed to true
                         .andThen(() -> {
-                            io.resetPosition();
+                            io.resetPosition(constants.minimumPosition);
                             zeroed = true;
                         })
                         // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet

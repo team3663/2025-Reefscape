@@ -57,7 +57,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         this.drivetrain = new SwerveDrivetrain<>(
                 TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants,
                 0.0,
-                VecBuilder.fill(0.1, 0.1, 0.1),
+                VecBuilder.fill(0.05, 0.05, 0.05),
                 VecBuilder.fill(10.0, 10.0, 10.0),
                 moduleConstants
         );
