@@ -141,15 +141,15 @@ public class Constants {
     public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_X = Units.inchesToMeters(8.125);
-    public static final double FRONT_CAMERA_Y = Units.inchesToMeters(27.0 / 2 - (27.0 - 22.625));
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - (27.0 - 22.625));
+    public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(8.125);
     public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
 
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = Units.inchesToMeters(8.125);
-    public static final double BACK_CAMERA_Y = Units.inchesToMeters(27.0 / 2.0 - (27.0 - 22.625));
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - (27.0 - 22.625));
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(-8.125);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }

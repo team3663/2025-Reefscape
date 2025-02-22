@@ -38,7 +38,7 @@ public class C2025ElevatorIO implements ElevatorIO {
         config.CurrentLimits.SupplyCurrentLimit = 60.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.Slot0.kV = 0.456;
+        config.Slot0.kV = 0.45;
         config.Slot0.kA = 0.0;
         config.Slot0.kP = 7.0;
         config.Slot0.kI = 0.0;

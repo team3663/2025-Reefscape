@@ -25,7 +25,7 @@ public class LimelightIO implements VisionIO {
         Rotation3d rotation = transform.getRotation();
         LimelightHelpers.setCameraPose_RobotSpace(name,
                 transform.getX(),
-                transform.getY(),
+                -transform.getY(),
                 transform.getZ(),
                 Units.radiansToDegrees(rotation.getX()),
                 Units.radiansToDegrees(rotation.getY()),
@@ -44,7 +44,7 @@ public class LimelightIO implements VisionIO {
         visionInputs.IMUYaw = imuData.Yaw;
 
         // Get a new pose estimate
-        LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraName);
+        LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
         // If no tags were seen then return without doing anything.
         if (estimate == null || estimate.tagCount == 0)
@@ -66,10 +66,10 @@ public class LimelightIO implements VisionIO {
     public void robotStateChanged() {
         // When the robot is disabled then seed the limelight's IMU with data from the Pigeon but once
         // the robot is enabled then switch to the Limelight's internal IMU.
-        if (RobotState.isDisabled()) {
-            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
-        } else {
-            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_INTERNAL);
-        }
+//        if (RobotState.isDisabled()) {
+//            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
+//        } else {
+//            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_INTERNAL);
+//        }
     }
 }

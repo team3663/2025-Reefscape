@@ -36,7 +36,7 @@ public class Vision extends SubsystemBase {
     // current yaw of robot as provided by the pigeon
     private Rotation2d currentYaw = new Rotation2d();
     @NotLogged
-    private List<VisionMeasurement> acceptedMeasurements = Collections.emptyList();
+    private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
 
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(1.0, VecBuilder.fill(1.0, 1.0, 1.0));
@@ -78,7 +78,7 @@ public class Vision extends SubsystemBase {
             ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
         }
 
-        List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
+        acceptedMeasurements.clear();
         for (VisionInputs visionInput : visionInputs) {
             Pose2d pose = visionInput.estimatedPose;
             double timestamp = visionInput.timestampSeconds;
@@ -102,8 +102,6 @@ public class Vision extends SubsystemBase {
 
             acceptedMeasurements.add(new VisionMeasurement(pose, timestamp, stdDevs));
         }
-
-        this.acceptedMeasurements = acceptedMeasurements;
     }
 
     /**
