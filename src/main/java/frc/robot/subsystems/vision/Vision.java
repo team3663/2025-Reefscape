@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -22,12 +23,19 @@ public class Vision extends SubsystemBase {
 
     private static final InterpolatingMatrixTreeMap<Double, N3, N1> MEASUREMENT_STD_DEV_DISTANCE_MAP = new InterpolatingMatrixTreeMap<>();
 
+    @NotLogged
     private final VisionIO[] ios;
+    @NotLogged
     private final AprilTagFieldLayout fieldLayout;
+    @NotLogged
     private final VisionInputs[] visionInputs;
+
+    private final VisionInputs frontInputs;
+    private final VisionInputs backInputs;
 
     // current yaw of robot as provided by the pigeon
     private Rotation2d currentYaw = new Rotation2d();
+    @NotLogged
     private List<VisionMeasurement> acceptedMeasurements = Collections.emptyList();
 
     static {
@@ -42,6 +50,21 @@ public class Vision extends SubsystemBase {
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
             visionInputs[i] = new VisionInputs();
+        }
+        if (visionInputs.length > 0)
+        {
+            frontInputs = visionInputs[0];
+        }
+        else
+        {
+            frontInputs = new VisionInputs();
+        }
+        if (visionInputs.length > 1)
+        {
+            backInputs = visionInputs[1];
+        }
+        else {
+            backInputs = new VisionInputs();
         }
 
         // Register the command we use to detect when the robot is enabled/disabled.
