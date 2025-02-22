@@ -130,7 +130,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
-        return runEnd(() -> {
+        return run(() -> {
             // Shoulder
             targetShoulderPosition = getValidPositionShoulder(shoulderPosition.getAsDouble());
             io.setShoulderTargetPosition(targetShoulderPosition);
@@ -140,7 +140,7 @@ public class Arm extends SubsystemBase {
                 targetWristPosition = getValidPositionWrist(wristPosition.getAsDouble());
                 io.setWristTargetPosition(targetWristPosition);
             }
-        }, this::stop);
+        });
     }
 
     private double getValidPositionShoulder(double position) {

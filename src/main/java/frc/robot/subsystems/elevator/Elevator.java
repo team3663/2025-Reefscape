@@ -111,12 +111,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command followPosition(DoubleSupplier position) {
-        return runEnd(() -> {
+        return run(() -> {
             if (zeroed) {
                 targetPosition = getValidPosition(position.getAsDouble());
                 io.setTargetPosition(targetPosition);
             }
-        }, io::stop);
+        });
     }
 
     private double getValidPosition(double position) {

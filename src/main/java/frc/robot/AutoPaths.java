@@ -94,9 +94,9 @@ public class AutoPaths {
         AutoTrajectory start = routine.trajectory("PStart-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
         AutoTrajectory wcsc = routine.trajectory("WCS-C");
-        start.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
-        dwcs.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
-        wcsc.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
+//        start.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
+//        dwcs.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
+//        wcsc.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3));
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -105,9 +105,12 @@ public class AutoPaths {
                         start.cmd())
         );
 
-        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
-        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
-        wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+//        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+//        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()));
+//        wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
+        dwcs.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(commandFactory.grabCoral()).andThen(wcsc.cmd()));
+        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(commandFactory.placeCoral()));
 
         return routine;
     }
