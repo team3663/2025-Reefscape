@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -94,7 +95,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command resetPosition() {
-        return runOnce(io::resetPosition);
+        return Commands.runOnce(() -> {
+            io.resetPosition();
+            zeroed = true;
+        });
     }
 
     public Command goToPosition(double position) {

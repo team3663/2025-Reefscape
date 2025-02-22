@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -97,6 +98,13 @@ public class Arm extends SubsystemBase {
                     io.stopWrist();
                 }
         );
+    }
+
+    public Command resetWristPositionToDefault() {
+        return Commands.runOnce(() -> {
+            io.resetWristPosition(constants.minimumWristAngle);
+            wristZeroed = true;
+        });
     }
 
     public boolean atTargetPositions() {

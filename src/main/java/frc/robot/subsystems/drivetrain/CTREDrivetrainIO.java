@@ -21,6 +21,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -43,6 +44,8 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final PIDController xController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
+
+    private double yawOffset = 0;
 
     @SafeVarargs
     public CTREDrivetrainIO(
@@ -102,7 +105,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.odometryPeriod = state.OdometryPeriod;
 
         inputs.pose = state.Pose;
-        inputs.yaw = new Rotation2d(drivetrain.getPigeon2().getYaw().getValue());
+        inputs.yaw = new Rotation2d(drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians) + yawOffset);
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
@@ -115,6 +118,8 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void resetOdometry(Pose2d newPose) {
+        yawOffset = newPose.getRotation().getRadians() - drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians);
+
         drivetrain.resetPose(newPose);
     }
 
@@ -127,16 +132,14 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     public void resetFieldOriented() {
         Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
-            switch (alliance.get()) {
-                case Blue:
-                    drivetrain.setOperatorPerspectiveForward(Rotation2d.kZero);
-                    drivetrain.resetRotation(Rotation2d.kZero);
-                    break;
-                case Red:
-                    drivetrain.setOperatorPerspectiveForward(Rotation2d.k180deg);
-                    drivetrain.resetRotation(Rotation2d.k180deg);
-                    break;
-            }
+            Rotation2d rotation = switch (alliance.get()) {
+                case Blue -> Rotation2d.kZero;
+                case Red -> Rotation2d.k180deg;
+            };
+            drivetrain.resetRotation(rotation);
+            drivetrain.setOperatorPerspectiveForward(rotation);
+
+            yawOffset = rotation.getRadians() - drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians);
         }
     }
 

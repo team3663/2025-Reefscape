@@ -190,6 +190,10 @@ public class SuperStructure extends SubsystemBase {
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 
+    public Command goToPositions(RobotMode robotMode) {
+        return followPositions(() -> robotMode).until(this::atTargetPositions);
+    }
+
     public Command goToDefaultPositions() {
         return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
     }
@@ -201,5 +205,9 @@ public class SuperStructure extends SubsystemBase {
                 runOnce(() -> {
                 })
         );
+    }
+
+    public Command resetPositions() {
+        return Commands.parallel(arm.resetWristPositionToDefault(), elevator.resetPosition());
     }
 }

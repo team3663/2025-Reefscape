@@ -6,6 +6,7 @@ package frc.robot;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.config.RobotFactory;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
@@ -64,9 +66,9 @@ public class RobotContainer {
         superStructure = new SuperStructure(elevator, arm, () -> haveAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, superStructure, drivetrain.getAutoFactory());
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, () -> drivetrain.getPose().getRotation()).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw).ignoringDisable(true));
 
         configureBindings();
 
@@ -80,6 +82,8 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
+        autoChooser.addRoutine("Test Auto", autoPaths::testAuto);
+
         autoChooser.addRoutine("FacePlantG", autoPaths::facePlantG);
         autoChooser.addRoutine("FacePlantH", autoPaths::facePlantH);
 
@@ -154,12 +158,12 @@ public class RobotContainer {
 //        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
 //        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
 
-//        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
-//        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
-//        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
-//        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
-//        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
-//        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
+        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
+        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
+        driverController.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        driverController.b().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        driverController.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        driverController.y().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
 //        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
 //        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));

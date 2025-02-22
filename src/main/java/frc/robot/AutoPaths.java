@@ -3,37 +3,66 @@ package frc.robot;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import choreo.auto.AutoFactory;
+import frc.robot.subsystems.grabber.Grabber;
+
+import java.sql.ParameterMetaData;
 
 public class AutoPaths {
     private final Drivetrain drivetrain;
+    private final Grabber grabber;
+    private final Arm arm;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
 
     public AutoPaths(
-            Drivetrain drivetrain,
-            SuperStructure superStructure, choreo.auto.AutoFactory autoFactory) {
+            Drivetrain drivetrain, Grabber grabber,
+            SuperStructure superStructure, choreo.auto.AutoFactory autoFactory, Arm arm) {
         this.drivetrain = drivetrain;
+        this.grabber = grabber;
         this.superStructure = superStructure;
         this.autoFactory = autoFactory;
+        this.arm = arm;
+    }
+
+    public AutoRoutine testAuto(){
+        AutoRoutine routine = autoFactory.newRoutine("Test Auto");
+
+        AutoTrajectory MoveForwardTraj = routine.trajectory("Move Forward");
+        MoveForwardTraj.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_2));
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        MoveForwardTraj.resetOdometry(),
+                        superStructure.resetPositions(),
+                        MoveForwardTraj.cmd()
+                )
+        );
+
+        MoveForwardTraj.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(grabber.withVoltage(6.0).until(grabber::getGamePieceNotDetected)));
+
+        return routine;
     }
 
     public AutoRoutine facePlantG() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlantG");
 
         AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantG");
+        facePlantGTraj.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4));
 
         routine.active().onTrue(
                 Commands.sequence(
                         facePlantGTraj.resetOdometry(),
+                        superStructure.resetPositions(),
                         Commands.waitSeconds(2).andThen(
                                 Commands.parallel(
-                                        facePlantGTraj.cmd(),
-                                        superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
+                                        facePlantGTraj.cmd()
+                                        //superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                         )
                 )
-        );
+        ));
         return routine;
     }
 
