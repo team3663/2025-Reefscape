@@ -105,10 +105,6 @@ public class Drivetrain extends SubsystemBase {
         return inputs.pose;
     }
 
-    public Rotation2d getYaw() {
-        return inputs.yaw;
-    }
-
     public AutoFactory getAutoFactory() {
         return autoFactory;
     }

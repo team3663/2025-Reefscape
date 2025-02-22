@@ -66,7 +66,7 @@ public class RobotContainer {
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
         autoPaths = new AutoPaths(drivetrain, superStructure, drivetrain.getAutoFactory());
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, () -> drivetrain.getPose().getRotation()).ignoringDisable(true));
 
         configureBindings();
 

@@ -180,15 +180,15 @@ public class C2025RobotFactory implements RobotFactory {
     @Override
     public VisionIO[] createVisionIo() {
 
-        Rotation3d leftRotation = new Rotation3d(Constants.FRONT_CAMERA_ROLL, Constants.FRONT_CAMERA_PITCH, Constants.FRONT_CAMERA_YAW);
-        Transform3d leftTransform = new Transform3d(Constants.FRONT_CAMERA_X, Constants.FRONT_CAMERA_Y, Constants.FRONT_CAMERA_Z, leftRotation);
+        Rotation3d frontRotation = new Rotation3d(Constants.FRONT_CAMERA_ROLL, Constants.FRONT_CAMERA_PITCH, Constants.FRONT_CAMERA_YAW);
+        Transform3d frontTransform = new Transform3d(Constants.FRONT_CAMERA_X, Constants.FRONT_CAMERA_Y, Constants.FRONT_CAMERA_Z, frontRotation);
 
-        Rotation3d rightRotation = new Rotation3d(Constants.BACK_CAMERA_ROLL, Constants.BACK_CAMERA_PITCH, Constants.BACK_CAMERA_YAW);
-        Transform3d rightTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, rightRotation);
+        Rotation3d backRotation = new Rotation3d(Constants.BACK_CAMERA_ROLL, Constants.BACK_CAMERA_PITCH, Constants.BACK_CAMERA_YAW);
+        Transform3d backTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, backRotation);
 
         return new VisionIO[]{
-                new LimelightIO(Constants.FRONT_CAMERA_NAME, leftTransform),
-                new LimelightIO(Constants.BACK_CAMERA_NAME, rightTransform),
+                new LimelightIO(Constants.FRONT_CAMERA_NAME, frontTransform),
+                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform),
 
         };
     }

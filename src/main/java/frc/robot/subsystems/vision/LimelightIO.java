@@ -27,9 +27,9 @@ public class LimelightIO implements VisionIO {
                 transform.getX(),
                 transform.getY(),
                 transform.getZ(),
-                rotation.getX(),
-                rotation.getY(),
-                rotation.getZ());
+                Units.radiansToDegrees(rotation.getX()),
+                Units.radiansToDegrees(rotation.getY()),
+                Units.radiansToDegrees(rotation.getZ()));
     }
 
     public void updateInputs(VisionInputs visionInputs, double currentYaw) {
@@ -44,7 +44,7 @@ public class LimelightIO implements VisionIO {
         visionInputs.IMUYaw = imuData.Yaw;
 
         // Get a new pose estimate
-        LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+        LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraName);
 
         // If no tags were seen then return without doing anything.
         if (estimate == null || estimate.tagCount == 0)
