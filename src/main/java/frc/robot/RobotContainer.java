@@ -124,7 +124,7 @@ public class RobotContainer {
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));
 
-        driverController.leftBumper().whileTrue(
+        driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
@@ -149,10 +149,10 @@ public class RobotContainer {
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
 //         Driver Controller Robot Mode
-        driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
-        driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
-        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
-        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+//        driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
+//        driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
+//        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+//        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
 
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
 //        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
@@ -161,10 +161,10 @@ public class RobotContainer {
 //        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
 //        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
 
-        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
-        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
-        driverController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
-        driverController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+//        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+//        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+//        driverController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+//        driverController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
     }
 
     private Command setRobotMode(RobotMode robotMode) {
