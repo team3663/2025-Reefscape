@@ -59,10 +59,10 @@ public class AutoPaths {
                         Commands.waitSeconds(2).andThen(
                                 Commands.parallel(
                                         facePlantGTraj.cmd()
-                                        //superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
                         )
                 )
         ));
+        facePlantGTraj.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(grabber.withVoltage(6.0).until(grabber::getGamePieceNotDetected)));
         return routine;
     }
 
@@ -89,18 +89,20 @@ public class AutoPaths {
         AutoTrajectory start = routine.trajectory("PStart-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
         AutoTrajectory wcsc = routine.trajectory("WCS-C");
+        start.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4));
+        dwcs.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION));
+        wcsc.atTimeBeforeEnd(0.25).onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4));
 
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        Commands.parallel(
-                                start.cmd(),
-                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4))
-                )
+                        superStructure.resetPositions(),
+                                start.cmd())
         );
 
-        start.done().onTrue(Commands.parallel(dwcs.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_STATION)));
-        dwcs.done().onTrue(Commands.parallel(wcsc.cmd(), superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)));
+        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(grabber.withVoltage(6.0).until(grabber::getGamePieceNotDetected)));
+        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(grabber.withVoltage(6.0).until(grabber::getGamePieceNotDetected)));
+
 
         return routine;
     }
