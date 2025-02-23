@@ -40,7 +40,6 @@ public class RobotContainer {
     private final Led led;
     private final Vision vision;
     private final SuperStructure superStructure;
-    private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
     private final CommandFactory commandFactory;
@@ -81,8 +80,6 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addRoutine("Test Auto", autoPaths::testAuto);
-
         autoChooser.addRoutine("FacePlantG", autoPaths::facePlantG);
         autoChooser.addRoutine("FacePlantH", autoPaths::facePlantH);
 
@@ -103,9 +100,6 @@ public class RobotContainer {
 
         autoChooser.addRoutine("FiveCoralFBCDE", autoPaths::fiveCoralFBCDE);
         autoChooser.addRoutine("FiveCoralFlippedIALKJ", autoPaths::fiveCoralFlippedIALKJ);
-
-        // Getting the auto factory
-        autoFactory = drivetrain.getAutoFactory();
 
         // Puts auto chooser on the dashboard
         Shuffleboard.getTab("Driver")
@@ -151,23 +145,13 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
-//         Driver Controller Robot Mode
-//        driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
-//        driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
-//        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
-//        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
-
+        // Test code for SysID
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
 //        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
 //        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
 //        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
 //        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
 //        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
-
-//        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
-//        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
-//        driverController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
-//        driverController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
     }
 
     private Command setRobotMode(RobotMode robotMode) {
