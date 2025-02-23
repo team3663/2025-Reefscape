@@ -70,7 +70,7 @@ public class C2025ArmIO implements ArmIO {
 
         // Wrist motor config
         TalonFXConfiguration wristConfig = new TalonFXConfiguration();
-        wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         wristConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         wristConfig.Feedback.SensorToMechanismRatio = WRIST_GEAR_RATIO;
         wristConfig.CurrentLimits.SupplyCurrentLimit = 30;

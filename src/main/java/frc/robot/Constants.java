@@ -108,7 +108,7 @@ public class Constants {
     public static class ArmPositions {
         // TODO: get the actual values of these variables!!
         // Coral Station
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(5.811);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(4.811);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(135.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0
         );
@@ -140,15 +140,15 @@ public class Constants {
     public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - (27.0 - 22.625));
-    public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(8.125);
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.375);
+    public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
     public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
 
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - (27.0 - 22.625));
-    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(8.125);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.375);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }

@@ -102,7 +102,7 @@ public class Arm extends SubsystemBase {
 
     public Command resetWristPositionToDefault() {
         return Commands.runOnce(() -> {
-            io.resetWristPosition(constants.minimumWristAngle + Units.degreesToRadians(2.0));
+            io.resetWristPosition(constants.minimumWristAngle + Units.degreesToRadians(1.0));
             wristZeroed = true;
         });
     }

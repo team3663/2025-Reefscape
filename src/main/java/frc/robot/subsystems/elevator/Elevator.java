@@ -96,7 +96,7 @@ public class Elevator extends SubsystemBase {
 
     public Command resetPosition() {
         return Commands.runOnce(() -> {
-            io.resetPosition(constants.minimumPosition + Units.inchesToMeters(0.5));
+            io.resetPosition(constants.minimumPosition + Units.inchesToMeters(2.5));
             zeroed = true;
         });
     }

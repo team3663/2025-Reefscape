@@ -2,6 +2,7 @@ package frc.robot;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -97,13 +98,13 @@ public class AutoPaths {
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        superStructure.resetPositions(),
-                        start.cmd())
-        );
+                        Commands.parallel(
+                                start.cmd(), superStructure.zero())
+                ));
 
-        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
+        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(Commands.waitSeconds(0.25)).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
         dwcs.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(commandFactory.grabCoral()).andThen(wcsc.cmd()));
-        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(commandFactory.placeCoral()));
+        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(Commands.waitSeconds(0.25)).andThen(commandFactory.placeCoral()));
 
         return routine;
     }
@@ -232,15 +233,15 @@ public class AutoPaths {
                         start.resetOdometry(),
                         Commands.parallel(
                                 start.cmd(),
-                                superStructure.followPositions(() -> RobotMode.CORAL_LEVEL_4)).andThen(commandFactory.placeCoral())
-                )
-        );
+                                superStructure.zero())
+                ));
 
-        start.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()).andThen(ewcs.cmd()));
-        ewcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()).andThen(wcsd.cmd()));
-        wcsd.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
-        dwcs.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.grabCoral()).andThen(wcsc.cmd()));
-        wcsc.done().onTrue(Commands.waitUntil(superStructure::atTargetPositions).andThen(commandFactory.placeCoral()));
+        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(Commands.waitSeconds(0.25)).andThen(commandFactory.placeCoral()).andThen(ewcs.cmd()));
+        ewcs.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(commandFactory.grabCoral()).andThen(wcsd.cmd()));
+        wcsd.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(Commands.waitSeconds(0.25)).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
+        dwcs.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(commandFactory.grabCoral()).andThen(wcsc.cmd()));
+        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_3).andThen(Commands.waitSeconds(0.25)).andThen(commandFactory.placeCoral()));
+
         return routine;
     }
 
@@ -252,7 +253,6 @@ public class AutoPaths {
         AutoTrajectory wcsf = routine.trajectory("WCS-F");
         AutoTrajectory fwcs = routine.trajectory("F-WCS");
         AutoTrajectory wcse = routine.trajectory("WCS-E");
-
 
 
         routine.active().onTrue(
@@ -309,7 +309,6 @@ public class AutoPaths {
         AutoTrajectory wcsd = routine.trajectory("WCS-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
         AutoTrajectory wcse = routine.trajectory("WCS-E");
-
 
 
         routine.active().onTrue(
