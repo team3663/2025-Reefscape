@@ -126,6 +126,8 @@ public class RobotContainer {
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
+        driverController.a().whileTrue(grabber.withVoltage(-6.0));
+
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
