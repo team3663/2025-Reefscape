@@ -117,12 +117,13 @@ public class RobotContainer {
                         autoChooser.selectedCommandScheduler()
                 ));
 
-        SmartDashboard.putBoolean("Auto Alignment Enabled", true);
+        SmartDashboard.putBoolean("Auto Reef", true);
+        SmartDashboard.putBoolean("Auto Coral Station", true);
     }
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(
-                Commands.repeatingSequence(Commands.deferredProxy(()->commandFactory.alignToReef(() -> robotMode))));
+                Commands.deferredProxy(()->commandFactory.alignToReef(() -> robotMode)));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));

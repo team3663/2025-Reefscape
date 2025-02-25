@@ -7,10 +7,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.*;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -20,6 +23,7 @@ import frc.robot.subsystems.vision.VisionMeasurement;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
@@ -77,22 +81,11 @@ public class Drivetrain extends SubsystemBase {
                 () -> inputs.chassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 io::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(10.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 constants.robotConfig, // The robot configuration
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    } else {
-                        return false;
-                    }
-                },
+                () -> false,
                 this // Reference to this subsystem to set requirements
         );
     }
@@ -158,43 +151,48 @@ public class Drivetrain extends SubsystemBase {
     }
 
     /**
-     * Makes a Pathplanner path to a given coral station pose from the robot's current position
+     * Drives the robot to a given pose fromm the robot's current position using a pathplanner path
      *
-     * @param targetPose requires a Pose2d of where you want the robot to go
+     * @param targetPose of where you want the robot to go
+     * @return follows a pathplanner path command
      */
-    public Command pathToCoralStationPoseCommand(Pose2d targetPose) {
-//        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
-//                5.0, this.getConstants().maxAngularVelocity,
-//                4 * Math.PI);
-//
-//        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_CORAL_STATION_OFFSET);
-//        Command alignToBranch = AutoBuilder.pathfindToPose(
-//                targetPose,
-//                constraints,
-//                0.0);
-//
-//        return alignToBranch;
-        return Commands.idle();
-    }
+    public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip) {
+        PathConstraints constraints = new PathConstraints(
+//                this.getConstants().maxLinearVelocity,
+                3.0,
+                3.0,
+//                this.getConstants().maxAngularVelocity,
+                3.0,
 
-    /**
-     * Makes a Pathplanner path to a given reef branch pose from the robot's current position
-     *
-     * @param targetPose requires a Pose2d of where you want the robot to go
-     */
-    public Command pathToReefPoseCommand(Pose2d targetPose) {
-//        PathConstraints constraints = new PathConstraints(this.getConstants().maxLinearVelocity,
-//                5.0, this.getConstants().maxAngularVelocity,
-//                4 * Math.PI);
-//
-//        targetPose = targetPose.plus(frc.robot.Constants.ROBOT_REEF_OFFSET);
-//        Command alignToBranch = AutoBuilder.pathfindToPose(
-//                targetPose,
-//                constraints,
-//                0.0);
-//
-//        return alignToBranch;
-        return Commands.idle();
+//                4 * Math.PI,
+                3.0
+        );
+
+        return defer(() -> {
+
+            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+            Rotation2d initialWaypointDirection;
+            if (currentVelocity < 0.1) {
+                var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+
+                initialWaypointDirection = delta.getAngle();
+            } else {
+                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+            }
+
+            var path = new PathPlannerPath(
+                    PathPlannerPath.waypointsFromPoses(
+                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip?Rotation2d.k180deg:Rotation2d.kZero))
+                    ),
+                    constraints,
+                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+                    new GoalEndState(0.0, targetPose.get().getRotation())
+            );
+
+            return AutoBuilder.followPath(path);
+        });
     }
 
 
