@@ -34,8 +34,8 @@ public class Constants {
     public static final double REEF_RED_POSE_X_OFFSET = Units.inchesToMeters(514.125);
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
-    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(21.125), 0, Rotation2d.fromDegrees(180));
-    public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(5), 0, Rotation2d.fromDegrees(180));
+    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(20.125), 0, Rotation2d.fromDegrees(180));
+    public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(5), 0, Rotation2d.fromDegrees(0));
 
     public static final Pose2d BLUE_BRANCH_A = getBranchPose(3, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
     public static final Pose2d BLUE_BRANCH_B = getBranchPose(3, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);

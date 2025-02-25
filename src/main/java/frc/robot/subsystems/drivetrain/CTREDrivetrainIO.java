@@ -61,10 +61,6 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 VecBuilder.fill(10.0, 10.0, 10.0),
                 moduleConstants
         );
-        ModuleConfig moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, 5.0,
-                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
-                moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 4);
-        RobotConfig robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
 
         headingController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -81,6 +77,11 @@ public class CTREDrivetrainIO implements DrivetrainIO {
             maxModuleVelocity = Math.min(maxModuleVelocity, moduleVelocity);
             maxDriveBaseRadius = Math.max(maxDriveBaseRadius, driveBaseRadius);
         }
+
+        ModuleConfig moduleConfig = new ModuleConfig(moduleConstants[0].WheelRadius, maxModuleVelocity,
+                Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
+                moduleConstants[0].DriveMotorInitialConfigs.CurrentLimits.StatorCurrentLimit, 1);
+        RobotConfig robotConfig = new RobotConfig(robotWeightKG, robotMOI, moduleConfig, drivetrain.getModuleLocations());
 
         constants = new Drivetrain.Constants(maxModuleVelocity,
                 maxModuleVelocity / maxDriveBaseRadius, robotConfig);
