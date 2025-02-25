@@ -12,10 +12,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
-import java.util.Set;
 import java.util.function.Supplier;
-
-import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
 public class CommandFactory {
     private final Drivetrain drivetrain;
@@ -71,51 +68,46 @@ public class CommandFactory {
 
     public Command alignToReef(Supplier<RobotMode> robotMode) {
         boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
-        if (autoAlignmentEnabled) {
-            return Commands.parallel(superStructure.followPositions(robotMode),
-                    drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())));
-        } else {
-            return Commands.run(() -> superStructure.followPositions(robotMode));
-        }
-    public Command alignToReef(Supplier<RobotMode> robotMode) {
-        return Commands.parallel(superStructure.followPositions(robotMode)
-//                Commands.repeatingSequence(
-//                        Commands.defer(
-//                ()->
-//                        drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose()))
-//                , Set.of(drivetrain)
-        );
+//        if (autoAlignmentEnabled) {
+//            return Commands.parallel(superStructure.followPositions(robotMode),
+//                    Commands.repeatingSequence(Commands.defer(
+//                            ()-> drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose())),
+//                            Set.of(drivetrain)
+//                    )));
+//        } else {
+        return Commands.run(() -> superStructure.followPositions(robotMode));
     }
 
-    public Command grabCoral(){
-        return grabber.followVoltage(()-> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+    public Command grabCoral() {
+        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
     }
-    public Command placeCoral(){
-        return grabber.followVoltage(()-> 6.0).until(grabber::getGamePieceNotDetected);
+
+    public Command placeCoral() {
+        return grabber.followVoltage(() -> 6.0).until(grabber::getGamePieceNotDetected);
     }
+
     public Command alignToCoralStation() {
-        return Commands.parallel(
-                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
-                grabber.followVoltage(() -> 6.0)
+        boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
+//        if (autoAlignmentEnabled) {
+//            return Commands.parallel(
+//                    superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
+//                            () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+//                            () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+//                    grabber.followVoltage(() -> 6.0)
 //                ,
 //                Commands.repeatingSequence(
 //                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
 //                                drivetrain.getPose()
 //                        )), Set.of(drivetrain)))
-        ).withDeadline(
+//            ).withDeadline(
+//                    Commands.waitUntil(() -> grabber.isGamePieceDetected()).andThen(Commands.waitSeconds(0.04))
+//            );
+//        } else {
+        return Commands.parallel(superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
+                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                grabber.followVoltage(() -> 6.0)).withDeadline(
                 Commands.waitUntil(() -> grabber.isGamePieceDetected()).andThen(Commands.waitSeconds(0.04))
         );
-    public Command alignToCoralStation() {
-        boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
-        if (autoAlignmentEnabled) {
-            return Commands.parallel(this.goToCoralStationAndIntake(),
-                    drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
-                            drivetrain.getPose())));
-        } else {
-            return Commands.run(() -> this.goToCoralStationAndIntake());
-        }
     }
-
 }
