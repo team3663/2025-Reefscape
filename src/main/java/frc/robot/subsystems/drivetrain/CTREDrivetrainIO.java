@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import choreo.trajectory.SwerveSample;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -12,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,10 +21,14 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants;
 import frc.robot.Robot;
+
+import java.util.Optional;
 
 public class CTREDrivetrainIO implements DrivetrainIO {
     private final SwerveDrivetrain<TalonFX, TalonFX, CANcoder> drivetrain;
@@ -39,6 +45,8 @@ public class CTREDrivetrainIO implements DrivetrainIO {
     private final PIDController yController = new PIDController(10.0, 0.0, 0.0);
     private final PIDController headingController = new PIDController(7.5, 0.0, 0.0);
 
+    private double yawOffset = 0;
+
     @SafeVarargs
     public CTREDrivetrainIO(
             double robotWeightKG,
@@ -47,7 +55,11 @@ public class CTREDrivetrainIO implements DrivetrainIO {
             SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants
     ) {
         this.drivetrain = new SwerveDrivetrain<>(
-                TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants, moduleConstants
+                TalonFX::new, TalonFX::new, CANcoder::new, drivetrainConstants,
+                0.0,
+                VecBuilder.fill(0.05, 0.05, 0.05),
+                VecBuilder.fill(10.0, 10.0, 10.0),
+                moduleConstants
         );
         ModuleConfig moduleConfig = new ModuleConfig(Constants.MK4_WHEEL_RADIUS, 5.0,
                 Constants.WHEEL_COF, DCMotor.getKrakenX60Foc(1), moduleConstants[0].DriveMotorGearRatio,
@@ -93,7 +105,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.odometryPeriod = state.OdometryPeriod;
 
         inputs.pose = state.Pose;
-        inputs.yaw = new Rotation2d(drivetrain.getPigeon2().getYaw().getValue());
+        inputs.yaw = new Rotation2d(drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians) + yawOffset);
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
@@ -106,6 +118,8 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void resetOdometry(Pose2d newPose) {
+        yawOffset = newPose.getRotation().getRadians() - drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians);
+
         drivetrain.resetPose(newPose);
     }
 
@@ -116,7 +130,17 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void resetFieldOriented() {
-        drivetrain.seedFieldCentric();
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            Rotation2d rotation = switch (alliance.get()) {
+                case Blue -> Rotation2d.kZero;
+                case Red -> Rotation2d.k180deg;
+            };
+            drivetrain.resetRotation(rotation);
+            drivetrain.setOperatorPerspectiveForward(rotation);
+
+            yawOffset = rotation.getRadians() - drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians);
+        }
     }
 
     @Override
@@ -152,7 +176,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void addVisionMeasurement(double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {
-        drivetrain.addVisionMeasurement(pose, timestamp, stdDevs);
+        drivetrain.addVisionMeasurement(pose, Utils.fpgaToCurrentTime(timestamp), stdDevs);
     }
 
     @Override

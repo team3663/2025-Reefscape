@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -70,6 +71,10 @@ public class Elevator extends SubsystemBase {
         return Math.abs(inputs.currentPositionMotor1 - position) < POSITION_THRESHOLD;
     }
 
+    public boolean atPosition(double position, double threshold) {
+        return Math.abs(inputs.currentPositionMotor1 - position) < threshold;
+    }
+
     public double getTargetPosition() {
         return targetPosition;
     }
@@ -90,7 +95,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command resetPosition() {
-        return runOnce(io::resetPosition);
+        return Commands.runOnce(() -> {
+            io.resetPosition(constants.minimumPosition + Units.inchesToMeters(2.5));
+            zeroed = true;
+        });
     }
 
     public Command goToPosition(double position) {
@@ -103,12 +111,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public Command followPosition(DoubleSupplier position) {
-        return runEnd(() -> {
+        return run(() -> {
             if (zeroed) {
                 targetPosition = getValidPosition(position.getAsDouble());
                 io.setTargetPosition(targetPosition);
             }
-        }, io::stop);
+        });
     }
 
     private double getValidPosition(double position) {
@@ -126,7 +134,7 @@ public class Elevator extends SubsystemBase {
                 .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocityMotor1) < VELOCITY_THRESHOLD)
                         // Then reset the elevator position and set zeroed to true
                         .andThen(() -> {
-                            io.resetPosition();
+                            io.resetPosition(constants.minimumPosition);
                             zeroed = true;
                         })
                         // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet

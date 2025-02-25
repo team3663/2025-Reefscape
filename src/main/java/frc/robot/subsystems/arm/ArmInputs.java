@@ -8,8 +8,9 @@ public class ArmInputs {
     public double currentShoulderVelocity;
     public double currentAppliedShoulderVoltage;
     public double currentShoulderPosition;
-    
-    public double shoulderMotorPosition;
+
+    public double currentShoulderEncoderPosition;
+
     public double currentShoulderDraw;
 
     // Wrist Inputs
@@ -17,6 +18,5 @@ public class ArmInputs {
     public double currentWristAppliedVoltage;
     public double currentWristPosition;
 
-    public double wristMotorPosition;
     public double currentWristDraw;
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
@@ -25,11 +26,11 @@ public class LimelightIO implements VisionIO {
         Rotation3d rotation = transform.getRotation();
         LimelightHelpers.setCameraPose_RobotSpace(name,
                 transform.getX(),
-                transform.getY(),
+                -transform.getY(),
                 transform.getZ(),
-                rotation.getX(),
-                rotation.getY(),
-                rotation.getZ());
+                Units.radiansToDegrees(rotation.getX()),
+                Units.radiansToDegrees(rotation.getY()),
+                Units.radiansToDegrees(rotation.getZ()));
     }
 
     public void updateInputs(VisionInputs visionInputs, double currentYaw) {
@@ -47,7 +48,7 @@ public class LimelightIO implements VisionIO {
         LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
 
         // If no tags were seen then return without doing anything.
-        if (estimate.tagCount == 0)
+        if (estimate == null || estimate.tagCount == 0)
             return;
 
         visionInputs.estimatedPose = estimate.pose;
@@ -66,10 +67,10 @@ public class LimelightIO implements VisionIO {
     public void robotStateChanged() {
         // When the robot is disabled then seed the limelight's IMU with data from the Pigeon but once
         // the robot is enabled then switch to the Limelight's internal IMU.
-        if (RobotState.isDisabled()) {
-            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
-        } else {
-            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_INTERNAL);
-        }
+//        if (RobotState.isDisabled()) {
+//            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_FUSED);
+//        } else {
+//            LimelightHelpers.SetIMUMode(cameraName, LIMELIGHT_IMU_INTERNAL);
+//        }
     }
 }

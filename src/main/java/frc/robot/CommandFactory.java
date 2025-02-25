@@ -65,20 +65,8 @@ public class CommandFactory {
     /**
      * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
      */
-    public Command releaseGamePiece() {
-        return runEnd(() -> {
-            grabber.withVoltage(-1.0);
-        }, grabber::stop).until(grabber::getGamePieceNotDetected);
-    }
-
-    /**
-     * Tells the Elevator and Arm to go to the required positions to intake a coral from the coral station
-     */
-    public Command goToCoralStationAndIntake() {
-        return superStructure.goToPositions(Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                        Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE)
-                .andThen(grabber.withVoltageUntilDetected(-1.0));
+    public Command releaseGamePiece(Supplier<RobotMode> robotMode) {
+        return grabber.followVoltage(() -> robotMode.get().isRunGrabberReverse() ? -6.0 : 6.0);
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode) {
@@ -89,8 +77,36 @@ public class CommandFactory {
         } else {
             return Commands.run(() -> superStructure.followPositions(robotMode));
         }
+    public Command alignToReef(Supplier<RobotMode> robotMode) {
+        return Commands.parallel(superStructure.followPositions(robotMode)
+//                Commands.repeatingSequence(
+//                        Commands.defer(
+//                ()->
+//                        drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose()))
+//                , Set.of(drivetrain)
+        );
     }
 
+    public Command grabCoral(){
+        return grabber.followVoltage(()-> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+    }
+    public Command placeCoral(){
+        return grabber.followVoltage(()-> 6.0).until(grabber::getGamePieceNotDetected);
+    }
+    public Command alignToCoralStation() {
+        return Commands.parallel(
+                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
+                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                grabber.followVoltage(() -> 6.0)
+//                ,
+//                Commands.repeatingSequence(
+//                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
+//                                drivetrain.getPose()
+//                        )), Set.of(drivetrain)))
+        ).withDeadline(
+                Commands.waitUntil(() -> grabber.isGamePieceDetected()).andThen(Commands.waitSeconds(0.04))
+        );
     public Command alignToCoralStation() {
         boolean autoAlignmentEnabled = SmartDashboard.getBoolean("Auto Alignment Enabled", true);
         if (autoAlignmentEnabled) {

@@ -8,6 +8,13 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Epilogue;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.epilogue.logging.EpilogueBackend;
+import edu.wpi.first.epilogue.logging.FileBackend;
+import edu.wpi.first.epilogue.logging.LazyBackend;
+import edu.wpi.first.epilogue.logging.NTEpilogueBackend;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -51,7 +58,20 @@ public class Robot extends TimedRobot {
 
         robotContainer = new RobotContainer(robotFactory);
 
+        SignalLogger.setPath("/media/sda1/");
+
+        if (Robot.isReal())
+        {
+            DataLogManager.start("/media/sda1/");
+        }
+
         Epilogue.configure(config -> {
+            if (Robot.isReal()) {
+                config.backend = EpilogueBackend.multi(
+                        new FileBackend(DataLogManager.getLog()),
+                        new NTEpilogueBackend(NetworkTableInstance.getDefault())
+                );
+            }
         });
         Epilogue.bind(this);
     }
@@ -59,6 +79,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        robotContainer.updateDashboard();
     }
 
     @Override

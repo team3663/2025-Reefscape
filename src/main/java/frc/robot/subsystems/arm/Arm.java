@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
@@ -17,7 +18,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 @Logged
 public class Arm extends SubsystemBase {
-    public static final double POSITION_THRESHOLD = Units.degreesToRadians(5);
+    public static final double POSITION_THRESHOLD = Units.degreesToRadians(2.0);
     private final ArmIO io;
     private final ArmInputs inputs = new ArmInputs();
     private final Constants constants;
@@ -35,7 +36,7 @@ public class Arm extends SubsystemBase {
         // Creating a SysId Routine
         sysIdRoutineShoulder = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        Volts.of(0.25).per(Second),
+                        Volts.of(0.1).per(Second),
                         Volts.of(4),
                         null,
                         (state) -> SignalLogger.writeString("state", state.toString())),
@@ -99,6 +100,13 @@ public class Arm extends SubsystemBase {
         );
     }
 
+    public Command resetWristPositionToDefault() {
+        return Commands.runOnce(() -> {
+            io.resetWristPosition(constants.minimumWristAngle + Units.degreesToRadians(1.0));
+            wristZeroed = true;
+        });
+    }
+
     public boolean atTargetPositions() {
         return this.atShoulderTargetPosition() && this.atWristTargetPosition();
     }
@@ -122,7 +130,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
-        return runEnd(() -> {
+        return run(() -> {
             // Shoulder
             targetShoulderPosition = getValidPositionShoulder(shoulderPosition.getAsDouble());
             io.setShoulderTargetPosition(targetShoulderPosition);
@@ -132,7 +140,7 @@ public class Arm extends SubsystemBase {
                 targetWristPosition = getValidPositionWrist(wristPosition.getAsDouble());
                 io.setWristTargetPosition(targetWristPosition);
             }
-        }, this::stop);
+        });
     }
 
     private double getValidPositionShoulder(double position) {
@@ -169,7 +177,7 @@ public class Arm extends SubsystemBase {
 
     public Command zeroWrist() {
         return runEnd(() -> {
-            io.setWristTargetVoltage(-1.0);
+            io.setWristTargetVoltage(-1.5);
             io.setShoulderTargetPosition(Units.degreesToRadians(90));
             targetWristPosition = constants.minimumWristAngle;
             targetShoulderPosition = Units.degreesToRadians(90);

@@ -13,6 +13,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -30,8 +31,6 @@ import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
 
-import java.util.*;
-
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -44,7 +43,6 @@ public class RobotContainer {
     private final Led led;
     private final Vision vision;
     private final SuperStructure superStructure;
-    private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
     private final CommandFactory commandFactory;
@@ -65,11 +63,11 @@ public class RobotContainer {
         grabber = new Grabber(robotFactory.createGrabberIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
-        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded), robotFactory.createVisionIo());
+        vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark), robotFactory.createVisionIo());
         superStructure = new SuperStructure(elevator, arm, () -> haveAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, superStructure, drivetrain.getAutoFactory());
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(),arm, commandFactory);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw).ignoringDisable(true));
 
@@ -106,9 +104,6 @@ public class RobotContainer {
         autoChooser.addRoutine("FiveCoralFBCDE", autoPaths::fiveCoralFBCDE);
         autoChooser.addRoutine("FiveCoralFlippedIALKJ", autoPaths::fiveCoralFlippedIALKJ);
 
-        // Getting the auto factory
-        autoFactory = drivetrain.getAutoFactory();
-
         // Puts auto chooser on the dashboard
         Shuffleboard.getTab("Driver")
                 .add("Auto Chooser", autoChooser)
@@ -130,19 +125,21 @@ public class RobotContainer {
                 Commands.repeatingSequence(Commands.deferredProxy(()->commandFactory.alignToReef(() -> robotMode))));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
-                .whileTrue(commandFactory.releaseGamePiece());
+                .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));
 
-        driverController.leftBumper().whileTrue(
-                Commands.repeatingSequence(Commands.deferredProxy(()-> commandFactory.alignToCoralStation())));
+        driverController.leftTrigger().whileTrue(
+                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
+
+        driverController.a().whileTrue(grabber.withVoltage(-6.0));
 
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
-        new Trigger(grabber::getGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
+        new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
-        new Trigger(() -> grabber.getGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
+        new Trigger(() -> grabber.isGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
         new Trigger(() -> grabber.getGamePieceNotDetected()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = false));
 
         // Operator Controller Robot Mode
@@ -156,20 +153,28 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
-        // Driver Controller Robot Mode
-        driverController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
-        driverController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
-        driverController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
-        driverController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
-
-        driverController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
-        driverController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
-        driverController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
-        driverController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+        // Test code for SysID
+//        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
+//        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
+//        driverController.a().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.b().whileTrue(arm.sysIdQuasistaticShoulder(SysIdRoutine.Direction.kReverse));
+//        driverController.x().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kForward));
+//        driverController.y().whileTrue(arm.sysIdDynamicShoulder(SysIdRoutine.Direction.kReverse));
     }
 
     private Command setRobotMode(RobotMode robotMode) {
         return runOnce(() -> this.robotMode = robotMode);
+    }
+
+    public void updateDashboard() {
+        SmartDashboard.putBoolean("Coral Level 1", robotMode == RobotMode.CORAL_LEVEL_1);
+        SmartDashboard.putBoolean("Coral Level 2", robotMode == RobotMode.CORAL_LEVEL_2);
+        SmartDashboard.putBoolean("Coral Level 3", robotMode == RobotMode.CORAL_LEVEL_3);
+        SmartDashboard.putBoolean("Coral Level 4", robotMode == RobotMode.CORAL_LEVEL_4);
+        SmartDashboard.putBoolean("Algae in Processor", robotMode == RobotMode.ALGAE_PROCESSOR);
+        SmartDashboard.putBoolean("Remove a Lower Algae", robotMode == RobotMode.ALGAE_REMOVE_LOWER);
+        SmartDashboard.putBoolean("Remove an Upper Algae", robotMode == RobotMode.ALGAE_REMOVE_UPPER);
+        SmartDashboard.putBoolean("Algae in Net", robotMode == RobotMode.ALGAE_NET);
     }
 
     private double getDrivetrainXVelocity() {

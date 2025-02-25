@@ -18,7 +18,6 @@ public class Constants {
     public static final double MK4N_STEER_FRICTION_VOLTAGE = 0.25;
     public static final Slot0Configs MK4N_STEER_PID_CONSTANTS = new Slot0Configs()
             .withKP(100.0);
-    public static final double MK4N_WHEEL_RADIUS = Units.inchesToMeters(4.0);
 
     public static final double MK4I_STEER_REDUCTION = (150.0 / 7.0);
     public static final double MK4I_STEER_INERTIA = 0.00001;
@@ -90,15 +89,14 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset){
+    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset) {
         if (adding) {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
                     Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin(((Math.PI / 3) * number) +
                             Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
-        }
-        else {
+        } else {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
                     Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin((Math.PI / 3) * number -
@@ -108,15 +106,15 @@ public class Constants {
     }
 
     public static class ArmPositions {
-        // TODO: get the actual values of these variables!!
         // Coral Station
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = 0.0;
-        public static final double CORAL_STATION_SHOULDER_ANGLE = 0.0;
-        public static final double CORAL_STATION_WRIST_ANGLE = 0.0;
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(6.811);
+        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(135.0);
+        public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
 
         // Shoulder Safe variables
-        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90);
-        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(30);
+        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90.0);
+        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(25.0);
+        public static final double SHOULDER_SAFE_BUFFER = Units.degreesToRadians(3.0);
 
         // Shoulder max angle when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
@@ -136,19 +134,19 @@ public class Constants {
     // Roll, pitch & yaw values are in radians
     // X, Y & Z translation values are in meters
     // TODO Get real values from CAD/Mech.
-    public static final String LEFT_CAMERA_NAME = "limelight-l";
-    public static final double LEFT_CAMERA_ROLL = 0.0;
-    public static final double LEFT_CAMERA_PITCH = 0.0;
-    public static final double LEFT_CAMERA_YAW = 0.0;
-    public static final double LEFT_CAMERA_X = 0.0;
-    public static final double LEFT_CAMERA_Y = 0.0;
-    public static final double LEFT_CAMERA_Z = 0.0;
+    public static final String FRONT_CAMERA_NAME = "limelight-front";
+    public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
+    public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(25.0);
+    public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.375);
+    public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
+    public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
 
-    public static final String RIGHT_CAMERA_NAME = "limelight-r";
-    public static final double RIGHT_CAMERA_ROLL = 0.0;
-    public static final double RIGHT_CAMERA_PITCH = 0.0;
-    public static final double RIGHT_CAMERA_YAW = 0.0;
-    public static final double RIGHT_CAMERA_X = 0.0;
-    public static final double RIGHT_CAMERA_Y = 0.0;
-    public static final double RIGHT_CAMERA_Z = 0.0;
+    public static final String BACK_CAMERA_NAME = "limelight-back";
+    public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
+    public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
+    public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.375);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
+    public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }

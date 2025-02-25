@@ -7,21 +7,17 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
+import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Robot;
 
 public class C2025ArmIO implements ArmIO {
     // TODO: Get real values from CAD
     private static final Arm.Constants CONSTANTS = new Arm.Constants(
-            0.2, Units.degreesToRadians(-135.0), Units.degreesToRadians(180.0),
-            0.05, Units.degreesToRadians(-90.0), Units.degreesToRadians(90.0));
+            0.2, Units.degreesToRadians(0.0), Units.degreesToRadians(180.0),
+            0.05, Units.degreesToRadians(-76.377), Units.degreesToRadians(74.09));
+    private final double WRIST_GEAR_RATIO = (48.0 / 16.0) * (66.0 / 18.0) * (36.0 / 15.0);
+    private final double SHOULDER_GEAR_RATIO = (60.0 / 16.0) * (60.0 / 22.0) * (72.0 / 12.0);
 
     private final TalonFX shoulderMotor;
     private final TalonFX wristMotor;
@@ -39,41 +35,57 @@ public class C2025ArmIO implements ArmIO {
         // CANCoder config
         CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
         canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        canCoderConfig.MagnetSensor.MagnetOffset = 0.0;
-//        canCoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+        canCoderConfig.MagnetSensor.MagnetOffset = 0.351806640625;
 
         shoulderCanCoder.getConfigurator().apply(canCoderConfig);
 
         // Shoulder motor config
         TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
         shoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        shoulderConfig.CurrentLimits.SupplyCurrentLimit = 60;
+        shoulderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        shoulderConfig.Slot0.kV = 0.115;
-        shoulderConfig.Slot0.kA = 0.01;
-        shoulderConfig.Slot0.kP = 0.5;
+        // SysID gave us the following values, but I don't think these are right...
+        // kV = 0.10508
+        // KA = 0.004985
+        // kS = 0.13898
+
+        shoulderConfig.Slot0.kV = 7.0;
+        shoulderConfig.Slot0.kA = 0.0;
+        shoulderConfig.Slot0.kP = 50.0;
         shoulderConfig.Slot0.kI = 0.0;
-        shoulderConfig.Slot0.kD = 0.0;
+        shoulderConfig.Slot0.kD = 5.0;
+        shoulderConfig.Slot0.kG = 0.25;
+        shoulderConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
         shoulderConfig.Feedback.FeedbackRemoteSensorID = this.shoulderCanCoder.getDeviceID();
         shoulderConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        shoulderConfig.Feedback.RotorToSensorRatio = SHOULDER_GEAR_RATIO;
 
-        shoulderConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
-        shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+        shoulderConfig.MotionMagic.MotionMagicJerk = 15.0;
+        shoulderConfig.MotionMagic.MotionMagicAcceleration = 3.0;
+        shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 1.63;
 
         shoulderMotor.getConfigurator().apply(shoulderConfig);
 
         // Wrist motor config
         TalonFXConfiguration wristConfig = new TalonFXConfiguration();
-        wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        wristConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        wristConfig.Feedback.SensorToMechanismRatio = WRIST_GEAR_RATIO;
+        wristConfig.CurrentLimits.SupplyCurrentLimit = 30;
+        wristConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        wristConfig.Slot0.kV = 0.115;
-        wristConfig.Slot0.kA = 0.01;
-        wristConfig.Slot0.kP = 0.5;
+        wristConfig.Slot0.kV = 3.0;
+        wristConfig.Slot0.kA = 0.0;
+        wristConfig.Slot0.kP = 50.0;
         wristConfig.Slot0.kI = 0.0;
         wristConfig.Slot0.kD = 0.0;
+        wristConfig.Slot0.kS = 0.2;
 
-        wristConfig.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
-        wristConfig.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
+        wristConfig.MotionMagic.MotionMagicAcceleration = 15;
+        wristConfig.MotionMagic.MotionMagicCruiseVelocity = 4;
+        wristConfig.MotionMagic.MotionMagicJerk = 100.0;
 
         wristMotor.getConfigurator().apply(wristConfig);
     }
@@ -89,15 +101,14 @@ public class C2025ArmIO implements ArmIO {
         inputs.currentWristAppliedVoltage = wristMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentWristVelocity = Units.rotationsToRadians(wristMotor.getVelocity().getValueAsDouble());
         inputs.currentWristPosition = Units.rotationsToRadians(wristMotor.getPosition().getValueAsDouble());
-        inputs.wristMotorPosition = wristMotor.getDeviceTemp().getValueAsDouble();
         inputs.currentWristDraw = wristMotor.getSupplyCurrent().getValueAsDouble();
 
         // Shoulder inputs
         inputs.currentAppliedShoulderVoltage = shoulderMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentShoulderVelocity = Units.rotationsToRadians(shoulderMotor.getVelocity().getValueAsDouble());
         inputs.currentShoulderPosition = Units.rotationsToRadians(shoulderMotor.getPosition().getValueAsDouble());
-        inputs.shoulderMotorPosition = shoulderMotor.getDeviceTemp().getValueAsDouble();
         inputs.currentShoulderDraw = shoulderMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentShoulderEncoderPosition = Units.rotationsToRadians(shoulderCanCoder.getPosition().getValueAsDouble());
     }
 
     @Override
@@ -111,7 +122,7 @@ public class C2025ArmIO implements ArmIO {
     }
 
     @Override
-    public void sysIdShoulder(Voltage voltage){
+    public void sysIdShoulder(Voltage voltage) {
         shoulderMotor.setControl(voltageRequest.withOutput(voltage));
     }
 
@@ -129,13 +140,14 @@ public class C2025ArmIO implements ArmIO {
     public void setWristTargetPosition(double position) {
         wristMotor.setControl(positionRequest.withPosition(Units.radiansToRotations(position)));
     }
+
     @Override
-    public void setWristTargetVoltage(double voltage){
+    public void setWristTargetVoltage(double voltage) {
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 
     @Override
-    public void sysIdWrist(Voltage voltage){
+    public void sysIdWrist(Voltage voltage) {
         wristMotor.setControl(voltageRequest.withOutput(voltage));
     }
 }
