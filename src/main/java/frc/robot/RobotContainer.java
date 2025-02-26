@@ -124,6 +124,7 @@ public class RobotContainer {
     private void configureBindings() {
         driverController.rightBumper().whileTrue(
                 Commands.deferredProxy(()->commandFactory.alignToReef(() -> robotMode)));
+//                superStructure.followPositions(()-> robotMode));
         driverController.rightTrigger().and(driverController.rightBumper())
                 .and(superStructure::atTargetPositions)
                 .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));

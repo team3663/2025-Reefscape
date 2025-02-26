@@ -72,17 +72,9 @@ public class CommandFactory {
                 Commands.deferredProxy(
                         () -> drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false)
                 ).andThen(superStructure.followPositions(robotMode)),
-                Commands.run(() -> superStructure.followPositions(robotMode)),
+                superStructure.followPositions(robotMode),
                 () -> SmartDashboard.getBoolean("Auto Reef", true)
         );
-    }
-
-    public Command grabCoral() {
-        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
-    }
-
-    public Command placeCoral() {
-        return grabber.followVoltage(() -> 6.0).until(grabber::getGamePieceNotDetected);
     }
 
     public Command alignToCoralStation() {
@@ -92,10 +84,18 @@ public class CommandFactory {
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
                 grabber.followVoltage(() -> 6.0),
                 Commands.either(
-                Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                        getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
+                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
+                                getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
                         Commands.idle(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 )).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+    }
+
+    public Command grabCoral() {
+        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+    }
+
+    public Command placeCoral() {
+        return grabber.followVoltage(() -> 6.0).until(grabber::getGamePieceNotDetected);
     }
 }
