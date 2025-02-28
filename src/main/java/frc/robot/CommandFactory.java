@@ -44,10 +44,18 @@ public class CommandFactory {
 
     public Pose2d getClosestBranch(Pose2d robotPose) {
         var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            return robotPose.nearest(Constants.RED_BRANCH_POSES);
-        } else {
-            return robotPose.nearest(Constants.BLUE_BRANCH_POSES);
+
+        if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && !Constants.IS_ANDYMARK) {
+            return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
+        }
+        else if(alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && Constants.IS_ANDYMARK){
+            return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
+        }
+        else if(alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue && !Constants.IS_ANDYMARK){
+            return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
+        }
+        else{
+            return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
         }
     }
 

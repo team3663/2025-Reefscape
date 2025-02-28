@@ -28,40 +28,17 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
+    public static final boolean IS_ANDYMARK= false;
+    public static final double WELDED_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
+    public static final double ANDYMARK_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.3);
+    public static final double BLUE_REEF_POSE_X_OFFSET = Units.inchesToMeters(176.75);
+    public static final double RED_REEF_POSE_X_OFFSET = Units.inchesToMeters(514.125);
 
-    public static final double REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
-    public static final double REEF_BLUE_POSE_X_OFFSET = Units.inchesToMeters(176.75);
-    public static final double REEF_RED_POSE_X_OFFSET = Units.inchesToMeters(514.125);
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(18.675), 0, Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
-    public static final Pose2d BLUE_BRANCH_A = getBranchPose(3, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_B = getBranchPose(3, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_C = getBranchPose(4, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_D = getBranchPose(4, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_E = getBranchPose(5, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_F = getBranchPose(5, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_G = getBranchPose(0, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_H = getBranchPose(0, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_I = getBranchPose(1, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_J = getBranchPose(1, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_K = getBranchPose(2, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d BLUE_BRANCH_L = getBranchPose(2, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-
-    public static final Pose2d RED_BRANCH_A = getBranchPose(0, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_B = getBranchPose(0, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_C = getBranchPose(1, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_D = getBranchPose(1, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_E = getBranchPose(2, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_F = getBranchPose(2, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_G = getBranchPose(3, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_H = getBranchPose(3, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_I = getBranchPose(4, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_J = getBranchPose(4, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_K = getBranchPose(5, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
-    public static final Pose2d RED_BRANCH_L = getBranchPose(5, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
 
     public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5229208469390869, 6.728616237640381, Rotation2d.fromDegrees(306));
@@ -71,17 +48,87 @@ public class Constants {
     public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), 0.7049461603164673, Rotation2d.fromDegrees(126));
     public static final Pose2d RED_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5229208469390869), 1.349269151687622, Rotation2d.fromDegrees(126));
     public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5559024810791016), 6.728616237640381, Rotation2d.fromDegrees(234));
-    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181 ), Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(234));
+    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(234));
 
-    public static final List<Pose2d> BLUE_BRANCH_POSES = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B,
-            BLUE_BRANCH_C, BLUE_BRANCH_D, BLUE_BRANCH_E, BLUE_BRANCH_F,
-            BLUE_BRANCH_G, BLUE_BRANCH_H, BLUE_BRANCH_I, BLUE_BRANCH_J,
-            BLUE_BRANCH_K, BLUE_BRANCH_L);
 
-    public static final List<Pose2d> RED_BRANCH_POSES = List.of(RED_BRANCH_A, RED_BRANCH_B,
-            RED_BRANCH_C, RED_BRANCH_D, RED_BRANCH_E, RED_BRANCH_F,
-            RED_BRANCH_G, RED_BRANCH_H, RED_BRANCH_I, RED_BRANCH_J,
-            RED_BRANCH_K, RED_BRANCH_L);
+    public static BranchPositions RED_WELDED_BRANCH_POSITIONS = new BranchPositions(
+            RED_REEF_POSE_X_OFFSET, WELDED_REEF_POSE_Y_OFFSET
+    );
+    public static BranchPositions BLUE_WELDED_BRANCH_POSITIONS = new BranchPositions(
+            BLUE_REEF_POSE_X_OFFSET, WELDED_REEF_POSE_Y_OFFSET
+    );
+    public static BranchPositions RED_ANDYMARK_BRANCH_POSITIONS = new BranchPositions(
+            RED_REEF_POSE_X_OFFSET, ANDYMARK_REEF_POSE_Y_OFFSET
+    );
+    public static BranchPositions BLUE_ANDYMARK_BRANCH_POSITIONS = new BranchPositions(
+            BLUE_REEF_POSE_X_OFFSET, ANDYMARK_REEF_POSE_Y_OFFSET
+    );
+
+    public static class BranchPositions {
+        public final Pose2d BRANCH_A;
+        public final Pose2d BRANCH_B;
+        public final Pose2d BRANCH_C;
+        public final Pose2d BRANCH_D;
+        public final Pose2d BRANCH_E;
+        public final Pose2d BRANCH_F;
+        public final Pose2d BRANCH_G;
+        public final Pose2d BRANCH_H;
+        public final Pose2d BRANCH_I;
+        public final Pose2d BRANCH_J;
+        public final Pose2d BRANCH_K;
+        public final Pose2d BRANCH_L;
+
+        public BranchPositions(double X_OFFSET, double Y_OFFSET) {
+            BRANCH_A = getBranchPose(3, false, X_OFFSET, Y_OFFSET);
+            BRANCH_B = getBranchPose(3, true, X_OFFSET, Y_OFFSET);
+            BRANCH_C = getBranchPose(4, false, X_OFFSET, Y_OFFSET);
+            BRANCH_D = getBranchPose(4, true, X_OFFSET, Y_OFFSET);
+            BRANCH_E = getBranchPose(5, false, X_OFFSET, Y_OFFSET);
+            BRANCH_F = getBranchPose(5, true, X_OFFSET, Y_OFFSET);
+            BRANCH_G = getBranchPose(0, false, X_OFFSET, Y_OFFSET);
+            BRANCH_H = getBranchPose(0, true, X_OFFSET, Y_OFFSET);
+            BRANCH_I = getBranchPose(1, false, X_OFFSET, Y_OFFSET);
+            BRANCH_J = getBranchPose(1, true, X_OFFSET, Y_OFFSET);
+            BRANCH_K = getBranchPose(2, false, X_OFFSET, Y_OFFSET);
+            BRANCH_L = getBranchPose(2, true, X_OFFSET, Y_OFFSET);
+
+        }
+
+
+    }
+
+    public static final List<Pose2d> RED_WELDED_BRANCH_POSES = List.of(RED_WELDED_BRANCH_POSITIONS.BRANCH_A, RED_WELDED_BRANCH_POSITIONS.BRANCH_B,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_C,RED_WELDED_BRANCH_POSITIONS.BRANCH_D,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_E,RED_WELDED_BRANCH_POSITIONS.BRANCH_F,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_G, RED_WELDED_BRANCH_POSITIONS.BRANCH_H,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_I,RED_WELDED_BRANCH_POSITIONS.BRANCH_J,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_K,RED_WELDED_BRANCH_POSITIONS.BRANCH_L
+    );
+    public static final List<Pose2d> BLUE_WELDED_BRANCH_POSES = List.of(BLUE_WELDED_BRANCH_POSITIONS.BRANCH_A, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_B,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_C,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_D,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_E,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_F,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_G, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_H,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_I,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_J,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_K,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_L
+    );
+
+
+
+    public static final List<Pose2d> RED_ANDYMARK_BRANCH_POSES = List.of(RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_A, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_B,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_C,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_E,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_G, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_H,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_I,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_K,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
+    );
+    public static final List<Pose2d> BLUE_ANDYMARK_BRANCH_POSES = List.of(BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_A, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_B,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_C,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_E,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_G, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_H,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_I,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_K,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
+    );
+
 
     public static final List<Pose2d> BLUE_CORAL_STATION_POSES = List.of(BLUE_LEFT_NEAR_SIDE_CORAL_STATION, BLUE_LEFT_FAR_SIDE_CORAL_STATION,
             BLUE_RIGHT_NEAR_SIDE_CORAL_STATION, BLUE_RIGHT_FAR_SIDE_CORAL_STATION);
@@ -124,6 +171,7 @@ public class Constants {
         public static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
         public static final double WRIST_DEFAULT_ANGLE = 0;
     }
+
 
     // Arm buffers
     public static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
