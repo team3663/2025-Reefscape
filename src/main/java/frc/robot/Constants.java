@@ -34,8 +34,8 @@ public class Constants {
     public static final double REEF_RED_POSE_X_OFFSET = Units.inchesToMeters(514.125);
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
-    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(21.125), 0, Rotation2d.fromDegrees(180));
-    public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(5), 0, Rotation2d.fromDegrees(180));
+    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(18.675), 0, Rotation2d.fromDegrees(180));
+    public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
     public static final Pose2d BLUE_BRANCH_A = getBranchPose(3, false, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
     public static final Pose2d BLUE_BRANCH_B = getBranchPose(3, true, REEF_BLUE_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
@@ -63,15 +63,15 @@ public class Constants {
     public static final Pose2d RED_BRANCH_K = getBranchPose(5, true, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
     public static final Pose2d RED_BRANCH_L = getBranchPose(5, false, REEF_RED_POSE_X_OFFSET, REEF_POSE_Y_OFFSET);
 
-    public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.6382254362106323, 7.540848731994629, Rotation2d.fromDegrees(306));
+    public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5229208469390869, 6.728616237640381, Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5559024810791016, 1.349269151687622, Rotation2d.fromDegrees(54));
-    public static final Pose2d BLUE_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5863468647003174, 0.621896505355835, Rotation2d.fromDegrees(54));
+    public static final Pose2d BLUE_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, 0.7049461603164673, Rotation2d.fromDegrees(54));
 
-    public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 1.6382254362106323), 0.621896505355835, Rotation2d.fromDegrees(126));
+    public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), 0.7049461603164673, Rotation2d.fromDegrees(126));
     public static final Pose2d RED_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5229208469390869), 1.349269151687622, Rotation2d.fromDegrees(126));
     public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5559024810791016), 6.728616237640381, Rotation2d.fromDegrees(234));
-    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 1.5863468647003174), 7.540848731994629, Rotation2d.fromDegrees(234));
+    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181 ), Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(234));
 
     public static final List<Pose2d> BLUE_BRANCH_POSES = List.of(BLUE_BRANCH_A, BLUE_BRANCH_B,
             BLUE_BRANCH_C, BLUE_BRANCH_D, BLUE_BRANCH_E, BLUE_BRANCH_F,
@@ -108,7 +108,7 @@ public class Constants {
     public static class ArmPositions {
         // Coral Station
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(6.811);
-        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(135.0);
+        public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
 
         // Shoulder Safe variables

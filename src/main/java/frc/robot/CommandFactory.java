@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
@@ -13,8 +14,6 @@ import frc.robot.subsystems.led.Led;
 
 import java.util.Set;
 import java.util.function.Supplier;
-
-import static edu.wpi.first.wpilibj2.command.Commands.runEnd;
 
 public class CommandFactory {
     private final Drivetrain drivetrain;
@@ -69,35 +68,34 @@ public class CommandFactory {
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode) {
-        return Commands.parallel(superStructure.followPositions(robotMode)
-//                Commands.repeatingSequence(
-//                        Commands.defer(
-//                ()->
-//                        drivetrain.pathToReefPoseCommand(getClosestBranch(drivetrain.getPose()))
-//                , Set.of(drivetrain)
+        return Commands.either(
+                Commands.deferredProxy(
+                        () -> drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false)
+                ).andThen(superStructure.followPositions(robotMode)),
+                superStructure.followPositions(robotMode),
+                () -> SmartDashboard.getBoolean("Auto Reef", true)
         );
     }
 
-    public Command grabCoral(){
-        return grabber.followVoltage(()-> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
-    }
-    public Command placeCoral(){
-        return grabber.followVoltage(()-> 6.0).until(grabber::getGamePieceNotDetected);
-    }
     public Command alignToCoralStation() {
         return Commands.parallel(
                 superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
                         () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
-                grabber.followVoltage(() -> 6.0)
-//                ,
-//                Commands.repeatingSequence(
-//                        Commands.defer(() -> drivetrain.pathToCoralStationPoseCommand(getClosestCoralStationPosition(
-//                                drivetrain.getPose()
-//                        )), Set.of(drivetrain)))
-        ).withDeadline(
-                Commands.waitUntil(() -> grabber.isGamePieceDetected()).andThen(Commands.waitSeconds(0.04))
-        );
+                grabber.followVoltage(() -> 6.0),
+                Commands.either(
+                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
+                                getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
+                        Commands.idle(),
+                        () -> SmartDashboard.getBoolean("Auto Coral Station", true)
+                )).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
     }
 
+    public Command grabCoral() {
+        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+    }
+
+    public Command placeCoral() {
+        return grabber.followVoltage(() -> 6.0).until(grabber::getGamePieceNotDetected);
+    }
 }
