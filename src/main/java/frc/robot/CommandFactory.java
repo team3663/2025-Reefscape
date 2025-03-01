@@ -1,6 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,7 +14,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
-import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -48,14 +49,11 @@ public class CommandFactory {
 
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && !Constants.IS_ANDYMARK) {
             return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
-        }
-        else if(alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && Constants.IS_ANDYMARK){
+        } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && Constants.IS_ANDYMARK) {
             return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
-        }
-        else if(alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue && !Constants.IS_ANDYMARK){
+        } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue && !Constants.IS_ANDYMARK) {
             return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
-        }
-        else{
+        } else {
             return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
         }
     }
@@ -82,7 +80,15 @@ public class CommandFactory {
                 drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
                 drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier),
                 () -> SmartDashboard.getBoolean("Auto Reef", true)
-        ).alongWith(superStructure.followPositions(robotMode));
+        ).alongWith(superStructure.followPositions(
+                () -> {
+                    if (drivetrain.isNotMoving()) return robotMode.get().getElevatorHeight();
+                    else return Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT);
+                }, () -> {
+                    if (drivetrain.isNotMoving()) return robotMode.get().getShoulderAngle();
+                    else return MathUtil.clamp(robotMode.get().getShoulderAngle(),
+                                Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90), Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE);
+                }, () -> robotMode.get().getWristAngle()));
     }
 
     public Command alignToCoralStation() {
