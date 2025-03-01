@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.*;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -150,6 +151,19 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
+    public Command PID_GoToPos(Supplier<Pose2d> targetPose){
+        PIDController xController= new PIDController(0,0,0);
+        PIDController yController= new PIDController(0,0,0);
+        PIDController rotationController= new PIDController(0,0,0);
+
+        return drive(
+                ()-> xController.calculate(inputs.pose.getX(),targetPose.get().getX()),
+                ()-> yController.calculate(inputs.pose.getY(),targetPose.get().getY()),
+                ()-> rotationController.calculate(inputs.pose.getRotation().getRadians(),targetPose.get().getRotation().getRadians())
+        );
+
+    }
+
     /**
      * Drives the robot to a given pose fromm the robot's current position using a pathplanner path
      *
@@ -192,6 +206,7 @@ public class Drivetrain extends SubsystemBase {
             );
 
             return AutoBuilder.followPath(path);
+//                    .andThen(PID_GoToPos(targetPose))
         });
     }
 

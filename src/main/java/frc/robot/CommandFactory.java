@@ -13,6 +13,7 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 
 import java.util.Set;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class CommandFactory {
@@ -75,14 +76,13 @@ public class CommandFactory {
         return grabber.followVoltage(() -> robotMode.get().isRunGrabberReverse() ? -6.0 : 6.0);
     }
 
-    public Command alignToReef(Supplier<RobotMode> robotMode) {
+    public Command alignToReef(Supplier<RobotMode> robotMode, DoubleSupplier xVelocitySupplier,
+                               DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
-                Commands.deferredProxy(
-                        () -> drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false)
-                ).andThen(superStructure.followPositions(robotMode)),
-                superStructure.followPositions(robotMode),
+                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
+                drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier),
                 () -> SmartDashboard.getBoolean("Auto Reef", true)
-        );
+        ).alongWith(superStructure.followPositions(robotMode));
     }
 
     public Command alignToCoralStation() {

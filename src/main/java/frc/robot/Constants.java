@@ -39,7 +39,6 @@ public class Constants {
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(18.675), 0, Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
-
     public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5229208469390869, 6.728616237640381, Rotation2d.fromDegrees(306));
     public static final Pose2d BLUE_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5559024810791016, 1.349269151687622, Rotation2d.fromDegrees(54));
