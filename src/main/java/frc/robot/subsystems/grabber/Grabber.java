@@ -35,6 +35,10 @@ public class Grabber extends SubsystemBase {
         return inputs.gamePieceDetected;
     }
 
+    public boolean getGamePieceDetected() {
+        return inputs.gamePieceDetected;
+    }
+
     public boolean getGamePieceNotDetected() {
         return !inputs.gamePieceDetected;
     }
