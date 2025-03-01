@@ -152,9 +152,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Command PID_GoToPos(Supplier<Pose2d> targetPose){
-        PIDController xController= new PIDController(0,0,0);
-        PIDController yController= new PIDController(0,0,0);
-        PIDController rotationController= new PIDController(0,0,0);
+        PIDController xController= new PIDController(1.0,0,0);
+        PIDController yController= new PIDController(1.0,0,0);
+        PIDController rotationController= new PIDController(5.0,0,0);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         return drive(
                 ()-> xController.calculate(inputs.pose.getX(),targetPose.get().getX()),
@@ -205,8 +206,7 @@ public class Drivetrain extends SubsystemBase {
                     new GoalEndState(0.0, targetPose.get().getRotation())
             );
 
-            return AutoBuilder.followPath(path);
-//                    .andThen(PID_GoToPos(targetPose))
+            return AutoBuilder.followPath(path).andThen(PID_GoToPos(targetPose));
         });
     }
 

@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -86,17 +87,23 @@ public class CommandFactory {
     }
 
     public Command alignToCoralStation() {
+        Debouncer[] debouncerHolder = new Debouncer[1];
         return Commands.parallel(
-                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
-                grabber.followVoltage(() -> 6.0),
-                Commands.either(
-                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
-                        Commands.idle(),
-                        () -> SmartDashboard.getBoolean("Auto Coral Station", true)
-                )).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+                        superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
+                                () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+                                () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                        grabber.followVoltage(() -> 6.0),
+                        Commands.either(
+                                Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
+                                        getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
+                                Commands.idle(),
+                                () -> SmartDashboard.getBoolean("Auto Coral Station", true)
+                        ))
+                .withDeadline(
+                        Commands.sequence(
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
+                                Commands.waitUntil(() -> debouncerHolder[0].calculate(grabber.isGamePieceDetected()))
+                        ));
     }
 
     public Command grabCoral() {

@@ -66,6 +66,7 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.MotionMagic.MotionMagicAcceleration = 3.0;
         shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 1.63;
 
+
         shoulderMotor.getConfigurator().apply(shoulderConfig);
 
         // Wrist motor config
