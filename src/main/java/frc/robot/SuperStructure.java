@@ -156,7 +156,7 @@ public class SuperStructure extends SubsystemBase {
                         },
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> {
-                    if (!elevator.atPosition(elevatorPosition.getAsDouble()) &&
+                    if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) &&
                             !arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD)) {
                         return elevator.getTargetPosition();
                     }

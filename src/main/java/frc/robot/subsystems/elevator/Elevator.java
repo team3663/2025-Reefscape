@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -68,7 +69,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return Math.abs(inputs.currentPositionMotor1 - position) < POSITION_THRESHOLD;
+        return atPosition(position, POSITION_THRESHOLD);
     }
 
     public boolean atPosition(double position, double threshold) {
@@ -120,7 +121,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private double getValidPosition(double position) {
-        return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
+        return MathUtil.clamp(position, constants.minimumPosition, constants.maximumPosition);
     }
 
     public Command zero() {
