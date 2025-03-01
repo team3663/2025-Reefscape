@@ -24,6 +24,8 @@ public interface DrivetrainIO {
     default void driveFieldOriented(double xVelocity, double yVelocity, double angularVelocity) {
     }
 
+    default void driveBlueAllianceOriented(double xVelocity, double yVelocity, double angularVelocity){}
+
     default void driveFieldOriented(SwerveSample sample) {
     }
 

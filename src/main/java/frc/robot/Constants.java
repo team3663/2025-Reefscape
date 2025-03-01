@@ -1,6 +1,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -29,6 +31,8 @@ public class Constants {
 
     public static final double DEBOUNCE_TIME = 0.5;
     public static final boolean IS_ANDYMARK= false;
+    public static final AprilTagFieldLayout FIELD =
+            AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
     public static final double WELDED_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
     public static final double ANDYMARK_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.3);
     public static final double BLUE_REEF_POSE_X_OFFSET = Units.inchesToMeters(176.75);
@@ -39,15 +43,22 @@ public class Constants {
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(18.675), 0, Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
-    public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(306));
-    public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5229208469390869, 6.728616237640381, Rotation2d.fromDegrees(306));
-    public static final Pose2d BLUE_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d(0.5559024810791016, 1.349269151687622, Rotation2d.fromDegrees(54));
-    public static final Pose2d BLUE_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(1.5771037340164185, 0.7049461603164673, Rotation2d.fromDegrees(54));
+    public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(14.5), Rotation2d.kZero);
+    public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(19.0), Rotation2d.kZero);
 
-    public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), 0.7049461603164673, Rotation2d.fromDegrees(126));
-    public static final Pose2d RED_LEFT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5229208469390869), 1.349269151687622, Rotation2d.fromDegrees(126));
-    public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = new Pose2d((17.548225 - 0.5559024810791016), 6.728616237640381, Rotation2d.fromDegrees(234));
-    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), Units.inchesToMeters(289.246214), Rotation2d.fromDegrees(234));
+    public static final Transform2d RIGHT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(17.5), Rotation2d.kZero);
+    public static final Transform2d RIGHT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(16.5), Rotation2d.kZero);
+
+    public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_FAR_CORAL_STATION_OFFSET);
+    public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_NEAR_CORAL_STATION_OFFSET);
+    public static final Pose2d BLUE_RIGHT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(12).get().toPose2d().plus(RIGHT_NEAR_CORAL_STATION_OFFSET);
+    public static final Pose2d BLUE_RIGHT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(12).get().toPose2d().plus(RIGHT_FAR_CORAL_STATION_OFFSET);
+
+    //    public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = new Pose2d(Units.inchesToMeters(628.78430181), 0.7049461603164673, Rotation2d.fromDegrees(126));
+    public static final Pose2d RED_LEFT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(1).get().toPose2d().plus(LEFT_FAR_CORAL_STATION_OFFSET);
+    public static final Pose2d RED_LEFT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(1).get().toPose2d().plus(LEFT_NEAR_CORAL_STATION_OFFSET);
+    public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_NEAR_CORAL_STATION_OFFSET);
+    public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_FAR_CORAL_STATION_OFFSET);
 
 
     public static BranchPositions RED_WELDED_BRANCH_POSITIONS = new BranchPositions(
@@ -151,7 +162,7 @@ public class Constants {
 
     public static class ArmPositions {
         // Coral Station
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(6.811);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
 
@@ -187,7 +198,7 @@ public class Constants {
     public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.375);
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.25);
     public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
     public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
 
@@ -195,7 +206,7 @@ public class Constants {
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
     public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.375);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.25);
     public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
 }

@@ -2,10 +2,7 @@ package frc.robot.config;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -49,7 +46,9 @@ public class C2025RobotFactory implements RobotFactory {
 
     private static final double DRIVE_INERTIA = 0.01;
     private static final double DRIVE_FRICTION_VOLTAGE = 0.25;
-    private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration();
+    private static final TalonFXConfiguration DRIVE_CONFIG = new TalonFXConfiguration()
+            .withCurrentLimits(new CurrentLimitsConfigs()
+                    .withStatorCurrentLimit(100).withStatorCurrentLimitEnable(true));
     private static final Slot0Configs DRIVE_PID_CONSTANTS = new Slot0Configs()
             .withKS(0.24802)
             .withKA(0.0081758)

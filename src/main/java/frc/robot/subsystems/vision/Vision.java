@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase {
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
 
     static {
-        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(1.0, VecBuilder.fill(0.05, 0.05, 0.05));
+        MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
     }
 

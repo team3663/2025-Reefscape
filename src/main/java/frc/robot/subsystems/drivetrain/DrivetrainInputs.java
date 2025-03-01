@@ -17,5 +17,6 @@ public class DrivetrainInputs {
     public ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     public SwerveModuleState[] moduleStates = new SwerveModuleState[0];
     public SwerveModuleState[] moduleTargets = new SwerveModuleState[0];
+    public double slip =0;
 
 }

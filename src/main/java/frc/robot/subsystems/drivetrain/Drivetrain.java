@@ -17,7 +17,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.vision.VisionMeasurement;
@@ -151,18 +154,23 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
-    public Command PID_GoToPos(Supplier<Pose2d> targetPose){
-        PIDController xController= new PIDController(1.0,0,0);
-        PIDController yController= new PIDController(1.0,0,0);
-        PIDController rotationController= new PIDController(5.0,0,0);
+    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
+        PIDController xController = new PIDController(10.0, 0, 0);
+        PIDController yController = new PIDController(10.0, 0, 0);
+        PIDController rotationController = new PIDController(20.0, 0, 0);
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
-        return drive(
-                ()-> xController.calculate(inputs.pose.getX(),targetPose.get().getX()),
-                ()-> yController.calculate(inputs.pose.getY(),targetPose.get().getY()),
-                ()-> rotationController.calculate(inputs.pose.getRotation().getRadians(),targetPose.get().getRotation().getRadians())
+        return runEnd(
+                () -> {
+                    targetPathPose = targetPose.get();
+                    io.driveBlueAllianceOriented(
+                            xController.calculate(inputs.pose.getX(), targetPose.get().getX()),
+                            yController.calculate(inputs.pose.getY(), targetPose.get().getY()),
+                            rotationController.calculate(inputs.pose.getRotation().getRadians(), targetPose.get().getRotation().getRadians())
+                    );
+                },
+                io::stop
         );
-
     }
 
     /**
@@ -173,13 +181,9 @@ public class Drivetrain extends SubsystemBase {
      */
     public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip) {
         PathConstraints constraints = new PathConstraints(
-//                this.getConstants().maxLinearVelocity,
                 3.0,
                 3.0,
-//                this.getConstants().maxAngularVelocity,
                 3.0,
-
-//                4 * Math.PI,
                 3.0
         );
 
@@ -188,8 +192,8 @@ public class Drivetrain extends SubsystemBase {
             var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
             var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
             Rotation2d initialWaypointDirection;
+            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
             if (currentVelocity < 0.1) {
-                var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
 
                 initialWaypointDirection = delta.getAngle();
             } else {
@@ -199,17 +203,17 @@ public class Drivetrain extends SubsystemBase {
             var path = new PathPlannerPath(
                     PathPlannerPath.waypointsFromPoses(
                             new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip?Rotation2d.k180deg:Rotation2d.kZero))
+                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
                     ),
                     constraints,
                     new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
                     new GoalEndState(0.0, targetPose.get().getRotation())
             );
 
-            return AutoBuilder.followPath(path).andThen(PID_GoToPos(targetPose));
+            return Commands.either(AutoBuilder.followPath(path), Commands.none(),
+                    () -> delta.getNorm() > Units.inchesToMeters(6.0)).andThen(PID_GoToPos(targetPose));
         });
     }
-
 
     public record Constants(
             double maxLinearVelocity,

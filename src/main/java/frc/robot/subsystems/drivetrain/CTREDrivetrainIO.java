@@ -110,6 +110,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         inputs.chassisSpeeds = state.Speeds;
         inputs.moduleStates = state.ModuleStates;
         inputs.moduleTargets = state.ModuleTargets;
+        inputs.slip= drivetrain.getModule(0).getDriveMotor().getStatorCurrent().getValueAsDouble();
     }
 
     @Override
@@ -119,6 +120,15 @@ public class CTREDrivetrainIO implements DrivetrainIO {
 
     @Override
     public void resetOdometry(Pose2d newPose) {
+        Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            Rotation2d rotation = switch (alliance.get()) {
+                case Blue -> Rotation2d.kZero;
+                case Red -> Rotation2d.k180deg;
+            };
+            drivetrain.setOperatorPerspectiveForward(rotation);
+        }
+
         yawOffset = newPose.getRotation().getRadians() - drivetrain.getPigeon2().getYaw().getValue().in(Units.Radians);
 
         drivetrain.resetPose(newPose);
@@ -149,7 +159,17 @@ public class CTREDrivetrainIO implements DrivetrainIO {
         drivetrain.setControl(fieldOrientedRequest
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVelocity)
-                .withRotationalRate(angularVelocity));
+                .withRotationalRate(angularVelocity)
+                .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.OperatorPerspective));
+    }
+
+    @Override
+    public void driveBlueAllianceOriented(double xVelocity, double yVelocity, double angularVelocity) {
+        drivetrain.setControl(fieldOrientedRequest
+                .withVelocityX(xVelocity)
+                .withVelocityY(yVelocity)
+                .withRotationalRate(angularVelocity)
+                .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance));
     }
 
     @Override
@@ -172,6 +192,7 @@ public class CTREDrivetrainIO implements DrivetrainIO {
                 .withVelocityX(xVelocity)
                 .withVelocityY(yVelocity)
                 .withRotationalRate(angularVelocity)
+                .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance)
         );
     }
 
