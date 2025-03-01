@@ -131,11 +131,6 @@ public class Drivetrain extends SubsystemBase {
         return sysIdTranslationRoutine.dynamic(direction);
     }
 
-    public boolean isNotMoving() {
-        return inputs.chassisSpeeds.vxMetersPerSecond == 0.0 && inputs.chassisSpeeds.vyMetersPerSecond == 0.0
-                && inputs.chassisSpeeds.omegaRadiansPerSecond == 0.0;
-    }
-
     /**
      * Drives field Oriented with the ability to specify X, Y, and Angular Velocities
      *

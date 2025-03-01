@@ -78,18 +78,23 @@ public class CommandFactory {
     public Command alignToReef(Supplier<RobotMode> robotMode, DoubleSupplier xVelocitySupplier,
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
-                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
-                drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier),
+                Commands.parallel(
+                        drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
+                        superStructure.followPositions(
+                                        () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                                        () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
+                                                Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
+                                                Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                        () -> robotMode.get().getWristAngle())
+                                .until(() -> drivetrain.getPose().getTranslation().getDistance(
+                                        getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
+                                ) < Units.feetToMeters(1.0))
+                                .andThen(superStructure.followPositions(robotMode))
+                ),
+                drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
+                        .alongWith(superStructure.followPositions(robotMode)),
                 () -> SmartDashboard.getBoolean("Auto Reef", true)
-        ).alongWith(superStructure.followPositions(
-                () -> {
-                    if (drivetrain.isNotMoving()) return robotMode.get().getElevatorHeight();
-                    else return Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT);
-                }, () -> {
-                    if (drivetrain.isNotMoving()) return robotMode.get().getShoulderAngle();
-                    else return MathUtil.clamp(robotMode.get().getShoulderAngle(),
-                                Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90), Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE);
-                }, () -> robotMode.get().getWristAngle()));
+        );
     }
 
     public Command alignToCoralStation() {
