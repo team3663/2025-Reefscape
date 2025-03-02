@@ -87,22 +87,7 @@ public class RobotContainer {
         autoChooser.addRoutine("FacePlantH", autoPaths::facePlantH);
 
         autoChooser.addRoutine("TwoCoralDC", autoPaths::twoCoralDC);
-//        autoChooser.addRoutine("TwoCoralFE", autoPaths::twoCoralFE);
-//        autoChooser.addRoutine("TwoCoralIJ", autoPaths::twoCoralIJ);
         autoChooser.addRoutine("TwoCoralKL", autoPaths::twoCoralKL);
-
-//        autoChooser.addRoutine("BehindTheBackAB", autoPaths::behindTheBackAB);
-//        autoChooser.addRoutine("BehindTheBackFlippedBA", autoPaths::behindTheBackFlippedBA);
-//
-//        autoChooser.addRoutine("ThreeCoralEDC", autoPaths::threeCoralEDC);
-//        autoChooser.addRoutine("ThreeCoralGFE", autoPaths::threeCoralGFE);
-//        autoChooser.addRoutine("ThreeCoralJKL", autoPaths::threeCoralJKL);
-//
-//        autoChooser.addRoutine("FourCoralFCDE", autoPaths::fourCoralFCDE);
-//        autoChooser.addRoutine("FourCoralFlippedILKJ", autoPaths::fourCoralFlippedILKJ);
-//
-//        autoChooser.addRoutine("FiveCoralFBCDE", autoPaths::fiveCoralFBCDE);
-//        autoChooser.addRoutine("FiveCoralFlippedIALKJ", autoPaths::fiveCoralFlippedIALKJ);
 
         // Puts auto chooser on the dashboard
         Shuffleboard.getTab("Driver")
