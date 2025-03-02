@@ -40,7 +40,7 @@ public class Constants {
 
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
-    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(18.675), 0, Rotation2d.fromDegrees(180));
+    public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(16.675), -Units.inchesToMeters(0.5), Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
     public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(14.5), Rotation2d.kZero);

@@ -118,10 +118,11 @@ public class CommandFactory {
     }
 
     public Command grabCoral() {
-        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.04)));
+        return superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected)
+                .andThen(Commands.waitSeconds(0.04))).andThen(superStructure.goToDefaultPositions()));
     }
 
     public Command placeCoral() {
-        return grabber.followVoltage(() -> 6.0).until(grabber::getGamePieceNotDetected);
+        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))).andThen(superStructure.goToDefaultPositions());
     }
 }

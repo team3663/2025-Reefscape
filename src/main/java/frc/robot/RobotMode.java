@@ -7,7 +7,7 @@ public enum RobotMode {
     CORAL_LEVEL_1(Units.inchesToMeters(0), Units.degreesToRadians(34.36), Units.degreesToRadians(40.34), false, false),
     CORAL_LEVEL_2(Units.inchesToMeters(3.6066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), false, false),
     CORAL_LEVEL_3(Units.inchesToMeters(20.1066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), false, false),
-    CORAL_LEVEL_4(Units.inchesToMeters(58.858), Units.degreesToRadians(39.199), Units.degreesToRadians(-32.871), false, false),
+    CORAL_LEVEL_4(Units.inchesToMeters(47.94498), Units.degreesToRadians(65.9277), Units.degreesToRadians(3.61), false, false),
     ALGAE_PROCESSOR(0, Units.degreesToRadians(90), Units.degreesToRadians(0), true, false),
     ALGAE_NET(1.55, Units.degreesToRadians(90), Units.degreesToRadians(0), true, false),
     ALGAE_REMOVE_LOWER(0, Units.degreesToRadians(90), Units.degreesToRadians(0), true, true),

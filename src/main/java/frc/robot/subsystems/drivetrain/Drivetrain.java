@@ -187,32 +187,33 @@ public class Drivetrain extends SubsystemBase {
                 3.0
         );
 
-        return defer(() -> {
+        return Commands.either(defer(() -> {
+                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            Rotation2d initialWaypointDirection;
+                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+                            if (currentVelocity < 0.1) {
 
-            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
-            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-            Rotation2d initialWaypointDirection;
-            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
-            if (currentVelocity < 0.1) {
+                                initialWaypointDirection = delta.getAngle();
+                            } else {
+                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            }
 
-                initialWaypointDirection = delta.getAngle();
-            } else {
-                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-            }
+                            var path = new PathPlannerPath(
+                                    PathPlannerPath.waypointsFromPoses(
+                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+                                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
+                                    ),
+                                    constraints,
+                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+                                    new GoalEndState(0.0, targetPose.get().getRotation())
+                            );
 
-            var path = new PathPlannerPath(
-                    PathPlannerPath.waypointsFromPoses(
-                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
-                    ),
-                    constraints,
-                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
-                    new GoalEndState(0.0, targetPose.get().getRotation())
-            );
-
-            return Commands.either(AutoBuilder.followPath(path), Commands.none(),
-                    () -> delta.getNorm() > Units.inchesToMeters(6.0)).andThen(PID_GoToPos(targetPose));
-        });
+                            return AutoBuilder.followPath(path);
+                        }),
+                        Commands.none(),
+                        () -> targetPose.get().getTranslation().minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0))
+                .andThen(PID_GoToPos(targetPose));
     }
 
     public record Constants(
