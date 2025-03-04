@@ -9,10 +9,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.S1StateValue;
-import com.ctre.phoenix6.signals.S2StateValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -41,18 +38,20 @@ public class C2025ClimberIO implements ClimberIO {
         this.coder = coder;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
         //PID for position
         config.Slot0.kV = 0.0;
         config.Slot0.kA = 0.0;
-        config.Slot0.kP = 100.0;
+        config.Slot0.kP = 50.0;
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
 
         config.Feedback.FeedbackRemoteSensorID = coder.getDeviceID();
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
-        config.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
-        config.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
+        config.MotionMagic.MotionMagicCruiseVelocity = 1.0;
+        config.MotionMagic.MotionMagicAcceleration = 3.0;
 
         motor.getConfigurator().apply(config);
 

@@ -2,6 +2,7 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,10 +19,11 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 @Logged
 public class Climber extends SubsystemBase {
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1);
-    private static final double POSITION_THRESHOLD = Units.degreesToRadians(1.0);
+    private static final double POSITION_THRESHOLD = Units.degreesToRadians(5.0);
     private static final double WAIT_TIME = 0.25;
+
     private static final double DEPLOY_ANGLE = Units.degreesToRadians(0.0);
-    private static final double CLIMB_ANGLE = Units.degreesToRadians(160);
+    private static final double CLIMB_ANGLE = Units.degreesToRadians(170.0);
 
     private final ClimberIO io;
     private final Constants constants;
@@ -31,7 +33,6 @@ public class Climber extends SubsystemBase {
     private boolean zeroed = true;
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
-
 
     public Climber(ClimberIO io) {
         this.io = io;
@@ -75,13 +76,6 @@ public class Climber extends SubsystemBase {
                 }
         );
     }
-
-    public Command resetPosition() {
-        return runOnce(
-                io::resetPosition
-        );
-    }
-
 
     public Command goToPosition(double position) {
         return runEnd(
@@ -129,12 +123,17 @@ public class Climber extends SubsystemBase {
         return Commands.none();
     }
 
-    public Command deploy() {
-        return goToPosition(DEPLOY_ANGLE);
+    public Command defaultCommand()
+    {
+        return followPosition(constants::minimumPosition);
+    }
+
+    public Command arm() {
+        return followPosition(() -> DEPLOY_ANGLE);
     }
 
     public Command climb() {
-        return goToPosition(CLIMB_ANGLE);
+        return followPosition(() -> CLIMB_ANGLE);
     }
 
     public record Constants(

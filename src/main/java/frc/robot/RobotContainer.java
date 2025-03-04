@@ -68,6 +68,7 @@ public class RobotContainer {
 
         configureBindings();
 
+        climber.setDefaultCommand(climber.defaultCommand());
         drivetrain.setDefaultCommand(
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
@@ -112,8 +113,13 @@ public class RobotContainer {
 
         driverController.a().whileTrue(grabber.eject());
 
-        operatorController.leftBumper().onTrue(climber.deploy());
-        operatorController.rightBumper().onTrue(climber.climb());
+        operatorController.leftBumper().whileTrue(climber.arm()
+                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+        operatorController.leftTrigger().and(operatorController.leftBumper())
+                .onTrue(climber.climb()
+                        .alongWith(
+                                superStructure.followPositions(() -> 0.0, () -> 0.0, ()-> arm.getConstants().maximumWristAngle())
+                        ).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
