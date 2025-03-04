@@ -13,7 +13,6 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
-import frc.robot.utility.Gamepiece;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -91,12 +90,7 @@ public class CommandFactory {
                                 .alongWith(superStructure.followPositions(robotMode)),
                         () -> SmartDashboard.getBoolean("Auto Reef", true)
                 )
-                .alongWith(
-                        Commands.either(Commands.waitUntil(readyToPlace).andThen(
-                                Commands.either(grabber.placeAlgae(), grabber.placeCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
-                                Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
-                                () -> robotMode.get().isPlacingMode())
-                );
+                .alongWith(grabber.getRobotModeCommand(robotMode, readyToPlace));
     }
 
     public Command alignToCoralStation() {
@@ -123,7 +117,7 @@ public class CommandFactory {
 
     public Command placeCoral() {
         return grabber.placeCoral().withDeadline(
-                Commands.waitUntil(grabber::getGamePieceNotDetected)
+                Commands.waitUntil(grabber::isGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         ).andThen(superStructure.goToDefaultPositions());
     }

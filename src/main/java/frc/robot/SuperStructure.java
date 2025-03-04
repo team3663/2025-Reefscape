@@ -173,7 +173,8 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private double shoulderHaveAlgaePosition(double shoulderPosition) {
-        return haveAlgae.getAsBoolean() ? Math.min(shoulderPosition, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : shoulderPosition;
+        return (haveAlgae.getAsBoolean() && elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_MIN_HEIGHT) ?
+                Math.min(shoulderPosition, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : shoulderPosition;
     }
 
     /**

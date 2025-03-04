@@ -172,8 +172,9 @@ public class Constants {
         public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(25.0);
         public static final double SHOULDER_SAFE_BUFFER = Units.degreesToRadians(3.0);
 
-        // Shoulder max angle when we have an algae
+        // Shoulder max angle and elevator min height when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
+        public static final double ELEVATOR_ALGAE_MIN_HEIGHT = 1.0;
 
         // Default positions and angles
         public static final double ELEVATOR_DEFAULT_POSITION = 0;

@@ -5,7 +5,11 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMode;
 import frc.robot.utility.Gamepiece;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 @Logged
 public class Grabber extends SubsystemBase {
@@ -42,7 +46,7 @@ public class Grabber extends SubsystemBase {
         return inputs.gamePieceDetected;
     }
 
-    public boolean getGamePieceNotDetected() {
+    public boolean isGamePieceNotDetected() {
         return !inputs.gamePieceDetected;
     }
 
@@ -77,7 +81,7 @@ public class Grabber extends SubsystemBase {
                         withVoltage(-6.0), // coral
                         this::hasAlgae
                 ).withDeadline(
-                        Commands.waitUntil(this::getGamePieceNotDetected))
+                        Commands.waitUntil(this::isGamePieceNotDetected))
                 .andThen(Commands.waitSeconds(0.25)
                 );
     }
@@ -95,16 +99,14 @@ public class Grabber extends SubsystemBase {
                 .unless(this::isGamePieceDetected);
     }
 
-    public Command placeAlgae()
-    {
+    public Command placeAlgae() {
         return withVoltage(6.0).withDeadline(
-                Commands.waitUntil(this::getGamePieceNotDetected)
+                Commands.waitUntil(this::isGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         );
     }
 
-    public Command removeAlgae()
-    {
+    public Command removeAlgae() {
         return withVoltage(3.0);
     }
 
@@ -123,5 +125,37 @@ public class Grabber extends SubsystemBase {
 
     public Command placeCoral() {
         return withVoltage(6.0);
+    }
+
+    public Command getRobotModeCommand(Supplier<RobotMode> robotMode, BooleanSupplier readyToPlace) {
+        Debouncer[] debouncerHolder = new Debouncer[1];
+
+        return run(() -> {
+            if (!robotMode.get().isPlacingMode())
+                if (robotMode.get().getGamepiece() == Gamepiece.ALGAE) {
+                    // Grab Algae
+                    targetVoltage = -4.0;
+                    if (gamepiece != Gamepiece.ALGAE)
+                        debouncerHolder[0] = new Debouncer(0.1);
+                } else {
+                    // Grab Coral
+                    targetVoltage = 6.0;
+                    if (gamepiece != Gamepiece.ALGAE)
+                        debouncerHolder[0] = new Debouncer(0.04);
+                }
+            else if (readyToPlace.getAsBoolean())
+                if (robotMode.get().getGamepiece() == Gamepiece.ALGAE) {
+                    // Place Algae
+                    targetVoltage = 6.0;
+                } else {
+                    // Place Coral
+                    targetVoltage = 6.0;
+                }
+            io.setTargetVoltage(targetVoltage);
+            gamepiece = robotMode.get().getGamepiece();
+
+        }).until(() -> (debouncerHolder[0].calculate(isGamePieceDetected()) && !robotMode.get().isPlacingMode()))
+                .withDeadline(Commands.waitUntil(() -> this.isGamePieceDetected() && gamepiece == Gamepiece.ALGAE).andThen(Commands.waitSeconds(0.25)))
+                .unless(() -> inputs.gamePieceDetected && !robotMode.get().isPlacingMode());
     }
 }
