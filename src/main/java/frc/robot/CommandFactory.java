@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -93,9 +92,10 @@ public class CommandFactory {
                         () -> SmartDashboard.getBoolean("Auto Reef", true)
                 )
                 .alongWith(
-                        Commands.waitUntil(readyToPlace).andThen(
-                                Commands.either(grabber.grabAlgae(), grabber.placeCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)
-                        )
+                        Commands.either(Commands.waitUntil(readyToPlace).andThen(
+                                Commands.either(grabber.placeAlgae(), grabber.placeCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
+                                Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
+                                () -> robotMode.get().isPlacingMode())
                 );
     }
 
