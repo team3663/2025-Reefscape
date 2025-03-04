@@ -13,8 +13,11 @@ public class Grabber extends SubsystemBase {
     private final GrabberIO io;
     private final GrabberInputs inputs = new GrabberInputs();
 
+    private Debouncer algaeDebouncer = new Debouncer(0.25);
+
     private Gamepiece gamepiece = Gamepiece.CORAL;
     private double targetVoltage = 0.0;
+    private boolean holdingAlgae = false;
 
     public Grabber(GrabberIO io) {
         this.io = io;
@@ -24,9 +27,10 @@ public class Grabber extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
 
-        if (hasAlgae() && targetVoltage == 0.0)
+        holdingAlgae = algaeDebouncer.calculate(isGamePieceDetected() && gamepiece == Gamepiece.ALGAE);
+        if (holdingAlgae && targetVoltage == 0.0)
         {
-            io.setTargetVoltage(-1.0);
+            io.setTargetVoltage(-3.0);
         }
     }
 
@@ -47,7 +51,7 @@ public class Grabber extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return isGamePieceDetected() && gamepiece == Gamepiece.ALGAE;
+        return holdingAlgae;
     }
 
     public boolean hasCoral() {
@@ -83,14 +87,8 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command grabAlgae() {
-        Debouncer[] debouncerHolder = new Debouncer[1];
-
-        return withVoltage(-4.0)
-                .withDeadline(
-                        Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.1)),
-                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
-                        ))
+        return withVoltage(-9.0)
+                .until(this::hasAlgae)
                 .beforeStarting(() -> gamepiece = Gamepiece.ALGAE)
                 .unless(this::isGamePieceDetected);
     }
@@ -114,7 +112,7 @@ public class Grabber extends SubsystemBase {
         return withVoltage(6.0)
                 .withDeadline(
                         Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.08)),
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected)

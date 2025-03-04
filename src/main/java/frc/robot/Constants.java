@@ -169,7 +169,7 @@ public class Constants {
 
         // Shoulder Safe variables
         public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90.0);
-        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(25.0);
+        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(15.0);
         public static final double SHOULDER_SAFE_BUFFER = Units.degreesToRadians(3.0);
 
         // Shoulder max angle when we have an algae
