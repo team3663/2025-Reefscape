@@ -30,7 +30,7 @@ public class Led extends SubsystemBase {
 
     private final double ANIMATION_SPEED = 0.001;
     private final double LED_BRIGHTNESS = 0.01;
-    private final int NUM_LEDS = 30;
+    private final int NUM_LEDS = 100;
     private final int POCKET_SIZE = 3;
 
     private final LedIo io;

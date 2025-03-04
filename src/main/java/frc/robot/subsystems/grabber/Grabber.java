@@ -1,10 +1,11 @@
 package frc.robot.subsystems.grabber;
 
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.util.function.DoubleSupplier;
+import frc.robot.utility.Gamepiece;
 
 @Logged
 public class Grabber extends SubsystemBase {
@@ -12,6 +13,7 @@ public class Grabber extends SubsystemBase {
     private final GrabberIO io;
     private final GrabberInputs inputs = new GrabberInputs();
 
+    private Gamepiece gamepiece = Gamepiece.CORAL;
     private double targetVoltage = 0.0;
 
     public Grabber(GrabberIO io) {
@@ -21,6 +23,11 @@ public class Grabber extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+
+        if (hasAlgae() && targetVoltage == 0.0)
+        {
+            io.setTargetVoltage(-1.0);
+        }
     }
 
     public double getCurrentVelocity() {
@@ -39,6 +46,14 @@ public class Grabber extends SubsystemBase {
         return !inputs.gamePieceDetected;
     }
 
+    public boolean hasAlgae() {
+        return isGamePieceDetected() && gamepiece == Gamepiece.ALGAE;
+    }
+
+    public boolean hasCoral() {
+        return isGamePieceDetected() && gamepiece == Gamepiece.CORAL;
+    }
+
     public Command stop() {
         return runOnce(this::stopInternal);
     }
@@ -49,17 +64,64 @@ public class Grabber extends SubsystemBase {
         io.stop();
     }
 
-    public Command withVoltage(double voltage) {
+    private Command withVoltage(double voltage) {
         return runEnd(() -> {
             targetVoltage = voltage;
             io.setTargetVoltage(targetVoltage);
         }, this::stopInternal);
     }
 
-    public Command followVoltage(DoubleSupplier velocity) {
-        return runEnd(() -> {
-            targetVoltage = velocity.getAsDouble();
-            io.setTargetVoltage(targetVoltage);
-        }, this::stopInternal);
+    public Command eject() {
+        return Commands.either(
+                        withVoltage(4.0), // algae
+                        withVoltage(-6.0), // coral
+                        this::hasAlgae
+                ).withDeadline(
+                        Commands.waitUntil(this::getGamePieceNotDetected))
+                .andThen(Commands.waitSeconds(0.25)
+                );
+    }
+
+    public Command grabAlgae() {
+        Debouncer[] debouncerHolder = new Debouncer[1];
+
+        return withVoltage(-4.0)
+                .withDeadline(
+                        Commands.sequence(
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.1)),
+                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
+                        ))
+                .beforeStarting(() -> gamepiece = Gamepiece.ALGAE)
+                .unless(this::isGamePieceDetected);
+    }
+
+    public Command placeAlgae()
+    {
+        return withVoltage(6.0).withDeadline(
+                Commands.waitUntil(this::getGamePieceNotDetected)
+                        .andThen(Commands.waitSeconds(0.25))
+        );
+    }
+
+    public Command removeAlgae()
+    {
+        return withVoltage(3.0);
+    }
+
+    public Command grabCoral() {
+        Debouncer[] debouncerHolder = new Debouncer[1];
+
+        return withVoltage(6.0)
+                .withDeadline(
+                        Commands.sequence(
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
+                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
+                        ))
+                .unless(this::isGamePieceDetected)
+                .beforeStarting(() -> gamepiece = Gamepiece.CORAL);
+    }
+
+    public Command placeCoral() {
+        return withVoltage(6.0);
     }
 }

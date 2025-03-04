@@ -14,7 +14,9 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
+import frc.robot.utility.Gamepiece;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -68,61 +70,61 @@ public class CommandFactory {
         }
     }
 
-    /**
-     * Runs the grabber backwards until it doesn't have the game piece anymore to release the game piece
-     */
-    public Command releaseGamePiece(Supplier<RobotMode> robotMode) {
-        return grabber.followVoltage(() -> robotMode.get().isRunGrabberReverse() ? -6.0 : 6.0);
-    }
-
-    public Command alignToReef(Supplier<RobotMode> robotMode, DoubleSupplier xVelocitySupplier,
+    public Command alignToReef(Supplier<RobotMode> robotMode,
+                               BooleanSupplier readyToPlace,
+                               DoubleSupplier xVelocitySupplier,
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
-                Commands.parallel(
-                        drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
-                        superStructure.followPositions(
-                                        () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
-                                        () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
-                                                Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
-                                                Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
-                                        () -> robotMode.get().getWristAngle())
-                                .until(() -> drivetrain.getPose().getTranslation().getDistance(
-                                        getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
-                                ) < Units.feetToMeters(1.0))
-                                .andThen(superStructure.followPositions(robotMode))
-                ),
-                drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
-                        .alongWith(superStructure.followPositions(robotMode)),
-                () -> SmartDashboard.getBoolean("Auto Reef", true)
-        );
+                        Commands.parallel(
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
+                                superStructure.followPositions(
+                                                () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                                                () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
+                                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
+                                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                                () -> robotMode.get().getWristAngle())
+                                        .until(() -> drivetrain.getPose().getTranslation().getDistance(
+                                                getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
+                                        ) < Units.feetToMeters(1.0))
+                                        .andThen(superStructure.followPositions(robotMode))
+                        ),
+                        drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
+                                .alongWith(superStructure.followPositions(robotMode)),
+                        () -> SmartDashboard.getBoolean("Auto Reef", true)
+                )
+                .alongWith(
+                        Commands.waitUntil(readyToPlace).andThen(
+                                Commands.either(grabber.grabAlgae(), grabber.placeCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)
+                        )
+                );
     }
 
     public Command alignToCoralStation() {
-        Debouncer[] debouncerHolder = new Debouncer[1];
-        return Commands.parallel(
-                        superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                                () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                                () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
-                        grabber.followVoltage(() -> 6.0),
-                        Commands.either(
-                                Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                        getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
-                                Commands.idle(),
-                                () -> SmartDashboard.getBoolean("Auto Coral Station", true)
-                        ))
-                .withDeadline(
-                        Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
-                                Commands.waitUntil(() -> debouncerHolder[0].calculate(grabber.isGamePieceDetected()))
-                        ));
+        return Commands.deadline(
+                grabber.grabCoral(),
+                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
+                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                Commands.either(
+                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
+                                getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
+                        Commands.none(),
+                        () -> SmartDashboard.getBoolean("Auto Coral Station", true)
+                ));
     }
 
     public Command grabCoral() {
-        return superStructure.goToPositions(RobotMode.CORAL_STATION).andThen(grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::isGamePieceDetected)
-                .andThen(Commands.waitSeconds(0.04))).andThen(superStructure.goToDefaultPositions()));
+        return Commands.sequence(
+                superStructure.goToPositions(RobotMode.CORAL_STATION),
+                grabber.grabCoral(),
+                superStructure.goToDefaultPositions()
+        );
     }
 
     public Command placeCoral() {
-        return grabber.followVoltage(() -> 6.0).withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))).andThen(superStructure.goToDefaultPositions());
+        return grabber.placeCoral().withDeadline(
+                Commands.waitUntil(grabber::getGamePieceNotDetected)
+                        .andThen(Commands.waitSeconds(0.25))
+        ).andThen(superStructure.goToDefaultPositions());
     }
 }

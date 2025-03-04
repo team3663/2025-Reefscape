@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 public class C2025ElevatorIO implements ElevatorIO {
     private static final Elevator.Constants CONSTANTS = new Elevator.Constants(0.0, 1.55);
@@ -33,7 +34,7 @@ public class C2025ElevatorIO implements ElevatorIO {
 
         TalonFXConfiguration config = new TalonFXConfiguration();
 
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = Constants.SUPERSTRUCTURE_COAST ? NeutralModeValue.Coast : NeutralModeValue.Brake;
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         config.CurrentLimits.SupplyCurrentLimit = 60.0;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;

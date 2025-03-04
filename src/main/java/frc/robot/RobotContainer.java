@@ -54,7 +54,6 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
-    private boolean haveAlgae;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -64,7 +63,7 @@ public class RobotContainer {
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark), robotFactory.createVisionIo());
-        superStructure = new SuperStructure(elevator, arm, () -> haveAlgae);
+        superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(),arm, commandFactory);
@@ -102,31 +101,25 @@ public class RobotContainer {
                         autoChooser.selectedCommandScheduler()
                 ));
 
-        SmartDashboard.putBoolean("Auto Reef", true);
-        SmartDashboard.putBoolean("Auto Coral Station", true);
+        SmartDashboard.putBoolean("Auto Reef", false);
+        SmartDashboard.putBoolean("Auto Coral Station", false);
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode,
+        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode, driverController.rightTrigger(),
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
-        driverController.rightTrigger().and(driverController.rightBumper())
-                .and(superStructure::atTargetPositions)
-                .whileTrue(commandFactory.releaseGamePiece(() -> robotMode));
 
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
-        driverController.a().whileTrue(grabber.withVoltage(-6.0));
+        driverController.a().whileTrue(grabber.eject());
 
         operatorController.leftBumper().onTrue(climber.deploy());
         operatorController.rightBumper().onTrue(climber.climb());
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
-
-        new Trigger(() -> grabber.isGamePieceDetected() && robotMode.isAlgaeMode()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = true));
-        new Trigger(() -> grabber.getGamePieceNotDetected()).debounce(Constants.DEBOUNCE_TIME).onTrue(runOnce(() -> haveAlgae = false));
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));

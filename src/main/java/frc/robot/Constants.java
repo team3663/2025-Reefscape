@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 
 public class Constants {
+    public static final boolean SUPERSTRUCTURE_COAST = true;
 
     public static final double MK4_2PLUS_REDUCTION = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double MK4_3PLUS_REDUCTION = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);

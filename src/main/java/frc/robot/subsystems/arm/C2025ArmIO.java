@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot.Constants;
 
 public class C2025ArmIO implements ArmIO {
     // TODO: Get real values from CAD
@@ -41,7 +42,7 @@ public class C2025ArmIO implements ArmIO {
 
         // Shoulder motor config
         TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
-        shoulderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        shoulderConfig.MotorOutput.NeutralMode = Constants.SUPERSTRUCTURE_COAST ? NeutralModeValue.Coast : NeutralModeValue.Brake;
         shoulderConfig.CurrentLimits.SupplyCurrentLimit = 60;
         shoulderConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
