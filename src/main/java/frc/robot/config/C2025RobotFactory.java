@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.C2025ArmIO;
+import frc.robot.subsystems.climber.C2025ClimberIO;
+import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.CTREDrivetrainIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 import frc.robot.subsystems.elevator.C2025ElevatorIO;
@@ -159,16 +161,16 @@ public class C2025RobotFactory implements RobotFactory {
     public ArmIO createArmIo() {
         return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
     }
-//
-//    @Override
-//    public ClimberIO createClimberIo() {
-//        return new C2025ClimberIO(new TalonFX(11), new CANdi(0), new CANcoder(0));
-//    }
 
     @Override
-    public ElevatorIO createElevatorIo() {
-        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
+    public ClimberIO createClimberIo() {
+        return new C2025ClimberIO(new TalonFX(11), new CANcoder(0));
     }
+//
+//    @Override
+//    public ElevatorIO createElevatorIo() {
+//        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
+//    }
 
     @Override
     public GrabberIO createGrabberIo() {

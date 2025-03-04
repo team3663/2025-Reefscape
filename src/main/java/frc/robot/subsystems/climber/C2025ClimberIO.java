@@ -25,7 +25,7 @@ public class C2025ClimberIO implements ClimberIO {
 
     private final TalonFX motor;
     private final CANcoder coder;
-    private final CANdi gamePieceDetector;
+//    private final CANdi gamePieceDetector;
     private final NeutralOut stopRequest = new NeutralOut();
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
@@ -34,9 +34,9 @@ public class C2025ClimberIO implements ClimberIO {
                     0.001, 1.0),
             DCMotor.getKrakenX60(1).withReduction(1.0));
 
-    public C2025ClimberIO(TalonFX motor, CANdi gamePieceDetector, CANcoder coder) {
+    public C2025ClimberIO(TalonFX motor, CANcoder coder) {
         this.motor = motor;
-        this.gamePieceDetector = gamePieceDetector;
+//        this.gamePieceDetector = gamePieceDetector;
         this.coder = coder;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
@@ -53,7 +53,7 @@ public class C2025ClimberIO implements ClimberIO {
         motor.getConfigurator().apply(config);
 
         CANdiConfiguration CANdiConfig = new CANdiConfiguration();
-        gamePieceDetector.getConfigurator().apply(CANdiConfig);
+//        gamePieceDetector.getConfigurator().apply(CANdiConfig);
 
         CANcoderConfiguration CANcoderConfig = new CANcoderConfiguration();
         coder.getConfigurator().apply(CANcoderConfig);
@@ -67,8 +67,8 @@ public class C2025ClimberIO implements ClimberIO {
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
         inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
 
-        inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
-        inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
+//        inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
+//        inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
 
         // SIM STATES
         if (Robot.isSimulation()) {
