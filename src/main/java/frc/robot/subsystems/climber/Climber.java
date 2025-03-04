@@ -4,6 +4,7 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -19,15 +20,15 @@ public class Climber extends SubsystemBase {
     private static final double VELOCITY_THRESHOLD = Units.rotationsPerMinuteToRadiansPerSecond(1);
     private static final double POSITION_THRESHOLD = Units.degreesToRadians(1.0);
     private static final double WAIT_TIME = 0.25;
-    private static final double DEPLOY_ANGLE = Units.degreesToRadians(90);
-    private static final double CLIMB_ANGLE = Units.degreesToRadians(270);
+    private static final double DEPLOY_ANGLE = Units.degreesToRadians(0.0);
+    private static final double CLIMB_ANGLE = Units.degreesToRadians(160);
 
     private final ClimberIO io;
     private final Constants constants;
     private final ClimberInputs inputs = new ClimberInputs();
     private final SysIdRoutine sysIdRoutine;
 
-    private boolean zeroed = false;
+    private boolean zeroed = true;
     private double targetPosition = 0.0;
     private double targetVoltage = 0.0;
 
@@ -111,20 +112,21 @@ public class Climber extends SubsystemBase {
 
     public Command zero() {
         // Run the Elevator backwards until stopped and then stop
-        return runEnd(() -> {
-            io.setTargetVoltage(-1.0);
-            targetPosition = constants.minimumPosition;
-        }, io::stop)
-                // While doing that wait until the elevator stops (Hit the hard stop)
-                // Also stop the previous command when this one stops (It hit the hard stop and reset position)
-                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
-                        // Then reset the elevator position and set wristZeroed to true
-                        .andThen(() -> {
-                            io.resetPosition();
-                            zeroed = true;
-                        })
-                        // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet
-                        .beforeStarting(waitSeconds(WAIT_TIME)));
+//        return runEnd(() -> {
+//            io.setTargetVoltage(-1.0);
+//            targetPosition = constants.minimumPosition;
+//        }, io::stop)
+//                // While doing that wait until the elevator stops (Hit the hard stop)
+//                // Also stop the previous command when this one stops (It hit the hard stop and reset position)
+//                .withDeadline(waitUntil(() -> Math.abs(inputs.currentVelocity) < VELOCITY_THRESHOLD)
+//                        // Then reset the elevator position and set wristZeroed to true
+//                        .andThen(() -> {
+//                            io.resetPosition();
+//                            zeroed = true;
+//                        })
+//                        // Before we check if we're at the bottom hard stop, wait a little so that it doesn't think we hit it because we haven't started going yet
+//                        .beforeStarting(waitSeconds(WAIT_TIME)));
+        return Commands.none();
     }
 
     public Command deploy() {

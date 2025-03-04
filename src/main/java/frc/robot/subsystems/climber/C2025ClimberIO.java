@@ -9,8 +9,10 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.S1StateValue;
 import com.ctre.phoenix6.signals.S2StateValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -21,7 +23,7 @@ import frc.robot.Robot;
 
 public class C2025ClimberIO implements ClimberIO {
     // TODO: Get real values from CAD
-    private static final Climber.Constants CONSTANTS = new Climber.Constants(1.0, -1.0);
+    private static final Climber.Constants CONSTANTS = new Climber.Constants(Units.degreesToRadians(175), Units.degreesToRadians(-89));
 
     private final TalonFX motor;
     private final CANcoder coder;
@@ -36,36 +38,41 @@ public class C2025ClimberIO implements ClimberIO {
 
     public C2025ClimberIO(TalonFX motor, CANcoder coder) {
         this.motor = motor;
-//        this.gamePieceDetector = gamePieceDetector;
         this.coder = coder;
 
         TalonFXConfiguration config = new TalonFXConfiguration();
         //PID for position
-        config.Slot0.kV = 0.115;
-        config.Slot0.kA = 0.01;
-        config.Slot0.kP = 0.5;
+        config.Slot0.kV = 0.0;
+        config.Slot0.kA = 0.0;
+        config.Slot0.kP = 100.0;
         config.Slot0.kI = 0.0;
         config.Slot0.kD = 0.0;
+
+        config.Feedback.FeedbackRemoteSensorID = coder.getDeviceID();
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
 
         config.MotionMagic.MotionMagicCruiseVelocity = 5500.0 / 60.0;
         config.MotionMagic.MotionMagicAcceleration = 2500.0 / 60.0;
 
         motor.getConfigurator().apply(config);
 
-        CANdiConfiguration CANdiConfig = new CANdiConfiguration();
-//        gamePieceDetector.getConfigurator().apply(CANdiConfig);
-
         CANcoderConfiguration CANcoderConfig = new CANcoderConfiguration();
+        CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint=0.6;
+        CANcoderConfig.MagnetSensor.MagnetOffset= -0.1357421875;
+        CANcoderConfig.MagnetSensor.SensorDirection= SensorDirectionValue.Clockwise_Positive;
         coder.getConfigurator().apply(CANcoderConfig);
     }
 
     @Override
     public void updateInputs(ClimberInputs inputs) {
         inputs.currentAppliedVoltage = motor.getMotorVoltage().getValueAsDouble();
-        inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
-        inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
+//        inputs.currentPosition = Units.rotationsToRadians(motor.getPosition().getValueAsDouble());
+//        inputs.currentVelocity = Units.rotationsToRadians(motor.getVelocity().getValueAsDouble());
+
+        inputs.currentPosition = Units.rotationsToRadians(coder.getPosition().getValueAsDouble());
+        inputs.currentVelocity=Units.rotationsToRadians(coder.getVelocity().getValueAsDouble());
 
 //        inputs.gamePieceDetected1 = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
 //        inputs.gamePieceDetected2 = gamePieceDetector.getS2State().getValue() == S2StateValue.High;
