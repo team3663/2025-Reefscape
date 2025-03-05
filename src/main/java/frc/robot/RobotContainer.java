@@ -119,7 +119,8 @@ public class RobotContainer {
                 .onTrue(climber.climb()
                         .alongWith(
                                 superStructure.followPositions(() -> 0.0, () -> 0.0, ()-> arm.getConstants().maximumWristAngle())
-                        ).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+                        )
+                        .until(operatorController.rightBumper()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
