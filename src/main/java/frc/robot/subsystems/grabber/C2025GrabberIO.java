@@ -1,23 +1,21 @@
 package frc.robot.subsystems.grabber;
 
-import com.ctre.phoenix6.configs.CANdiConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.CANdi;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.S1StateValue;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Robot;
 
 public class C2025GrabberIO implements GrabberIO {
     private final TalonFX motor;
-    private final CANdi gamePieceDetector;
+    private final DigitalInput gamePieceDetector;
 
     private final DCMotorSim simMotor = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1),
@@ -28,17 +26,14 @@ public class C2025GrabberIO implements GrabberIO {
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final NeutralOut stopRequest = new NeutralOut();
 
-    public C2025GrabberIO(TalonFX motor, CANdi gamePieceDetector) {
+    public C2025GrabberIO(TalonFX motor, DigitalInput gamePieceDetector) {
         this.motor = motor;
         this.gamePieceDetector = gamePieceDetector;
 
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         motor.getConfigurator().apply(motorConfig);
-
-        CANdiConfiguration CANdiConfig = new CANdiConfiguration();
-        gamePieceDetector.getConfigurator().apply(CANdiConfig);
     }
 
     @Override
@@ -59,7 +54,7 @@ public class C2025GrabberIO implements GrabberIO {
         inputs.motorTemperature = motor.getDeviceTemp().getValueAsDouble();
         inputs.currentDraw = motor.getSupplyCurrent().getValueAsDouble();
 
-        inputs.gamePieceDetected = gamePieceDetector.getS1State().getValue() == S1StateValue.High;
+        inputs.gamePieceDetected = gamePieceDetector.get();
     }
 
     @Override

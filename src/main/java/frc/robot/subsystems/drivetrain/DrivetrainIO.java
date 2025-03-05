@@ -1,8 +1,10 @@
 package frc.robot.subsystems.drivetrain;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.config.RobotConfig;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -22,6 +24,8 @@ public interface DrivetrainIO {
     default void driveFieldOriented(double xVelocity, double yVelocity, double angularVelocity) {
     }
 
+    default void driveBlueAllianceOriented(double xVelocity, double yVelocity, double angularVelocity){}
+
     default void driveFieldOriented(SwerveSample sample) {
     }
 
@@ -38,12 +42,16 @@ public interface DrivetrainIO {
 
     }
 
+    default void driveRobotRelative(ChassisSpeeds robotSpeeds){
+
+    }
+
 
     default Drivetrain.Constants getConstants() {
         return new Drivetrain.Constants(
                 5.0,
-                Units.rotationsPerMinuteToRadiansPerSecond(60.0)
-        );
+                Units.rotationsPerMinuteToRadiansPerSecond(60.0),
+                new RobotConfig(null,null,null,null, null));
     }
 
     default void addVisionMeasurement(double timestamp, Pose2d pose, Matrix<N3, N1> stdDevs) {

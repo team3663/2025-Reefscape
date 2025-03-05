@@ -74,7 +74,7 @@ public class SimElevatorIO implements ElevatorIO {
     }
 
     @Override
-    public void resetPosition() {
-        sim.setState(0.0, sim.getVelocityMetersPerSecond());
+    public void resetPosition(double position) {
+        sim.setState(position, sim.getVelocityMetersPerSecond());
     }
 }

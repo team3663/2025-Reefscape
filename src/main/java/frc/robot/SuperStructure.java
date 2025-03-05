@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -20,9 +21,6 @@ import java.util.function.Supplier;
 
 @Logged
 public class SuperStructure extends SubsystemBase {
-    private static final double ELEVATOR_DEFAULT_POSITION = 0;
-    private static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90);
-    private static final double WRIST_DEFAULT_ANGLE = 0;
 
     @NotLogged
     private final Elevator elevator;
@@ -89,6 +87,34 @@ public class SuperStructure extends SubsystemBase {
         SmartDashboard.putData("Superstructure", mechanism);
     }
 
+    private double getMinimumAllowableElevatorPosition(double shoulderAngle, double wristAngle) {
+        return Math.max(
+                elevator.getConstants().minimumPosition(),
+                Math.max(
+                        -(arm.getConstants().shoulderLength() + Constants.SHOULDER_BUFFER) * Math.sin(shoulderAngle),
+                        -arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) - (arm.getConstants().wristLength() + Constants.WRIST_BUFFER)
+                                * Math.sin(shoulderAngle + wristAngle)));
+    }
+
+    private double getMinimumAllowableWristAngle(double elevatorPosition, double shoulderAngle) {
+        double length = (arm.getConstants().shoulderLength() * Math.sin(shoulderAngle) + elevatorPosition - Constants.WRIST_BUFFER) / arm.getConstants().wristLength();
+        if (Math.abs(length) <= 1.0) {
+            return Math.max(arm.getConstants().minimumWristAngle(), -shoulderAngle - Math.asin(length));
+        }
+        return arm.getConstants().minimumWristAngle();
+    }
+
+    private double getMinimumAllowableShoulderAngle(double currentElevatorPos, double targetElevatorPos) {
+        double minimumAllowablePos = arm.getConstants().minimumShoulderAngle();
+        if (Math.abs((currentElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((currentElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+        }
+        if (Math.abs((targetElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            minimumAllowablePos = Math.max(minimumAllowablePos, -Math.asin((targetElevatorPos - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+        }
+        return minimumAllowablePos;
+    }
+
     @Override
     public void periodic() {
         targetElevatorMechanism.setLength(elevator.getTargetPosition());
@@ -115,16 +141,35 @@ public class SuperStructure extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
-                arm.followPositions(() -> shoulderHaveAlgaePosition(shoulderPosition.getAsDouble()), wristPosition),
-                elevator.followPosition(elevatorPosition),
-                run(() -> {}));
+                arm.followPositions(
+                        () -> {
+                            double pos = shoulderHaveAlgaePosition(
+                                    Math.max(shoulderPosition.getAsDouble(),
+                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())));
+
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)))
+                                return MathUtil.clamp(pos, Constants.ArmPositions.SHOULDER_SAFE_ANGLE - Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD
+                                        + Constants.ArmPositions.SHOULDER_SAFE_BUFFER, Constants.ArmPositions.SHOULDER_SAFE_ANGLE +
+                                        Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD - Constants.ArmPositions.SHOULDER_SAFE_BUFFER);
+
+                            return pos;
+                        },
+                        () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
+                elevator.followPosition(() -> {
+                    if (!elevator.atPosition(elevatorPosition.getAsDouble()) &&
+                            !arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD)) {
+                        return elevator.getTargetPosition();
+                    }
+
+                    return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
+                }),
+                run(() -> {
+                }));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return Commands.parallel(
-                elevator.goToPosition(elevatorPosition),
-                arm.goToPositions(shoulderHaveAlgaePosition(shoulderPosition), wristPosition),
-                runOnce(() -> {}));
+        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
+                .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
     private double shoulderHaveAlgaePosition(double shoulderPosition) {
@@ -138,24 +183,19 @@ public class SuperStructure extends SubsystemBase {
      * @return The command to follow the current position based on the Robot Mode
      */
     public Command followPositions(Supplier<RobotMode> robotMode) {
-        DoubleSupplier targetElevatorHeight = () -> {
-            if (elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD) ||
-                    arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD))
-                return robotMode.get().getElevatorHeight();
-            else return elevator.getTargetPosition();
-        };
-        DoubleSupplier targetShoulderAngle = () -> {
-            if (!elevator.atPosition(robotMode.get().getElevatorHeight(), Elevator.POSITION_THRESHOLD))
-                return Constants.ArmPositions.SHOULDER_SAFE_ANGLE;
-            return robotMode.get().getShoulderAngle();
-        };
+        DoubleSupplier targetElevatorHeight = () -> robotMode.get().getElevatorHeight();
+        DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 
+    public Command goToPositions(RobotMode robotMode) {
+        return followPositions(() -> robotMode).until(this::atTargetPositions);
+    }
+
     public Command goToDefaultPositions() {
-        return goToPositions(ELEVATOR_DEFAULT_POSITION, SHOULDER_DEFAULT_ANGLE, WRIST_DEFAULT_ANGLE);
+        return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
     }
 
     public Command zero() {
@@ -165,5 +205,9 @@ public class SuperStructure extends SubsystemBase {
                 runOnce(() -> {
                 })
         );
+    }
+
+    public Command resetPositions() {
+        return Commands.parallel(arm.resetWristPositionToDefault(), elevator.resetPosition());
     }
 }

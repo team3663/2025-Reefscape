@@ -24,6 +24,6 @@ public interface ElevatorIO {
     default void setTargetPosition(double position) {
     }
 
-    default void resetPosition() {
+    default void resetPosition(double position) {
     }
 }

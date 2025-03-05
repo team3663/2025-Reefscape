@@ -3,17 +3,31 @@ package frc.robot.subsystems.drivetrain;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.vision.VisionMeasurement;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
@@ -56,6 +70,28 @@ public class Drivetrain extends SubsystemBase {
                         io::driveSysIdTranslation,
                         null,
                         this));
+        RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                () -> inputs.pose, // Robot pose supplier
+                io::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                () -> inputs.chassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                io::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(10.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                constants.robotConfig, // The robot configuration
+                () -> false,
+                this // Reference to this subsystem to set requirements
+        );
     }
 
     public Constants getConstants() {
@@ -64,6 +100,10 @@ public class Drivetrain extends SubsystemBase {
 
     public Pose2d getPose() {
         return inputs.pose;
+    }
+
+    public Rotation2d getYaw() {
+        return inputs.yaw;
     }
 
     public AutoFactory getAutoFactory() {
@@ -114,9 +154,72 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
+    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
+        PIDController xController = new PIDController(10.0, 0, 0);
+        PIDController yController = new PIDController(10.0, 0, 0);
+        PIDController rotationController = new PIDController(20.0, 0, 0);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
+        return runEnd(
+                () -> {
+                    targetPathPose = targetPose.get();
+                    io.driveBlueAllianceOriented(
+                            xController.calculate(inputs.pose.getX(), targetPose.get().getX()),
+                            yController.calculate(inputs.pose.getY(), targetPose.get().getY()),
+                            rotationController.calculate(inputs.pose.getRotation().getRadians(), targetPose.get().getRotation().getRadians())
+                    );
+                },
+                io::stop
+        );
+    }
+
+    /**
+     * Drives the robot to a given pose fromm the robot's current position using a pathplanner path
+     *
+     * @param targetPose of where you want the robot to go
+     * @return follows a pathplanner path command
+     */
+    public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip) {
+        PathConstraints constraints = new PathConstraints(
+                3.0,
+                3.0,
+                3.0,
+                3.0
+        );
+
+        return Commands.either(defer(() -> {
+                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            Rotation2d initialWaypointDirection;
+                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+                            if (currentVelocity < 0.1) {
+
+                                initialWaypointDirection = delta.getAngle();
+                            } else {
+                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            }
+
+                            var path = new PathPlannerPath(
+                                    PathPlannerPath.waypointsFromPoses(
+                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+                                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
+                                    ),
+                                    constraints,
+                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+                                    new GoalEndState(0.0, targetPose.get().getRotation())
+                            );
+
+                            return AutoBuilder.followPath(path);
+                        }),
+                        Commands.none(),
+                        () -> targetPose.get().getTranslation().minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0))
+                .andThen(PID_GoToPos(targetPose));
+    }
+
     public record Constants(
             double maxLinearVelocity,
-            double maxAngularVelocity
+            double maxAngularVelocity,
+            RobotConfig robotConfig
     ) {
     }
 }

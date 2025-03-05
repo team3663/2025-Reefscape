@@ -24,7 +24,7 @@ public class PhotonIO implements VisionIO {
                 PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraTransform);
     }
 
-    public void updateInputs(VisionInputs visionInputs) {
+    public void updateInputs(VisionInputs visionInputs, double currentYaw) {
         // Assume pose will not be updated.
         visionInputs.poseUpdated = false;
 
