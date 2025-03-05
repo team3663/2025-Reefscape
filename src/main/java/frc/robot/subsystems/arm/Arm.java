@@ -2,12 +2,12 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants;
 
 import java.util.function.DoubleSupplier;
 
@@ -144,11 +144,11 @@ public class Arm extends SubsystemBase {
     }
 
     private double getValidPositionShoulder(double position) {
-        return Math.max(constants.minimumShoulderAngle, Math.min(constants.maximumShoulderAngle, position));
+            return MathUtil.clamp(position, constants.minimumShoulderAngle, constants.maximumShoulderAngle);
     }
 
     private double getValidPositionWrist(double position) {
-        return Math.max(constants.minimumWristAngle, Math.min(constants.maximumWristAngle, position));
+        return MathUtil.clamp(position, constants.minimumWristAngle, constants.maximumWristAngle);
     }
 
     public double getShoulderPosition() {
@@ -156,7 +156,11 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atShoulderTargetPosition() {
-        return shoulderAtPosition(targetShoulderPosition, POSITION_THRESHOLD);
+        return shoulderAtPosition(targetShoulderPosition);
+    }
+
+    public boolean shoulderAtPosition(double position) {
+        return shoulderAtPosition(position, POSITION_THRESHOLD);
     }
 
     public boolean shoulderAtPosition(double position, double threshold) {
@@ -168,7 +172,11 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atWristTargetPosition() {
-        return wristAtPosition(targetWristPosition, POSITION_THRESHOLD);
+        return wristAtPosition(targetWristPosition);
+    }
+
+    public boolean wristAtPosition(double position) {
+        return wristAtPosition(position, POSITION_THRESHOLD);
     }
 
     public boolean wristAtPosition(double position, double threshold) {
