@@ -11,7 +11,7 @@ public class LedCandleIo implements LedIo {
     public LedCandleIo(CANdle candle) {
         this.candle = candle;
         CANdleConfiguration config = new CANdleConfiguration();
-        config.stripType = CANdle.LEDStripType.RGB;
+
         candle.configAllSettings(config);
     }
 

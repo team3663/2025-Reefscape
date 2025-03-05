@@ -103,6 +103,9 @@ public class Climber extends SubsystemBase {
     private double getValidPosition(double position) {
         return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
     }
+    public Command stow(){
+        return goToPosition(constants.minimumPosition);
+    }
 
     public Command zero() {
         // Run the Elevator backwards until stopped and then stop
@@ -123,10 +126,10 @@ public class Climber extends SubsystemBase {
         return Commands.none();
     }
 
-    public Command defaultCommand()
-    {
-        return followPosition(constants::minimumPosition);
-    }
+//    public Command defaultCommand()
+//    {
+//        return followPosition(constants::minimumPosition);
+//    }
 
     public Command arm() {
         return followPosition(() -> DEPLOY_ANGLE);

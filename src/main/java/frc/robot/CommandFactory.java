@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -93,7 +94,7 @@ public class CommandFactory {
                 )
                 .alongWith(
                         Commands.either(Commands.waitUntil(readyToPlace).andThen(
-                                Commands.either(grabber.placeAlgae(), grabber.placeCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
+                                Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
                                 () -> robotMode.get().isPlacingMode())
                 );

@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMode;
 import frc.robot.utility.Gamepiece;
 
 @Logged
@@ -57,6 +58,8 @@ public class Grabber extends SubsystemBase {
     public boolean hasCoral() {
         return isGamePieceDetected() && gamepiece == Gamepiece.CORAL;
     }
+
+
 
     public Command stop() {
         return runOnce(this::stopInternal);
@@ -112,7 +115,7 @@ public class Grabber extends SubsystemBase {
         return withVoltage(6.0)
                 .withDeadline(
                         Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.08)),
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.05)),
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected)
@@ -120,6 +123,11 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command placeCoral() {
+
         return withVoltage(6.0);
+    }
+
+    public Command placeCoralSlow(){
+        return withVoltage(3.0);
     }
 }
