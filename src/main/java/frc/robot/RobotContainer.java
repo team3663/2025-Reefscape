@@ -89,11 +89,7 @@ public class RobotContainer {
         autoChooser.addRoutine("Leave Right", autoPaths::leaveRight);
 
         // Puts auto chooser on the dashboard
-        Shuffleboard.getTab("Driver")
-                .add("Auto Chooser", autoChooser)
-                .withPosition(0, 0)
-                .withSize(3, 1)
-                .withWidget(BuiltInWidgets.kComboBoxChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
