@@ -79,11 +79,14 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addRoutine("FacePlantG", autoPaths::facePlantG);
-        autoChooser.addRoutine("FacePlantH", autoPaths::facePlantH);
+        autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
+        autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
 
-        autoChooser.addRoutine("TwoCoralDC", autoPaths::twoCoralDC);
-        autoChooser.addRoutine("TwoCoralKL", autoPaths::twoCoralKL);
+        autoChooser.addRoutine("TwoCoral:B2-C1", autoPaths::twoCoralB2C1);
+        autoChooser.addRoutine("TwoCoralKL", autoPaths::twoCoralF1F2);
+
+        autoChooser.addRoutine("Leave Left", autoPaths::leaveLeft);
+        autoChooser.addRoutine("Leave Right", autoPaths::leaveRight);
 
         // Puts auto chooser on the dashboard
         Shuffleboard.getTab("Driver")

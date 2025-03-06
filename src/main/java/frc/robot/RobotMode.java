@@ -5,7 +5,6 @@ import frc.robot.utility.Gamepiece;
 import frc.robot.Constants.ArmPositions;
 
 public enum RobotMode {
-    // TODO: get the actual values of these variables!!
     CORAL_LEVEL_1(Units.inchesToMeters(0.53), Units.degreesToRadians(28.48), Units.degreesToRadians(76.29), Gamepiece.CORAL, true),
     CORAL_LEVEL_2(Units.inchesToMeters(3.6066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), Gamepiece.CORAL, true),
     CORAL_LEVEL_3(Units.inchesToMeters(20.1066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), Gamepiece.CORAL, true),
