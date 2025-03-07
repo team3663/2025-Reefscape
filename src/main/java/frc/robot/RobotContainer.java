@@ -79,18 +79,14 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addRoutine("FacePlantG", autoPaths::facePlantG);
-        autoChooser.addRoutine("FacePlantH", autoPaths::facePlantH);
+        autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
+        autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
 
-        autoChooser.addRoutine("TwoCoralDC", autoPaths::twoCoralDC);
-        autoChooser.addRoutine("TwoCoralKL", autoPaths::twoCoralKL);
+        autoChooser.addRoutine("TwoCoral:B2-B1", autoPaths::twoCoralB2B1);
+        autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
         // Puts auto chooser on the dashboard
-        Shuffleboard.getTab("Driver")
-                .add("Auto Chooser", autoChooser)
-                .withPosition(0, 0)
-                .withSize(3, 1)
-                .withWidget(BuiltInWidgets.kComboBoxChooser);
+        SmartDashboard.putData("Auto Select", autoChooser);
 
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
