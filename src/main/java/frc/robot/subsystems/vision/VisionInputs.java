@@ -13,4 +13,5 @@ public class VisionInputs {
     public double orientationDuration;
     public double imuDataDuration;
     public double poseEstimateDuration;
+    public double filterDuration;
 }
