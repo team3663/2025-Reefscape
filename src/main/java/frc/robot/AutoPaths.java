@@ -68,6 +68,7 @@ public class AutoPaths {
         AutoTrajectory start = routine.trajectory("PStart-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
         AutoTrajectory wcsc = routine.trajectory("WCS-C");
+        AutoTrajectory cwcs = routine.trajectory("C-WCS");
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -77,7 +78,7 @@ public class AutoPaths {
 
         start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
         dwcs.done().onTrue(commandFactory.grabCoral().andThen(wcsc.cmd()));
-        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(cwcs.cmd()));
 
         return routine;
     }
@@ -88,6 +89,8 @@ public class AutoPaths {
         AutoTrajectory start = routine.trajectory("LStart-K");
         AutoTrajectory klwcs = routine.trajectory("K-LWCS");
         AutoTrajectory lwcsl = routine.trajectory("LWCS-L");
+        AutoTrajectory llwcs = routine.trajectory("L-LWCS");
+
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -98,7 +101,7 @@ public class AutoPaths {
 
         start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(klwcs.cmd()));
         klwcs.done().onTrue(commandFactory.grabCoral().andThen(lwcsl.cmd()));
-        lwcsl.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        lwcsl.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(llwcs.cmd()));
         return routine;
     }
 }
