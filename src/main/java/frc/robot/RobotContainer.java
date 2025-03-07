@@ -82,14 +82,14 @@ public class RobotContainer {
         autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
         autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
 
-        autoChooser.addRoutine("TwoCoral:B2-C1", autoPaths::twoCoralB2C1);
-        autoChooser.addRoutine("TwoCoralKL", autoPaths::twoCoralF1F2);
+        autoChooser.addRoutine("TwoCoral:B2-B1", autoPaths::twoCoralB2B1);
+        autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
         autoChooser.addRoutine("Leave Left", autoPaths::leaveLeft);
         autoChooser.addRoutine("Leave Right", autoPaths::leaveRight);
 
         // Puts auto chooser on the dashboard
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        SmartDashboard.putData("Auto Select", autoChooser);
 
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
