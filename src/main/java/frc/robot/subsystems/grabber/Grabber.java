@@ -143,8 +143,10 @@ public class Grabber extends SubsystemBase {
     public Command getRobotModeCommand(Supplier<RobotMode> robotMode, BooleanSupplier readyToPlace) {
         Debouncer[] debouncerHolder = new Debouncer[1];
 
-        return run(() -> {
-            if (!robotMode.get().isPlacingMode())
+        return runEnd(() -> {
+            if (hasAlgae() && !readyToPlace.getAsBoolean()) {
+                targetVoltage = ALGAE_HOLD_VOLTAGE;
+            } else if (!robotMode.get().isPlacingMode())
                 if (robotMode.get().getGamepiece() == Gamepiece.ALGAE) {
                     // Grab Algae
                     targetVoltage = ALGAE_GRAB_VOLTAGE;
@@ -154,7 +156,7 @@ public class Grabber extends SubsystemBase {
                     if (gamepiece != Gamepiece.CORAL)
                         debouncerHolder[0] = new Debouncer(CORAL_DEBOUNCE_TIME);
                 }
-            else if (readyToPlace.getAsBoolean())
+            else if (readyToPlace.getAsBoolean()) {
                 if (robotMode.get().getGamepiece() == Gamepiece.ALGAE) {
                     // Place Algae
                     targetVoltage = ALGAE_PLACE_VOLTAGE;
@@ -165,17 +167,19 @@ public class Grabber extends SubsystemBase {
                     else
                         targetVoltage = CORAL_PLACE_VOLTAGE;
                 }
+            }
             io.setTargetVoltage(targetVoltage);
             gamepiece = robotMode.get().getGamepiece();
-
-        }).beforeStarting(runOnce(() -> {
+        },this::stopInternal)
+                .beforeStarting(runOnce(() -> {
                     gamepiece = robotMode.get().getGamepiece();
                     debouncerHolder[0] = new Debouncer(gamepiece == Gamepiece.CORAL ? CORAL_DEBOUNCE_TIME : ALGAE_DEBOUNCE_TIME);
-                })).until(() -> (debouncerHolder[0].calculate(isGamePieceDetected()) && robotMode.get() == RobotMode.CORAL_STATION) ||
+                }))
+                .until(() -> (debouncerHolder[0].calculate(isGamePieceDetected()) && robotMode.get() == RobotMode.CORAL_STATION) ||
                         (hasAlgae() && (robotMode.get() == RobotMode.ALGAE_REMOVE_UPPER || robotMode.get() == RobotMode.ALGAE_REMOVE_LOWER)))
-                .withDeadline(Commands.waitUntil(() -> this.isGamePieceDetected() && gamepiece == Gamepiece.ALGAE).andThen(Commands.waitSeconds(ALGAE_PLACE_DELAY)))
-                .unless(() -> (!inputs.gamePieceDetected && !robotMode.get().isPlacingMode()) ||
-                        (inputs.gamePieceDetected && (robotMode.get() == RobotMode.ALGAE_REMOVE_UPPER || robotMode.get() == RobotMode.ALGAE_REMOVE_LOWER)));
+                .withDeadline(
+                        Commands.waitUntil(() -> this.isGamePieceNotDetected() && gamepiece == Gamepiece.ALGAE && robotMode.get().isPlacingMode()).andThen(Commands.waitSeconds(ALGAE_PLACE_DELAY)))
+                .unless(() -> (inputs.gamePieceDetected && !robotMode.get().isPlacingMode()));
     }
 
 //    public Command placeCoralSlow() {
