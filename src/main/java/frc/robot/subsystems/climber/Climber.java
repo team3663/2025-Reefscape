@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
     private static final double WAIT_TIME = 0.25;
 
     private static final double DEPLOY_ANGLE = Units.degreesToRadians(7.0);
-    private static final double CLIMB_ANGLE = Units.degreesToRadians(170.0);
+    private static final double CLIMB_ANGLE = Units.degreesToRadians(160.0);
     private static final double STOW_THRESHOLD = Units.degreesToRadians(20);
 
     private final ClimberIO io;
