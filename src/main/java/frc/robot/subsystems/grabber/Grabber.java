@@ -147,7 +147,7 @@ public class Grabber extends SubsystemBase {
             if (hasAlgae() && !readyToPlace.getAsBoolean()) {
                 targetVoltage = ALGAE_HOLD_VOLTAGE;
             } else if (!robotMode.get().isPlacingMode())
-                if (robotMode.get().getGamepiece() == Gamepiece.ALGAE) {
+                if (robotMode.get().getGamepiece() == Gamepiece.ALGAE && !hasCoral()) {
                     // Grab Algae
                     targetVoltage = ALGAE_GRAB_VOLTAGE;
                 } else {
@@ -178,7 +178,7 @@ public class Grabber extends SubsystemBase {
                 .until(() -> (debouncerHolder[0].calculate(isGamePieceDetected()) && robotMode.get() == RobotMode.CORAL_STATION) ||
                         (hasAlgae() && (robotMode.get() == RobotMode.ALGAE_REMOVE_UPPER || robotMode.get() == RobotMode.ALGAE_REMOVE_LOWER)))
                 .withDeadline(
-                        Commands.waitUntil(() -> this.isGamePieceNotDetected() && gamepiece == Gamepiece.ALGAE && robotMode.get().isPlacingMode()).andThen(Commands.waitSeconds(ALGAE_PLACE_DELAY)))
+                        Commands.waitUntil(() -> this.isGamePieceNotDetected() && readyToPlace.getAsBoolean() && gamepiece == Gamepiece.ALGAE && robotMode.get().isPlacingMode()).andThen(Commands.waitSeconds(ALGAE_PLACE_DELAY)))
                 .unless(() -> (inputs.gamePieceDetected && !robotMode.get().isPlacingMode()));
     }
 
