@@ -39,7 +39,7 @@ public class Vision extends SubsystemBase {
     private Rotation2d currentYaw = new Rotation2d();
     @NotLogged
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
-
+    private final double[] ioUpdateDurations;
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
@@ -48,6 +48,7 @@ public class Vision extends SubsystemBase {
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
         this.ios = ios;
         this.fieldLayout = fieldLayout;
+        this.ioUpdateDurations=new double[ios.length];
 
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
@@ -77,7 +78,11 @@ public class Vision extends SubsystemBase {
     public void periodic() {
 
         for (int i = 0; i < ios.length; i++) {
+            double start = System.nanoTime();
             ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
+            double end = System.nanoTime();
+            double duration = end-start;
+            ioUpdateDurations[i]= duration;
         }
 
         acceptedMeasurements.clear();
