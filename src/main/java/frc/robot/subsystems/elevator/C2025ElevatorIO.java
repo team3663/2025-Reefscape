@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 
 public class C2025ElevatorIO implements ElevatorIO {
-    private static final Elevator.Constants CONSTANTS = new Elevator.Constants(0.0, 1.55);
+    private static final Elevator.Constants CONSTANTS = new Elevator.Constants(0.0, Units.inchesToMeters(60.8));
 
     private static final double GEAR_RATIO = (38.0 / 10.0);
     private static final double PULLEY_RADIUS = Units.inchesToMeters(0.7525);

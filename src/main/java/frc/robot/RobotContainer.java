@@ -12,6 +12,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -96,9 +97,13 @@ public class RobotContainer {
                 Commands.sequence(
                         autoChooser.selectedCommandScheduler()
                 ));
+        RobotModeTriggers.autonomous().or(RobotModeTriggers.teleop()).onTrue(climber.stow());
 
         SmartDashboard.putBoolean("Auto Reef", false);
         SmartDashboard.putBoolean("Auto Coral Station", false);
+
+        new Trigger(() -> robotMode == RobotMode.CORAL_LEVEL_1)
+                .whileTrue(led.setLedColor(Color.kYellow).andThen(Commands.idle(led)));
     }
 
     private void configureBindings() {
@@ -112,14 +117,22 @@ public class RobotContainer {
 
         driverController.a().whileTrue(grabber.eject());
 
-        operatorController.leftBumper().onTrue(climber.deploy());
-        operatorController.rightBumper().onTrue(climber.climb());
+        operatorController.leftBumper().whileTrue(climber.arm()
+                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+        operatorController.leftBumper().onFalse(climber.stow());
+        operatorController.rightBumper().onFalse(climber.stow());
+        operatorController.leftTrigger().and(operatorController.leftBumper())
+                .onTrue(climber.climb()
+                        .alongWith(
+                                superStructure.followPositions(() -> 0.0, () -> 0.0, ()-> arm.getConstants().maximumWristAngle())
+                        )
+                        .until(operatorController.rightBumper()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
-        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR));
-        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET));
+        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));
+        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
         operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
         operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
 

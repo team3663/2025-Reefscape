@@ -164,13 +164,13 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public ClimberIO createClimberIo() {
-        return new C2025ClimberIO(new TalonFX(11), new CANcoder(0));
+        return new C2025ClimberIO(new TalonFX(11, DRIVETRAIN_CAN_BUS), new CANcoder(11, DRIVETRAIN_CAN_BUS));
     }
-//
-//    @Override
-//    public ElevatorIO createElevatorIo() {
-//        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
-//    }
+
+    @Override
+    public ElevatorIO createElevatorIo() {
+        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
+    }
 
     @Override
     public GrabberIO createGrabberIo() {

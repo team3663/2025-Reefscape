@@ -13,14 +13,14 @@ import java.util.function.Supplier;
 
 @Logged
 public class Grabber extends SubsystemBase {
-    public static final double CORAL_DEBOUNCE_TIME = 0.04;
+    public static final double CORAL_DEBOUNCE_TIME = 0.05;
     public static final double CORAL_GRAB_VOLTAGE = 6.0;
     public static final double CORAL_PLACE_VOLTAGE = 6.0;
     public static final double CORAL_EJECT_VOLTAGE = -6.0;
 
     public static final double ALGAE_DEBOUNCE_TIME = 0.1;
-    public static final double ALGAE_GRAB_VOLTAGE = -4.0;
-    public static final double ALGAE_HOLD_VOLTAGE = -1.0;
+    public static final double ALGAE_GRAB_VOLTAGE = -9.0;
+    public static final double ALGAE_HOLD_VOLTAGE = -3.0;
     public static final double ALGAE_PLACE_VOLTAGE = 6.0;
     public static final double ALGAE_PLACE_DELAY = 0.25;
     public static final double ALGAE_REMOVE_VOLTAGE = 3.0;
@@ -29,8 +29,11 @@ public class Grabber extends SubsystemBase {
     private final GrabberIO io;
     private final GrabberInputs inputs = new GrabberInputs();
 
+    private Debouncer algaeDebouncer = new Debouncer(0.25);
+
     private Gamepiece gamepiece = Gamepiece.CORAL;
     private double targetVoltage = 0.0;
+    private boolean holdingAlgae = false;
 
     public Grabber(GrabberIO io) {
         this.io = io;
@@ -40,8 +43,11 @@ public class Grabber extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
 
-        if (hasAlgae() && targetVoltage == 0.0)
+        holdingAlgae = algaeDebouncer.calculate(isGamePieceDetected() && gamepiece == Gamepiece.ALGAE);
+        if (holdingAlgae && targetVoltage == 0.0)
+        {
             io.setTargetVoltage(ALGAE_HOLD_VOLTAGE);
+        }
     }
 
     public double getCurrentVelocity() {
@@ -61,12 +67,14 @@ public class Grabber extends SubsystemBase {
     }
 
     public boolean hasAlgae() {
-        return isGamePieceDetected() && gamepiece == Gamepiece.ALGAE;
+        return holdingAlgae;
     }
 
     public boolean hasCoral() {
         return isGamePieceDetected() && gamepiece == Gamepiece.CORAL;
     }
+
+
 
     public Command stop() {
         return runOnce(this::stopInternal);
@@ -97,14 +105,8 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command grabAlgae() {
-        Debouncer[] debouncerHolder = new Debouncer[1];
-
         return withVoltage(ALGAE_GRAB_VOLTAGE)
-                .withDeadline(
-                        Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(ALGAE_DEBOUNCE_TIME)),
-                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
-                        ))
+                .until(this::hasAlgae)
                 .beforeStarting(() -> gamepiece = Gamepiece.ALGAE)
                 .unless(this::isGamePieceDetected);
     }
@@ -170,5 +172,9 @@ public class Grabber extends SubsystemBase {
                 })).until(() -> (debouncerHolder[0].calculate(isGamePieceDetected()) && !robotMode.get().isPlacingMode()))
                 .withDeadline(Commands.waitUntil(() -> this.isGamePieceDetected() && gamepiece == Gamepiece.ALGAE).andThen(Commands.waitSeconds(ALGAE_PLACE_DELAY)))
                 .unless(() -> inputs.gamePieceDetected && !robotMode.get().isPlacingMode());
+    }
+
+    public Command placeCoralSlow(){
+        return withVoltage(3.0);
     }
 }
