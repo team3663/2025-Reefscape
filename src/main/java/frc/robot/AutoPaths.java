@@ -92,8 +92,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine twoCoralB2C1() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:B2-C1");
+    public AutoRoutine twoCoralB2B1() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:B2-B1");
 
         AutoTrajectory start = routine.trajectory("PStart-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
