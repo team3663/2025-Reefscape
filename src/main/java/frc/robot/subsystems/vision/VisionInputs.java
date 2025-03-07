@@ -10,4 +10,7 @@ public class VisionInputs {
     public int[] targetIds = new int[0];
     public boolean poseUpdated;
     public double IMUYaw;
+    public double orientationDuration;
+    public double imuDataDuration;
+    public double poseEstimateDuration;
 }

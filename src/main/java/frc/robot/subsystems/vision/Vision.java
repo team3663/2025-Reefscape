@@ -40,6 +40,7 @@ public class Vision extends SubsystemBase {
     @NotLogged
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
     private final double[] ioUpdateDurations;
+    private final double[] processingDurations;
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
@@ -49,6 +50,7 @@ public class Vision extends SubsystemBase {
         this.ios = ios;
         this.fieldLayout = fieldLayout;
         this.ioUpdateDurations=new double[ios.length];
+        this.processingDurations=new double[ios.length];
 
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
@@ -78,15 +80,17 @@ public class Vision extends SubsystemBase {
     public void periodic() {
 
         for (int i = 0; i < ios.length; i++) {
-            double start = System.nanoTime();
+            double start = System.currentTimeMillis();
             ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
-            double end = System.nanoTime();
+            double end = System.currentTimeMillis();
             double duration = end-start;
             ioUpdateDurations[i]= duration;
         }
 
         acceptedMeasurements.clear();
-        for (VisionInputs visionInput : visionInputs) {
+        for (int i = 0; i < visionInputs.length; i++) {
+            VisionInputs visionInput = visionInputs[i];
+            double start = System.currentTimeMillis();
             Pose2d pose = visionInput.estimatedPose;
             double timestamp = visionInput.timestampSeconds;
 
@@ -108,6 +112,9 @@ public class Vision extends SubsystemBase {
             Matrix<N3, N1> stdDevs = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(closestTagDistance.orElse(Double.MAX_VALUE));
 
             acceptedMeasurements.add(new VisionMeasurement(pose, timestamp, stdDevs));
+            double end = System.currentTimeMillis();
+            double duration = end - start;
+            processingDurations[i] = duration;
         }
     }
 
