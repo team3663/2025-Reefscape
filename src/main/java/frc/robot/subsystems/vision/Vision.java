@@ -7,6 +7,7 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -103,13 +104,19 @@ public class Vision extends SubsystemBase {
                 continue;
 
             // Compute the standard deviation to use based on the distance to the closest tag
-            OptionalDouble closestTagDistance = Arrays.stream(visionInput.targetIds)
-                    .mapToObj(fieldLayout::getTagPose)
-                    .filter(Optional::isPresent)
-                    .mapToDouble(v -> v.get().toPose2d().getTranslation().getDistance(pose.getTranslation()))
-                    .min();
+            double closestTagDistance = Double.MAX_VALUE;
+            for (int targetId : visionInput.targetIds) {
+                Optional<Pose3d> v = fieldLayout.getTagPose(targetId);
+                if (v.isPresent()) {
+                    double distance = v.get().toPose2d().getTranslation().getDistance(pose.getTranslation());
+                    if (distance < closestTagDistance) {
+                        closestTagDistance = distance;
+                    }
+                }
+            }
+
             // If for some reason we were unable to calculate the distance to the closest tag, assume we are infinitely far away
-            Matrix<N3, N1> stdDevs = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(closestTagDistance.orElse(Double.MAX_VALUE));
+            Matrix<N3, N1> stdDevs = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(closestTagDistance);
 
             acceptedMeasurements.add(new VisionMeasurement(pose, timestamp, stdDevs));
             double end = System.currentTimeMillis();
