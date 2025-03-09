@@ -42,6 +42,7 @@ public class Vision extends SubsystemBase {
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
     private final double[] ioUpdateDurations;
     private final double[] processingDurations;
+
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
@@ -50,26 +51,21 @@ public class Vision extends SubsystemBase {
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
         this.ios = ios;
         this.fieldLayout = fieldLayout;
-        this.ioUpdateDurations=new double[ios.length];
-        this.processingDurations=new double[ios.length];
+        this.ioUpdateDurations = new double[ios.length];
+        this.processingDurations = new double[ios.length];
 
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
             visionInputs[i] = new VisionInputs();
         }
-        if (visionInputs.length > 0)
-        {
+        if (visionInputs.length > 0) {
             frontInputs = visionInputs[0];
-        }
-        else
-        {
+        } else {
             frontInputs = new VisionInputs();
         }
-        if (visionInputs.length > 1)
-        {
+        if (visionInputs.length > 1) {
             backInputs = visionInputs[1];
-        }
-        else {
+        } else {
             backInputs = new VisionInputs();
         }
 
@@ -84,8 +80,8 @@ public class Vision extends SubsystemBase {
             double start = System.currentTimeMillis();
             ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
             double end = System.currentTimeMillis();
-            double duration = end-start;
-            ioUpdateDurations[i]= duration;
+            double duration = end - start;
+            ioUpdateDurations[i] = duration;
         }
 
         acceptedMeasurements.clear();
