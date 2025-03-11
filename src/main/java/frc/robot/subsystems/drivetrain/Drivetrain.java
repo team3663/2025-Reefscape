@@ -154,24 +154,24 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
-    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
-        PIDController xController = new PIDController(10.0, 0, 0);
-        PIDController yController = new PIDController(10.0, 0, 0);
-        PIDController rotationController = new PIDController(20.0, 0, 0);
-        rotationController.enableContinuousInput(-Math.PI, Math.PI);
-
-        return runEnd(
-                () -> {
-                    targetPathPose = targetPose.get();
-                    io.driveBlueAllianceOriented(
-                            xController.calculate(inputs.pose.getX(), targetPose.get().getX()),
-                            yController.calculate(inputs.pose.getY(), targetPose.get().getY()),
-                            rotationController.calculate(inputs.pose.getRotation().getRadians(), targetPose.get().getRotation().getRadians())
-                    );
-                },
-                io::stop
-        );
-    }
+//    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
+//        PIDController xController = new PIDController(10.0, 0, 0);
+//        PIDController yController = new PIDController(10.0, 0, 0);
+//        PIDController rotationController = new PIDController(20.0, 0, 0);
+//        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+//
+//        return runEnd(
+//                () -> {
+//                    targetPathPose = targetPose.get();
+//                    io.driveBlueAllianceOriented(
+//                            xController.calculate(inputs.pose.getX(), targetPose.get().getX()),
+//                            yController.calculate(inputs.pose.getY(), targetPose.get().getY()),
+//                            rotationController.calculate(inputs.pose.getRotation().getRadians(), targetPose.get().getRotation().getRadians())
+//                    );
+//                },
+//                io::stop
+//        );
+//    }
 
     /**
      * Drives the robot to a given pose fromm the robot's current position using a pathplanner path
@@ -213,7 +213,8 @@ public class Drivetrain extends SubsystemBase {
                         }),
                         Commands.none(),
                         () -> targetPose.get().getTranslation().minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0))
-                .andThen(PID_GoToPos(targetPose));
+//                .andThen(PID_GoToPos(targetPose));
+        ;
     }
 
     public record Constants(

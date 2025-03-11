@@ -99,7 +99,7 @@ public class RobotContainer {
                 ));
         RobotModeTriggers.autonomous().or(RobotModeTriggers.teleop()).onTrue(climber.stow());
 
-        SmartDashboard.putBoolean("Auto Reef", false);
+        SmartDashboard.putBoolean("Auto Reef", true);
         SmartDashboard.putBoolean("Auto Coral Station", false);
 
         new Trigger(() -> robotMode == RobotMode.CORAL_LEVEL_1)

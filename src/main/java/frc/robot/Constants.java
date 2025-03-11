@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 
 public class Constants {
-    public static final boolean SUPERSTRUCTURE_COAST = true;
+    public static final boolean SUPERSTRUCTURE_COAST = false;
 
     public static final double MK4_2PLUS_REDUCTION = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double MK4_3PLUS_REDUCTION = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
@@ -31,7 +31,7 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
-    public static final boolean IS_ANDYMARK= false;
+    public static final boolean IS_ANDYMARK= true;
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
     public static final double WELDED_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
@@ -41,6 +41,8 @@ public class Constants {
 
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
+    private static final double LEFT_BRANCH_ARM_OFFSET= -Units.inchesToMeters(0.125);
+    private static final double RIGHT_BRANCH_ARM_OFFSET= -Units.inchesToMeters(0.125);
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(16.675), -Units.inchesToMeters(0.5), Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
@@ -148,15 +150,15 @@ public class Constants {
     private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset) {
         if (adding) {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
-                    Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + RIGHT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin(((Math.PI / 3) * number) +
-                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF+RIGHT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         } else {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
-                    Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF +LEFT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin((Math.PI / 3) * number -
-                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF +LEFT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         }
     }
