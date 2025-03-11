@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.utility.Gamepiece;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class Constants {
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
     private static final double LEFT_BRANCH_ARM_OFFSET= -Units.inchesToMeters(0.125);
-    private static final double RIGHT_BRANCH_ARM_OFFSET= -Units.inchesToMeters(0.125);
+    private static final double RIGHT_BRANCH_ARM_OFFSET= Units.inchesToMeters(0.125);
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(16.675), -Units.inchesToMeters(0.5), Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
@@ -92,18 +93,18 @@ public class Constants {
         public final Pose2d BRANCH_L;
 
         public BranchPositions(double X_OFFSET, double Y_OFFSET) {
-            BRANCH_A = getBranchPose(3, false, X_OFFSET, Y_OFFSET);
-            BRANCH_B = getBranchPose(3, true, X_OFFSET, Y_OFFSET);
-            BRANCH_C = getBranchPose(4, false, X_OFFSET, Y_OFFSET);
-            BRANCH_D = getBranchPose(4, true, X_OFFSET, Y_OFFSET);
-            BRANCH_E = getBranchPose(5, false, X_OFFSET, Y_OFFSET);
-            BRANCH_F = getBranchPose(5, true, X_OFFSET, Y_OFFSET);
-            BRANCH_G = getBranchPose(0, false, X_OFFSET, Y_OFFSET);
-            BRANCH_H = getBranchPose(0, true, X_OFFSET, Y_OFFSET);
-            BRANCH_I = getBranchPose(1, false, X_OFFSET, Y_OFFSET);
-            BRANCH_J = getBranchPose(1, true, X_OFFSET, Y_OFFSET);
-            BRANCH_K = getBranchPose(2, false, X_OFFSET, Y_OFFSET);
-            BRANCH_L = getBranchPose(2, true, X_OFFSET, Y_OFFSET);
+            BRANCH_A = getBranchPose(3, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_B = getBranchPose(3, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_C = getBranchPose(4, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_D = getBranchPose(4, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_E = getBranchPose(5, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_F = getBranchPose(5, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_G = getBranchPose(0, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_H = getBranchPose(0, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_I = getBranchPose(1, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_J = getBranchPose(1, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_K = getBranchPose(2, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
+            BRANCH_L = getBranchPose(2, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
 
         }
 
@@ -147,7 +148,7 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset) {
+    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset,Gamepiece gamepiece) {
         if (adding) {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
                     Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + RIGHT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
