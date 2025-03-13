@@ -47,17 +47,49 @@ public class CommandFactory {
         this.superStructure = superStructure;
     }
 
-    public Pose2d getClosestBranch(Pose2d robotPose) {
+    public Pose2d getClosestBranch(Pose2d robotPose, RobotMode robotMode) {
         var alliance = DriverStation.getAlliance();
 
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && !Constants.IS_ANDYMARK) {
-            return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES_CENTER);
+            }
+            else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET){
+                return robotPose;
+            }
+            else{
+                return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
+            }
         } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red && Constants.IS_ANDYMARK) {
-            return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES_CENTER);
+            }
+            else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET){
+                return robotPose;
+            }
+            else{
+                return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
+            }
         } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue && !Constants.IS_ANDYMARK) {
-            return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES_CENTER);
+            }
+            else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET){
+                return robotPose;
+            }
+            else{
+                return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
+            }
         } else {
-            return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES_CENTER);
+            }
+            else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET){
+                return robotPose;
+            }
+            else{
+                return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
+            }
         }
     }
 
@@ -76,7 +108,7 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET), false),
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET), false),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -84,7 +116,7 @@ public class CommandFactory {
                                                         Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
                                                 () -> robotMode.get().getWristAngle())
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
-                                                getClosestBranch(drivetrain.getPose()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
+                                                getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
                                         ) < Units.feetToMeters(1.0))
                                         .andThen(superStructure.followPositions(robotMode))
                         ),
