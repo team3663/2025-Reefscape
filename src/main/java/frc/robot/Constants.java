@@ -117,7 +117,6 @@ public class Constants {
             CENTER_D = getCenterReefPose(0, X_OFFSET, Y_OFFSET);
             CENTER_E = getCenterReefPose(1, X_OFFSET, Y_OFFSET);
             CENTER_F = getCenterReefPose(2, X_OFFSET, Y_OFFSET);
-
         }
     }
 
@@ -230,11 +229,9 @@ public class Constants {
         public static final double SHOULDER_MAX_MOVING_ANGLE = Units.degreesToRadians(90.0 + 10.0);
     }
 
-
     // Arm buffers
     public static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
     public static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
-
 
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
