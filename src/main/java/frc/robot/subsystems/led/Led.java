@@ -17,16 +17,16 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
 @Logged
 public class Led extends SubsystemBase {
     private static final Pattern CORAL_PATTERN = Pattern.SOLID;
-    private static final Color CORAL_LEVEL_1_COLOR = Color.kGreen;
-    private static final Color CORAL_LEVEL_2_COLOR = Color.kLightGreen;
-    private static final Color CORAL_LEVEL_3_COLOR = Color.kDarkGreen;
-    private static final Color CORAL_LEVEL_4_COLOR = Color.kDarkBlue;
+    private static final Color CORAL_LEVEL_1_COLOR = Color.kYellow;
+    private static final Color CORAL_LEVEL_2_COLOR = Color.kGreen;
+    private static final Color CORAL_LEVEL_3_COLOR = Color.kCyan;
+    private static final Color CORAL_LEVEL_4_COLOR = Color.kBlue;
 
     private static final Pattern ALGAE_PATTERN = Pattern.SOLID;
-    private static final Color ALGAE_NET_COLOR = Color.kPink;
     private static final Color ALGAE_PROCESSOR_COLOR = Color.kAntiqueWhite;
-    private static final Color ALGAE_REMOVE_LOWER_COLOR = Color.kViolet; // Light Red
+    private static final Color ALGAE_REMOVE_LOWER_COLOR = new Color(0.8f, 0.25f, 0.25f);
     private static final Color ALGAE_REMOVE_UPPER_COLOR = Color.kDarkRed;
+    private static final Color ALGAE_NET_COLOR = Color.kPurple;
 
     private final double ANIMATION_SPEED = 0.001;
     private final double LED_BRIGHTNESS = 1.0;

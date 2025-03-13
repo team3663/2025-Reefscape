@@ -23,7 +23,7 @@ public class LedCandleIo implements LedIo {
 
     @Override
     public void setColor(Color color) {
-        candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.green * 255));
+        candle.setLEDs((int) (color.red * 255), (int) (color.green * 255), (int) (color.blue * 255));
     }
 
     @Override
