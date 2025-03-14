@@ -54,17 +54,12 @@ public class CommandFactory {
             if (Constants.IS_ANDYMARK) {
                 if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                     return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES_CENTER);
-                } else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET) {
-                    return robotPose;
                 } else {
                     return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
                 }
             } else {
                 if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
                     return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES_CENTER);
-                }
-                else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET) {
-                    return robotPose;
                 }
                 else {
                     return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
@@ -74,17 +69,13 @@ public class CommandFactory {
             if (Constants.IS_ANDYMARK) {
                 if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                     return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES_CENTER);
-                } else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET) {
-                    return robotPose;
-                } else {
+                }
+                else {
                     return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
                 }
             } else {
                 if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
                     return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES_CENTER);
-                }
-                else if (robotMode == RobotMode.ALGAE_PROCESSOR || robotMode == RobotMode.ALGAE_NET) {
-                    return robotPose;
                 }
                 else {
                     return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
@@ -100,6 +91,11 @@ public class CommandFactory {
         } else {
             return robotPose.nearest(Constants.BLUE_CORAL_STATION_POSES);
         }
+    }
+
+    public Boolean shouldAlignToReef(RobotMode robotMode){
+        return (SmartDashboard.getBoolean("Auto Reef", true) && robotMode != RobotMode.ALGAE_PROCESSOR
+        && robotMode != RobotMode.ALGAE_NET);
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode,
@@ -122,7 +118,7 @@ public class CommandFactory {
                         ),
                         drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
                                 .alongWith(superStructure.followPositions(robotMode)),
-                        () -> SmartDashboard.getBoolean("Auto Reef", true)
+                        () -> shouldAlignToReef(robotMode.get())
                 )
                 .alongWith(
                         Commands.either(Commands.waitUntil(readyToPlace).andThen(
