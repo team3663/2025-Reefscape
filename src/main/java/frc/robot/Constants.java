@@ -32,7 +32,7 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
-    public static final boolean IS_ANDYMARK= true;
+    public static final boolean IS_ANDYMARK = true;
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
     public static final double WELDED_REEF_POSE_Y_OFFSET = Units.inchesToMeters(158.5);
@@ -42,8 +42,8 @@ public class Constants {
 
     public static final double X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(31.625);
     public static final double Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF = Units.inchesToMeters(6.5);
-    private static final double LEFT_BRANCH_ARM_OFFSET= -Units.inchesToMeters(0.125);
-    private static final double RIGHT_BRANCH_ARM_OFFSET= Units.inchesToMeters(0.125);
+    private static final double LEFT_BRANCH_ARM_OFFSET = -Units.inchesToMeters(0.5);
+    private static final double RIGHT_BRANCH_ARM_OFFSET = Units.inchesToMeters(2.0);
     public static final Transform2d ROBOT_REEF_OFFSET = new Transform2d(Units.inchesToMeters(16.675), -Units.inchesToMeters(0.5), Rotation2d.fromDegrees(180));
     public static final Transform2d ROBOT_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(2), 0, Rotation2d.fromDegrees(0));
 
@@ -91,56 +91,89 @@ public class Constants {
         public final Pose2d BRANCH_J;
         public final Pose2d BRANCH_K;
         public final Pose2d BRANCH_L;
+        public final Pose2d CENTER_A;
+        public final Pose2d CENTER_B;
+        public final Pose2d CENTER_C;
+        public final Pose2d CENTER_D;
+        public final Pose2d CENTER_E;
+        public final Pose2d CENTER_F;
 
         public BranchPositions(double X_OFFSET, double Y_OFFSET) {
-            BRANCH_A = getBranchPose(3, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_B = getBranchPose(3, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_C = getBranchPose(4, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_D = getBranchPose(4, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_E = getBranchPose(5, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_F = getBranchPose(5, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_G = getBranchPose(0, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_H = getBranchPose(0, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_I = getBranchPose(1, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_J = getBranchPose(1, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_K = getBranchPose(2, false, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-            BRANCH_L = getBranchPose(2, true, X_OFFSET, Y_OFFSET, Gamepiece.CORAL);
-
+            BRANCH_A = getBranchPose(3, false, X_OFFSET, Y_OFFSET);
+            BRANCH_B = getBranchPose(3, true, X_OFFSET, Y_OFFSET);
+            BRANCH_C = getBranchPose(4, false, X_OFFSET, Y_OFFSET);
+            BRANCH_D = getBranchPose(4, true, X_OFFSET, Y_OFFSET);
+            BRANCH_E = getBranchPose(5, false, X_OFFSET, Y_OFFSET);
+            BRANCH_F = getBranchPose(5, true, X_OFFSET, Y_OFFSET);
+            BRANCH_G = getBranchPose(0, false, X_OFFSET, Y_OFFSET);
+            BRANCH_H = getBranchPose(0, true, X_OFFSET, Y_OFFSET);
+            BRANCH_I = getBranchPose(1, false, X_OFFSET, Y_OFFSET);
+            BRANCH_J = getBranchPose(1, true, X_OFFSET, Y_OFFSET);
+            BRANCH_K = getBranchPose(2, false, X_OFFSET, Y_OFFSET);
+            BRANCH_L = getBranchPose(2, true, X_OFFSET, Y_OFFSET);
+            CENTER_A = getCenterReefPose(3, X_OFFSET, Y_OFFSET);
+            CENTER_B = getCenterReefPose(4, X_OFFSET, Y_OFFSET);
+            CENTER_C = getCenterReefPose(5, X_OFFSET, Y_OFFSET);
+            CENTER_D = getCenterReefPose(0, X_OFFSET, Y_OFFSET);
+            CENTER_E = getCenterReefPose(1, X_OFFSET, Y_OFFSET);
+            CENTER_F = getCenterReefPose(2, X_OFFSET, Y_OFFSET);
         }
-
-
     }
 
     public static final List<Pose2d> RED_WELDED_BRANCH_POSES = List.of(RED_WELDED_BRANCH_POSITIONS.BRANCH_A, RED_WELDED_BRANCH_POSITIONS.BRANCH_B,
-            RED_WELDED_BRANCH_POSITIONS.BRANCH_C,RED_WELDED_BRANCH_POSITIONS.BRANCH_D,
-            RED_WELDED_BRANCH_POSITIONS.BRANCH_E,RED_WELDED_BRANCH_POSITIONS.BRANCH_F,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_C, RED_WELDED_BRANCH_POSITIONS.BRANCH_D,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_E, RED_WELDED_BRANCH_POSITIONS.BRANCH_F,
             RED_WELDED_BRANCH_POSITIONS.BRANCH_G, RED_WELDED_BRANCH_POSITIONS.BRANCH_H,
-            RED_WELDED_BRANCH_POSITIONS.BRANCH_I,RED_WELDED_BRANCH_POSITIONS.BRANCH_J,
-            RED_WELDED_BRANCH_POSITIONS.BRANCH_K,RED_WELDED_BRANCH_POSITIONS.BRANCH_L
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_I, RED_WELDED_BRANCH_POSITIONS.BRANCH_J,
+            RED_WELDED_BRANCH_POSITIONS.BRANCH_K, RED_WELDED_BRANCH_POSITIONS.BRANCH_L
     );
     public static final List<Pose2d> BLUE_WELDED_BRANCH_POSES = List.of(BLUE_WELDED_BRANCH_POSITIONS.BRANCH_A, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_B,
-            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_C,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_D,
-            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_E,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_F,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_C, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_D,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_E, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_F,
             BLUE_WELDED_BRANCH_POSITIONS.BRANCH_G, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_H,
-            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_I,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_J,
-            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_K,BLUE_WELDED_BRANCH_POSITIONS.BRANCH_L
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_I, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_J,
+            BLUE_WELDED_BRANCH_POSITIONS.BRANCH_K, BLUE_WELDED_BRANCH_POSITIONS.BRANCH_L
     );
 
     public static final List<Pose2d> RED_ANDYMARK_BRANCH_POSES = List.of(RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_A, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_B,
-            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_C,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
-            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_E,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_C, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_E, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
             RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_G, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_H,
-            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_I,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
-            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_K,RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_I, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
+            RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_K, RED_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
     );
 
     public static final List<Pose2d> BLUE_ANDYMARK_BRANCH_POSES = List.of(BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_A, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_B,
-            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_C,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
-            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_E,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_C, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_D,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_E, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_F,
             BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_G, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_H,
-            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_I,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
-            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_K,BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_I, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_J,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_K, BLUE_ANDYMARK_BRANCH_POSITIONS.BRANCH_L
     );
+
+    public static final List<Pose2d> RED_WELDED_BRANCH_POSES_CENTER = List.of(RED_WELDED_BRANCH_POSITIONS.CENTER_A,
+            RED_WELDED_BRANCH_POSITIONS.CENTER_B, RED_WELDED_BRANCH_POSITIONS.CENTER_C,
+            RED_WELDED_BRANCH_POSITIONS.CENTER_D,RED_WELDED_BRANCH_POSITIONS.CENTER_E,
+            RED_WELDED_BRANCH_POSITIONS.CENTER_F
+    );
+    public static final List<Pose2d> BLUE_WELDED_BRANCH_POSES_CENTER = List.of(BLUE_WELDED_BRANCH_POSITIONS.CENTER_A,
+            BLUE_WELDED_BRANCH_POSITIONS.CENTER_B, BLUE_WELDED_BRANCH_POSITIONS.CENTER_C,
+            BLUE_WELDED_BRANCH_POSITIONS.CENTER_D, BLUE_WELDED_BRANCH_POSITIONS.CENTER_E,
+            BLUE_WELDED_BRANCH_POSITIONS.CENTER_F
+    );
+
+    public static final List<Pose2d> RED_ANDYMARK_BRANCH_POSES_CENTER = List.of(RED_ANDYMARK_BRANCH_POSITIONS.CENTER_A,
+            RED_ANDYMARK_BRANCH_POSITIONS.CENTER_B, RED_ANDYMARK_BRANCH_POSITIONS.CENTER_C,
+            RED_ANDYMARK_BRANCH_POSITIONS.CENTER_D, RED_ANDYMARK_BRANCH_POSITIONS.CENTER_E,
+            RED_ANDYMARK_BRANCH_POSITIONS.CENTER_F
+    );
+
+    public static final List<Pose2d> BLUE_ANDYMARK_BRANCH_POSES_CENTER = List.of(BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_A,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_B, BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_C,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_D, BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_E,
+            BLUE_ANDYMARK_BRANCH_POSITIONS.CENTER_F
+    );
+
 
     public static final List<Pose2d> BLUE_CORAL_STATION_POSES = List.of(BLUE_LEFT_NEAR_SIDE_CORAL_STATION, BLUE_LEFT_FAR_SIDE_CORAL_STATION,
             BLUE_RIGHT_NEAR_SIDE_CORAL_STATION, BLUE_RIGHT_FAR_SIDE_CORAL_STATION);
@@ -148,20 +181,28 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset,Gamepiece gamepiece) {
+    private static Pose2d getBranchPose(int number, boolean adding, double xOffset, double yOffset) {
         if (adding) {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
-                    Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + RIGHT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.cos(((Math.PI / 3) * number) + Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + RIGHT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin(((Math.PI / 3) * number) +
-                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF+RIGHT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + RIGHT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         } else {
             return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
-                    Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF +LEFT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
+                    Math.cos(((Math.PI / 3) * number) - Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + LEFT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + xOffset,
                     Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) * Math.sin((Math.PI / 3) * number -
-                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF +LEFT_BRANCH_ARM_OFFSET/ X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
+                            Math.asin(Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF + LEFT_BRANCH_ARM_OFFSET / X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF)) + yOffset,
                     Rotation2d.fromRadians((Math.PI / 3) * number));
         }
+    }
+
+    private static Pose2d getCenterReefPose(int number, double xOffset, double yOffset) {
+        return new Pose2d(Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
+                Math.cos((Math.PI / 3) * number) + xOffset,
+                Math.hypot(X_BRANCH_DISTANCE_FROM_CENTER_OF_REEF, Y_BRANCH_DISTANCE_FROM_CENTER_OF_REEF) *
+                        Math.sin((Math.PI / 3) * number) + yOffset,
+                Rotation2d.fromRadians((Math.PI / 3) * number));
     }
 
     public static class ArmPositions {
@@ -188,11 +229,9 @@ public class Constants {
         public static final double SHOULDER_MAX_MOVING_ANGLE = Units.degreesToRadians(90.0 + 10.0);
     }
 
-
     // Arm buffers
     public static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
     public static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
-
 
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
