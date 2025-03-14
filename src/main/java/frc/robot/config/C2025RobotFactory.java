@@ -45,11 +45,12 @@ public class C2025RobotFactory implements RobotFactory {
             .withMountPoseYaw(-178.1190643310547)
             .withMountPosePitch(-0.13654977083206177)
             .withMountPoseRoll(-0.49644964933395386);
+    private static final  GyroTrimConfigs gyroTrim= new GyroTrimConfigs().withGyroScalarZ(-4.45);
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
             .withPigeon2Id(1)
-            .withPigeon2Configs(new Pigeon2Configuration().withMountPose(mountPose));
+            .withPigeon2Configs(new Pigeon2Configuration().withMountPose(mountPose).withGyroTrim(gyroTrim));
 
 
     private static final double DRIVE_INERTIA = 0.01;
