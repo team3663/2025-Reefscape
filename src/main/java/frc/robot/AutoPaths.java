@@ -24,7 +24,6 @@ public class AutoPaths {
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final CommandFactory commandFactory;
-    private final double INTERMEDIATE_LIMIT = 0.2;
 
 
     public AutoPaths(
@@ -52,7 +51,7 @@ public class AutoPaths {
         return Commands.parallel(
                 path.cmd().andThen(drivetrain.stop()),
                 limitedArm(RobotMode.CORAL_STATION)
-                        .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT))
+                        .until(path.atTimeBeforeEnd(1.0))
                         .andThen(superStructure.goToPositions(RobotMode.CORAL_STATION)
                                 .alongWith(grabber.grabCoral())));
     }
@@ -63,7 +62,7 @@ public class AutoPaths {
                         Commands.sequence(
                                 shouldZero ? superStructure.zero() : Commands.none(),
                                 limitedArm(RobotMode.CORAL_LEVEL_4)
-                                        .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT)),
+                                        .until(path.atTimeBeforeEnd(0.25)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
                 .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
