@@ -7,6 +7,7 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -39,6 +40,8 @@ public class Vision extends SubsystemBase {
     private Rotation2d currentYaw = new Rotation2d();
     @NotLogged
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
+    private final double[] ioUpdateDurations;
+    private final double[] processingDurations;
 
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
@@ -48,24 +51,21 @@ public class Vision extends SubsystemBase {
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
         this.ios = ios;
         this.fieldLayout = fieldLayout;
+        this.ioUpdateDurations = new double[ios.length];
+        this.processingDurations = new double[ios.length];
 
         visionInputs = new VisionInputs[ios.length];
         for (int i = 0; i < visionInputs.length; i++) {
             visionInputs[i] = new VisionInputs();
         }
-        if (visionInputs.length > 0)
-        {
+        if (visionInputs.length > 0) {
             frontInputs = visionInputs[0];
-        }
-        else
-        {
+        } else {
             frontInputs = new VisionInputs();
         }
-        if (visionInputs.length > 1)
-        {
+        if (visionInputs.length > 1) {
             backInputs = visionInputs[1];
-        }
-        else {
+        } else {
             backInputs = new VisionInputs();
         }
 
@@ -77,11 +77,17 @@ public class Vision extends SubsystemBase {
     public void periodic() {
 
         for (int i = 0; i < ios.length; i++) {
+            double start = System.currentTimeMillis();
             ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
+            double end = System.currentTimeMillis();
+            double duration = end - start;
+            ioUpdateDurations[i] = duration;
         }
 
         acceptedMeasurements.clear();
-        for (VisionInputs visionInput : visionInputs) {
+        for (int i = 0; i < visionInputs.length; i++) {
+            VisionInputs visionInput = visionInputs[i];
+            double start = System.currentTimeMillis();
             Pose2d pose = visionInput.estimatedPose;
             double timestamp = visionInput.timestampSeconds;
 
@@ -94,15 +100,24 @@ public class Vision extends SubsystemBase {
                 continue;
 
             // Compute the standard deviation to use based on the distance to the closest tag
-            OptionalDouble closestTagDistance = Arrays.stream(visionInput.targetIds)
-                    .mapToObj(fieldLayout::getTagPose)
-                    .filter(Optional::isPresent)
-                    .mapToDouble(v -> v.get().toPose2d().getTranslation().getDistance(pose.getTranslation()))
-                    .min();
+            double closestTagDistance = Double.MAX_VALUE;
+            for (int targetId : visionInput.targetIds) {
+                Optional<Pose3d> v = fieldLayout.getTagPose(targetId);
+                if (v.isPresent()) {
+                    double distance = v.get().toPose2d().getTranslation().getDistance(pose.getTranslation());
+                    if (distance < closestTagDistance) {
+                        closestTagDistance = distance;
+                    }
+                }
+            }
+
             // If for some reason we were unable to calculate the distance to the closest tag, assume we are infinitely far away
-            Matrix<N3, N1> stdDevs = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(closestTagDistance.orElse(Double.MAX_VALUE));
+            Matrix<N3, N1> stdDevs = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(closestTagDistance);
 
             acceptedMeasurements.add(new VisionMeasurement(pose, timestamp, stdDevs));
+            double end = System.currentTimeMillis();
+            double duration = end - start;
+            processingDurations[i] = duration;
         }
     }
 

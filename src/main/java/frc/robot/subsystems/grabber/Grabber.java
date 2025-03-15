@@ -90,7 +90,7 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command grabAlgae() {
-        return withVoltage(-9.0)
+        return withVoltage(-12.0)
                 .until(this::hasAlgae)
                 .beforeStarting(() -> gamepiece = Gamepiece.ALGAE)
                 .unless(this::isGamePieceDetected);
