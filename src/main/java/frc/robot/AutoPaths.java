@@ -33,32 +33,32 @@ public class AutoPaths {
     public AutoRoutine facePlantD1() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
 
-        AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantD1");
+        AutoTrajectory facePlantD1Traj = routine.trajectory("FacePlantD1");
 
         routine.active().onTrue(
                 Commands.sequence(
-                        facePlantGTraj.resetOdometry(),
+                        facePlantD1Traj.resetOdometry(),
                         superStructure.zero(),
-                        facePlantGTraj.cmd()
+                        facePlantD1Traj.cmd()
 
                 ));
-        facePlantGTraj.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        facePlantD1Traj.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
         return routine;
     }
 
     public AutoRoutine facePlantD2() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D2");
 
-        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantD2");
+        AutoTrajectory facePlantD2Traj = routine.trajectory("FacePlantD2");
 
         routine.active().onTrue(
                 Commands.sequence(
-                        facePlantHTraj.resetOdometry(),
+                        facePlantD2Traj.resetOdometry(),
                         superStructure.zero(),
-                        facePlantHTraj.cmd()
+                        facePlantD2Traj.cmd()
 
                 ));
-        facePlantHTraj.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        facePlantD2Traj.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
         return routine;
     }
 
@@ -66,9 +66,9 @@ public class AutoPaths {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoral:B2-B1");
 
         AutoTrajectory start = routine.trajectory("RStart-B2");
-        AutoTrajectory dwcs = routine.trajectory("B2-RS");
-        AutoTrajectory wcsc = routine.trajectory("RS-B1");
-        AutoTrajectory cwcs = routine.trajectory("B1-RS");
+        AutoTrajectory b2rs = routine.trajectory("B2-RS");
+        AutoTrajectory rsb1 = routine.trajectory("RS-B1");
+        AutoTrajectory b1rs = routine.trajectory("B1-RS");
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -76,9 +76,9 @@ public class AutoPaths {
                                 start.cmd(), superStructure.zero())
                 ));
 
-        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
-        dwcs.done().onTrue(commandFactory.grabCoral().andThen(wcsc.cmd()));
-        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(cwcs.cmd()));
+        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(b2rs.cmd()));
+        b2rs.done().onTrue(commandFactory.grabCoral().andThen(rsb1.cmd()));
+        rsb1.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(b1rs.cmd()));
 
         return routine;
     }
@@ -87,9 +87,9 @@ public class AutoPaths {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoral:F1-F2");
 
         AutoTrajectory start = routine.trajectory("LStart-F1");
-        AutoTrajectory klwcs = routine.trajectory("F1-LS");
-        AutoTrajectory lwcsl = routine.trajectory("LS-F2");
-        AutoTrajectory llwcs = routine.trajectory("F2-LS");
+        AutoTrajectory f1ls = routine.trajectory("F1-LS");
+        AutoTrajectory lsf2 = routine.trajectory("LS-F2");
+        AutoTrajectory f2ls = routine.trajectory("F2-LS");
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -99,9 +99,9 @@ public class AutoPaths {
                 )
         );
 
-        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(klwcs.cmd()));
-        klwcs.done().onTrue(commandFactory.grabCoral().andThen(lwcsl.cmd()));
-        lwcsl.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(llwcs.cmd()));
+        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(f1ls.cmd()));
+        f1ls.done().onTrue(commandFactory.grabCoral().andThen(lsf2.cmd()));
+        lsf2.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(f2ls.cmd()));
         return routine;
     }
 }
