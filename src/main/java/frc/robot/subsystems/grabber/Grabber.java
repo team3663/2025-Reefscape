@@ -5,7 +5,6 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotMode;
 import frc.robot.utility.Gamepiece;
 
 @Logged
@@ -31,7 +30,7 @@ public class Grabber extends SubsystemBase {
         holdingAlgae = algaeDebouncer.calculate(isGamePieceDetected() && gamepiece == Gamepiece.ALGAE);
         if (holdingAlgae && targetVoltage == 0.0)
         {
-            io.setTargetVoltage(-3.0);
+            io.setTargetVoltage(-1.5);
         }
     }
 
@@ -58,8 +57,6 @@ public class Grabber extends SubsystemBase {
     public boolean hasCoral() {
         return isGamePieceDetected() && gamepiece == Gamepiece.CORAL;
     }
-
-
 
     public Command stop() {
         return runOnce(this::stopInternal);
