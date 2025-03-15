@@ -33,7 +33,7 @@ public class AutoPaths {
     public AutoRoutine facePlantD1() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
 
-        AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantG");
+        AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantD1");
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -49,7 +49,7 @@ public class AutoPaths {
     public AutoRoutine facePlantD2() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D2");
 
-        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH");
+        AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantD2");
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -65,10 +65,10 @@ public class AutoPaths {
     public AutoRoutine twoCoralB2B1() {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoral:B2-B1");
 
-        AutoTrajectory start = routine.trajectory("PStart-D");
-        AutoTrajectory dwcs = routine.trajectory("D-WCS");
-        AutoTrajectory wcsc = routine.trajectory("WCS-C");
-        AutoTrajectory cwcs = routine.trajectory("C-WCS");
+        AutoTrajectory start = routine.trajectory("RStart-B2");
+        AutoTrajectory dwcs = routine.trajectory("B2-RS");
+        AutoTrajectory wcsc = routine.trajectory("RS-B1");
+        AutoTrajectory cwcs = routine.trajectory("B1-RS");
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -86,10 +86,10 @@ public class AutoPaths {
     public AutoRoutine twoCoralF1F2() {
         AutoRoutine routine = autoFactory.newRoutine("TwoCoral:F1-F2");
 
-        AutoTrajectory start = routine.trajectory("LStart-K");
-        AutoTrajectory klwcs = routine.trajectory("K-LWCS");
-        AutoTrajectory lwcsl = routine.trajectory("LWCS-L");
-        AutoTrajectory llwcs = routine.trajectory("L-LWCS");
+        AutoTrajectory start = routine.trajectory("LStart-F1");
+        AutoTrajectory klwcs = routine.trajectory("F1-LS");
+        AutoTrajectory lwcsl = routine.trajectory("LS-F2");
+        AutoTrajectory llwcs = routine.trajectory("F2-LS");
 
         routine.active().onTrue(
                 Commands.sequence(
