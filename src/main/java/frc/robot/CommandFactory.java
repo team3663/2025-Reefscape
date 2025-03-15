@@ -89,8 +89,8 @@ public class CommandFactory {
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
-                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE,
-                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
                                                 () -> robotMode.get().getWristAngle())
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
                                                 getClosestBranch(drivetrain.getPose(), robotMode.get()).getTranslation()
