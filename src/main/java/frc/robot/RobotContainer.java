@@ -86,7 +86,7 @@ public class RobotContainer {
         autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
         autoChooser.addRoutine("ThreeCoral:C1-B1-B2",autoPaths::threeCoralC1B1B2);
-        autoChooser.addRoutine("ThreeCoral:E2-F2-F1",autoPaths::threeCoralE2F2F1);
+        //autoChooser.addRoutine("ThreeCoral:E2-F2-F1",autoPaths::threeCoralE2F2F1);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);
@@ -100,19 +100,6 @@ public class RobotContainer {
 
         SmartDashboard.putBoolean("Auto Reef", true);
         SmartDashboard.putBoolean("Auto Coral Station", false);
-
-        SmartDashboard.putString("A1 Branch", Constants.BLUE_BRANCH_A1.toString());
-        SmartDashboard.putString("A2 Branch", Constants.BLUE_BRANCH_A2.toString());
-        SmartDashboard.putString("B1 Branch", Constants.BLUE_BRANCH_B1.toString());
-        SmartDashboard.putString("B2 Branch", Constants.BLUE_BRANCH_B2.toString());
-        SmartDashboard.putString("C1 Branch", Constants.BLUE_BRANCH_C1.toString());
-        SmartDashboard.putString("C2 Branch", Constants.BLUE_BRANCH_C2.toString());
-        SmartDashboard.putString("D1 Branch", Constants.BLUE_BRANCH_D1.toString());
-        SmartDashboard.putString("D2 Branch", Constants.BLUE_BRANCH_D2.toString());
-        SmartDashboard.putString("E1 Branch", Constants.BLUE_BRANCH_E1.toString());
-        SmartDashboard.putString("E2 Branch", Constants.BLUE_BRANCH_E2.toString());
-        SmartDashboard.putString("F1 Branch", Constants.BLUE_BRANCH_F1.toString());
-        SmartDashboard.putString("F2 Branch", Constants.BLUE_BRANCH_F2.toString());
 
 
 
