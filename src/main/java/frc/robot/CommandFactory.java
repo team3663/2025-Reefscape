@@ -109,7 +109,7 @@ public class CommandFactory {
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
                                                         Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE,
                                                         Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
-                                                () -> robotMode.get().getWristAngle(), () -> robotMode.get().getGamepiece())
+                                                () -> robotMode.get().getWristAngle())
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
                                                 getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
                                         ) < Units.feetToMeters(1.0))
@@ -132,7 +132,7 @@ public class CommandFactory {
                 grabber.grabCoral(),
                 superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
                         () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE, () -> Gamepiece.CORAL),
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
                                 getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),

@@ -118,13 +118,13 @@ public class RobotContainer {
         driverController.a().whileTrue(grabber.eject());
 
         operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle(), () -> robotMode.getGamepiece())));
+                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
         operatorController.leftBumper().onFalse(climber.stow());
         operatorController.rightBumper().onFalse(climber.stow());
         operatorController.leftTrigger().and(operatorController.leftBumper())
                 .onTrue(climber.climb()
                         .alongWith(
-                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle(), () -> robotMode.getGamepiece())
+                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
                         )
                         .until(operatorController.rightBumper()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 

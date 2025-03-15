@@ -140,9 +140,7 @@ public class SuperStructure extends SubsystemBase {
         return elevator.atTargetPosition() && arm.atTargetPositions();
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, Supplier<Gamepiece> gamepiece) {
-        DoubleSupplier shoulderReefAngle = () -> gamepiece.get() == Gamepiece.CORAL ? Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL : Constants.ArmPositions.SHOULDER_REEF_ANGLE_ALGAE;
-
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return Commands.parallel(
                 arm.followPositions(
                         () -> {
@@ -150,31 +148,37 @@ public class SuperStructure extends SubsystemBase {
                                     Math.max(shoulderPosition.getAsDouble(),
                                             getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())));
 
-                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)))
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
                                 return MathUtil.clamp(pos,
-                                        Units.degreesToRadians(90.0) - shoulderReefAngle.getAsDouble(),
-                                        Units.degreesToRadians(90.0) + shoulderReefAngle.getAsDouble());
+                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL - Arm.POSITION_THRESHOLD,
+                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD);
 
                             return pos;
                         },
-                        () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
+                        () -> wristHaveAlgaePosition(Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition())))),
                 elevator.followPosition(() -> {
-                    if (!elevator.atPosition(elevatorPosition.getAsDouble()) &&
-                            !arm.shoulderAtPosition(Math.PI / 2, shoulderReefAngle.getAsDouble())) {
-                        return elevator.getTargetPosition();
+                    if (elevator.atPosition(elevatorPosition.getAsDouble()) ||
+                            arm.shoulderAtPosition(Units.degreesToRadians(90.0), Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD) ||
+                            haveAlgae.getAsBoolean() && arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE)) {
+                        return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
                     }
+                    return elevator.getTargetPosition();
 
-                    return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
                 }), run(() -> {}));
     }
 
-    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition, Supplier<Gamepiece> gamepiece) {
-        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition, gamepiece)
+    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
+        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
                 .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
-    private double shoulderHaveAlgaePosition(double shoulderPosition) {
-        return haveAlgae.getAsBoolean() ? Math.min(shoulderPosition, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : shoulderPosition;
+    private double shoulderHaveAlgaePosition(double position) {
+        return haveAlgae.getAsBoolean() ? Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
+    }
+
+    private double wristHaveAlgaePosition(double position) {
+        return haveAlgae.getAsBoolean() && arm.getShoulderPosition() >= Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE - Arm.POSITION_THRESHOLD ?
+                Math.min(position, Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE) : position;
     }
 
     /**
@@ -188,7 +192,7 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
-        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle, () -> robotMode.get().getGamepiece());
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
     }
 
     public Command goToPositions(RobotMode robotMode) {
@@ -196,15 +200,15 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command goToDefaultPositions() {
-        return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE, () -> Gamepiece.CORAL);
+        return followPositions(() -> Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, () -> Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE,
+                () -> haveAlgae.getAsBoolean() ? Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE : Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
     }
 
     public Command zero() {
         return Commands.parallel(
                 arm.zeroWrist(),
                 elevator.zero(),
-                runOnce(() -> {
-                })
+                runOnce(() -> {})
         );
     }
 
