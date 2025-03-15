@@ -31,7 +31,7 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
-    public static final boolean IS_ANDYMARK = true;
+    public static final boolean IS_ANDYMARK = false;
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
