@@ -63,7 +63,7 @@ public class RobotContainer {
         superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(),arm, commandFactory);
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw).ignoringDisable(true));
 
@@ -118,13 +118,13 @@ public class RobotContainer {
         driverController.a().whileTrue(grabber.eject());
 
         operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle(), () -> robotMode.getGamepiece())));
         operatorController.leftBumper().onFalse(climber.stow());
         operatorController.rightBumper().onFalse(climber.stow());
         operatorController.leftTrigger().and(operatorController.leftBumper())
                 .onTrue(climber.climb()
                         .alongWith(
-                                superStructure.followPositions(() -> 0.0, () -> 0.0, ()-> arm.getConstants().maximumWristAngle())
+                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle(), () -> robotMode.getGamepiece())
                         )
                         .until(operatorController.rightBumper()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 

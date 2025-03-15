@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utility.Gamepiece;
 
 import java.util.List;
 
@@ -212,9 +211,8 @@ public class Constants {
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
 
         // Shoulder Safe variables
-        public static final double SHOULDER_SAFE_ANGLE = Units.degreesToRadians(90.0);
-        public static final double SHOULDER_SAFE_THRESHOLD = Units.degreesToRadians(15.0);
-        public static final double SHOULDER_SAFE_BUFFER = Units.degreesToRadians(3.0);
+        public static final double SHOULDER_REEF_ANGLE_CORAL = Units.degreesToRadians(15.0);
+        public static final double SHOULDER_REEF_ANGLE_ALGAE = Units.degreesToRadians(5.0);
 
         // Shoulder max angle when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(70);
@@ -226,7 +224,7 @@ public class Constants {
 
         // Max Positions when moving
         public static final double ELEVATOR_MAX_MOVING_HEIGHT = Units.feetToMeters(1.0);
-        public static final double SHOULDER_MAX_MOVING_ANGLE = Units.degreesToRadians(90.0 + 10.0);
+        public static final double SHOULDER_MAX_MOVING_ANGLE = Units.degreesToRadians(10.0);
     }
 
     // Arm buffers

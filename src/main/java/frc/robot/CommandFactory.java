@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -58,7 +57,7 @@ public class CommandFactory {
                     return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
                 }
             } else {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                     return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES_CENTER);
                 }
                 else {
@@ -74,7 +73,7 @@ public class CommandFactory {
                     return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
                 }
             } else {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
+                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                     return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES_CENTER);
                 }
                 else {
@@ -93,9 +92,9 @@ public class CommandFactory {
         }
     }
 
-    public Boolean shouldAlignToReef(RobotMode robotMode){
+    public Boolean shouldAlignToReef(RobotMode robotMode) {
         return (SmartDashboard.getBoolean("Auto Reef", true) && robotMode != RobotMode.ALGAE_PROCESSOR
-        && robotMode != RobotMode.ALGAE_NET);
+                && robotMode != RobotMode.ALGAE_NET);
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode,
@@ -108,9 +107,9 @@ public class CommandFactory {
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
-                                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
-                                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
-                                                () -> robotMode.get().getWristAngle())
+                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE,
+                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                                () -> robotMode.get().getWristAngle(), () -> robotMode.get().getGamepiece())
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
                                                 getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
                                         ) < Units.feetToMeters(1.0))
@@ -122,7 +121,7 @@ public class CommandFactory {
                 )
                 .alongWith(
                         Commands.either(Commands.waitUntil(readyToPlace).andThen(
-                                Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
+                                        Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
                                 () -> robotMode.get().isPlacingMode())
                 );
@@ -133,7 +132,7 @@ public class CommandFactory {
                 grabber.grabCoral(),
                 superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
                         () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE, () -> Gamepiece.CORAL),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
                                 getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),

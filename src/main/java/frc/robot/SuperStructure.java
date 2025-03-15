@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.utility.Gamepiece;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -139,7 +140,9 @@ public class SuperStructure extends SubsystemBase {
         return elevator.atTargetPosition() && arm.atTargetPositions();
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, Supplier<Gamepiece> gamepiece) {
+        DoubleSupplier shoulderReefAngle = () -> gamepiece.get() == Gamepiece.CORAL ? Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL : Constants.ArmPositions.SHOULDER_REEF_ANGLE_ALGAE;
+
         return Commands.parallel(
                 arm.followPositions(
                         () -> {
@@ -148,27 +151,25 @@ public class SuperStructure extends SubsystemBase {
                                             getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())));
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)))
-                                return MathUtil.clamp(pos, Constants.ArmPositions.SHOULDER_SAFE_ANGLE - Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD
-                                        + Constants.ArmPositions.SHOULDER_SAFE_BUFFER, Constants.ArmPositions.SHOULDER_SAFE_ANGLE +
-                                        Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD - Constants.ArmPositions.SHOULDER_SAFE_BUFFER);
+                                return MathUtil.clamp(pos,
+                                        Units.degreesToRadians(90.0) - shoulderReefAngle.getAsDouble(),
+                                        Units.degreesToRadians(90.0) + shoulderReefAngle.getAsDouble());
 
                             return pos;
                         },
                         () -> Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition()))),
                 elevator.followPosition(() -> {
                     if (!elevator.atPosition(elevatorPosition.getAsDouble()) &&
-                            !arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_SAFE_ANGLE, Constants.ArmPositions.SHOULDER_SAFE_THRESHOLD)) {
+                            !arm.shoulderAtPosition(Math.PI / 2, shoulderReefAngle.getAsDouble())) {
                         return elevator.getTargetPosition();
                     }
 
                     return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
-                }),
-                run(() -> {
-                }));
+                }), run(() -> {}));
     }
 
-    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
-        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
+    public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition, Supplier<Gamepiece> gamepiece) {
+        return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition, gamepiece)
                 .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
@@ -187,7 +188,7 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
-        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle, () -> robotMode.get().getGamepiece());
     }
 
     public Command goToPositions(RobotMode robotMode) {
@@ -195,7 +196,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command goToDefaultPositions() {
-        return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
+        return goToPositions(Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE, Constants.ArmPositions.WRIST_DEFAULT_ANGLE, () -> Gamepiece.CORAL);
     }
 
     public Command zero() {
