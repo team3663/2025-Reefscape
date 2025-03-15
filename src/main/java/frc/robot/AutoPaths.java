@@ -47,8 +47,8 @@ public class AutoPaths {
                 superStructure.followPositions(
                                 () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                 () -> MathUtil.clamp(robotMode.getShoulderAngle(),
-                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
-                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
                                 robotMode::getWristAngle)
                         .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT))
                         .andThen(superStructure.goToPositions(RobotMode.CORAL_STATION)
@@ -64,13 +64,13 @@ public class AutoPaths {
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.getShoulderAngle(),
-                                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
-                                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
                                                 robotMode::getWristAngle)
                                         .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
-                .andThen(grabber.placeCoral().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
+                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
     }
 
     public AutoRoutine facePlantD1() {
