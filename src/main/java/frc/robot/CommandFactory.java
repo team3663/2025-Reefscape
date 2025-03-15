@@ -76,7 +76,7 @@ public class CommandFactory {
 
     public Boolean shouldAlignToReef(RobotMode robotMode) {
         return (SmartDashboard.getBoolean("Auto Reef", true) && robotMode != RobotMode.ALGAE_PROCESSOR
-                && robotMode != RobotMode.ALGAE_NET);
+                && robotMode != RobotMode.ALGAE_NET && robotMode != RobotMode.ALGAE_PICKUP_GROUND);
     }
 
 
