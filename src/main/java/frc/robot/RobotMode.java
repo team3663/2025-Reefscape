@@ -16,7 +16,8 @@ public enum RobotMode {
     // ALGAE_REMOVE_LOWER(0.48, Units.degreesToRadians(12.13), Units.degreesToRadians(51.33), Gamepiece.ALGAE, false),
     ALGAE_REMOVE_LOWER(Units.inchesToMeters(9.52), Units.degreesToRadians(31.28), Units.degreesToRadians(62.24), Gamepiece.ALGAE, false),
     ALGAE_REMOVE_UPPER(Units.inchesToMeters(26.02), Units.degreesToRadians(31.28), Units.degreesToRadians(62.24), Gamepiece.ALGAE, false),
-    CORAL_STATION(ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, ArmPositions.CORAL_STATION_SHOULDER_ANGLE, ArmPositions.CORAL_STATION_WRIST_ANGLE, Gamepiece.CORAL, false);
+    CORAL_STATION(ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT, ArmPositions.CORAL_STATION_SHOULDER_ANGLE, ArmPositions.CORAL_STATION_WRIST_ANGLE, Gamepiece.CORAL, false),
+    ALGAE_PICKUP_GROUND(Units.inchesToMeters(0.0), Units.degreesToRadians(0.0), Units.degreesToRadians(45.0), Gamepiece.ALGAE, false);
 
     private final double elevatorHeight;
     private final double shoulderAngle;
