@@ -1,5 +1,5 @@
 {
- "name":"PStart-D",
+ "name":"RStart-B2",
  "version":1,
  "snapshot":{
   "waypoints":[
@@ -14,9 +14,9 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"300 in - 14 in", "val":7.264399999999999}, "y":{"exp":"16.5 in + 4 ft", "val":1.6383}, "heading":{"exp":"90 deg", "val":1.5707963267948966}, "intervals":61, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"RStart.x", "val":7.264399999999999}, "y":{"exp":"RStart.y", "val":1.6383}, "heading":{"exp":"RStart.heading", "val":1.5707963267948966}, "intervals":61, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"4.292627811431885 m", "val":4.292627811431885}, "y":{"exp":"2.1111998558044434 m", "val":2.1111998558044434}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":37, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
-    {"x":{"exp":"3.997889995574951 m + 5.5 in", "val":4.137589995574952}, "y":{"exp":"2.8203799724578857 m + 2 in", "val":2.871179972457886}, "heading":{"exp":"60 deg", "val":1.0471975511965976}, "intervals":49, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
+    {"x":{"exp":"B2.x", "val":4.137589995574952}, "y":{"exp":"B2.y", "val":2.871179972457886}, "heading":{"exp":"B2.heading", "val":1.0471975511965976}, "intervals":49, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
