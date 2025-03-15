@@ -39,34 +39,30 @@ public class AutoPaths {
         this.arm = arm;
     }
 
+    public Command limitedArm(RobotMode robotMode) {
+        return superStructure.followPositions(
+                () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                () -> MathUtil.clamp(robotMode.getShoulderAngle(),
+                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
+                robotMode::getWristAngle);
+    }
 
-    public Command pickupFromCoralStation(RobotMode robotMode,
-                                          AutoTrajectory path) {
+    public Command pickupFromCoralStation(AutoTrajectory path) {
         return Commands.parallel(
                 path.cmd().andThen(drivetrain.stop()),
-                superStructure.followPositions(
-                                () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
-                                () -> MathUtil.clamp(robotMode.getShoulderAngle(),
-                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
-                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
-                                robotMode::getWristAngle)
+                limitedArm(RobotMode.CORAL_STATION)
                         .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT))
                         .andThen(superStructure.goToPositions(RobotMode.CORAL_STATION)
                                 .alongWith(grabber.grabCoral())));
     }
 
-    public Command placeOnReef(RobotMode robotMode,
-                               AutoTrajectory path, boolean shouldZero) {
+    public Command placeOnReef(AutoTrajectory path, boolean shouldZero) {
         return Commands.parallel(
                         path.cmd().andThen(drivetrain.stop()),
                         Commands.sequence(
                                 shouldZero ? superStructure.zero() : Commands.none(),
-                                superStructure.followPositions(
-                                                () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
-                                                () -> MathUtil.clamp(robotMode.getShoulderAngle(),
-                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
-                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
-                                                robotMode::getWristAngle)
+                                limitedArm(RobotMode.CORAL_LEVEL_4)
                                         .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
@@ -115,10 +111,10 @@ public class AutoPaths {
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        placeOnReef(RobotMode.CORAL_LEVEL_4, start, true),
-                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, b2rs),
-                        placeOnReef(RobotMode.CORAL_LEVEL_4, rsb1, false),
-                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, b1rs)
+                        placeOnReef(start, true),
+                        pickupFromCoralStation(b2rs),
+                        placeOnReef(rsb1, false),
+                        pickupFromCoralStation(b1rs)
                 ));
 
         return routine;
@@ -135,12 +131,35 @@ public class AutoPaths {
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        placeOnReef(RobotMode.CORAL_LEVEL_4, start, true),
-                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, f1ls),
-                        placeOnReef(RobotMode.CORAL_LEVEL_4, lsf2, false),
-                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, f2ls)
+                        placeOnReef(start, true),
+                        pickupFromCoralStation(f1ls),
+                        placeOnReef(lsf2, false),
+                        pickupFromCoralStation(f2ls)
                 )
         );
+
+        return routine;
+    }
+
+    public AutoRoutine threeCoralC1B1B2() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-B1-B2");
+
+        AutoTrajectory start = routine.trajectory("RStart-C1");
+        AutoTrajectory c1rs = routine.trajectory("C1-RS");
+        AutoTrajectory rsb1 = routine.trajectory("RS-B1");
+        AutoTrajectory b1rs = routine.trajectory("B1-RS");
+        AutoTrajectory rsb2 = routine.trajectory("RS-B2");
+        AutoTrajectory b2rs = routine.trajectory("B2-RS");
+        routine.active().onTrue(
+                Commands.sequence(
+                        start.resetOdometry(),
+                        placeOnReef(start, true),
+                        pickupFromCoralStation(c1rs),
+                        placeOnReef(rsb1, false),
+                        pickupFromCoralStation(b1rs),
+                        placeOnReef(rsb2, false),
+                        pickupFromCoralStation(b2rs)
+                ));
 
         return routine;
     }
