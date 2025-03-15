@@ -86,7 +86,7 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET), false),
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -94,7 +94,7 @@ public class CommandFactory {
                                                         Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
                                                 () -> robotMode.get().getWristAngle())
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
-                                                getClosestBranch(drivetrain.getPose(), robotMode.get()).plus(Constants.ROBOT_REEF_OFFSET).getTranslation()
+                                                getClosestBranch(drivetrain.getPose(), robotMode.get()).getTranslation()
                                         ) < Units.feetToMeters(1.0))
                                         .andThen(superStructure.followPositions(robotMode))
                         ),
