@@ -1,8 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.utility.Gamepiece;
 import frc.robot.Constants.ArmPositions;
+import frc.robot.utility.Gamepiece;
 
 public enum RobotMode {
     // TODO: get the actual values of these variables!!

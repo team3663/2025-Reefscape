@@ -1,13 +1,12 @@
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import choreo.auto.AutoFactory;
 import frc.robot.subsystems.grabber.Grabber;
-
 
 public class AutoPaths {
     private final Drivetrain drivetrain;
