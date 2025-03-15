@@ -111,18 +111,18 @@ public class RobotContainer {
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
-        driverController.a().whileTrue(grabber.eject());
+        driverController.b().whileTrue(grabber.eject());
 
         operatorController.leftBumper().whileTrue(climber.arm()
                 .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
         operatorController.leftBumper().onFalse(climber.stow());
-        operatorController.rightBumper().onFalse(climber.stow());
-        operatorController.leftTrigger().and(operatorController.leftBumper())
+        driverController.a().onFalse(climber.stow());
+        driverController.y().and(operatorController.leftBumper())
                 .onTrue(climber.climb()
                         .alongWith(
                                 superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
                         )
-                        .until(operatorController.rightBumper()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+                        .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
