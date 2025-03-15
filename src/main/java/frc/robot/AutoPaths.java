@@ -162,4 +162,27 @@ public class AutoPaths {
 
         return routine;
     }
+
+    public AutoRoutine threeCoralE2F2F1() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:E2-F2-F1");
+
+        AutoTrajectory start = routine.trajectory("LStart-E2");
+        AutoTrajectory e2ls = routine.trajectory("E2-LS");
+        AutoTrajectory lsf2 = routine.trajectory("LS-F2");
+        AutoTrajectory f2ls = routine.trajectory("F2-LS");
+        AutoTrajectory lsf1 = routine.trajectory("LS-F1");
+        AutoTrajectory f1ls = routine.trajectory("F1-LS");
+        routine.active().onTrue(
+                Commands.sequence(
+                        start.resetOdometry(),
+                        placeOnReef(start, true),
+                        pickupFromCoralStation(e2ls),
+                        placeOnReef(lsf2, false),
+                        pickupFromCoralStation(f2ls),
+                        placeOnReef(lsf1, false),
+                        pickupFromCoralStation(f1ls)
+                ));
+
+        return routine;
+    }
 }
