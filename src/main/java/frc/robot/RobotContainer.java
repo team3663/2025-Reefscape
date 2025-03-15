@@ -85,6 +85,8 @@ public class RobotContainer {
         autoChooser.addRoutine("TwoCoral:B2-B1", autoPaths::twoCoralB2B1);
         autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
+        autoChooser.addRoutine("ThreeCoral:C1-B1-B2",autoPaths::threeCoralC1B1B2);
+
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);
 
