@@ -153,6 +153,9 @@ public class Drivetrain extends SubsystemBase {
                 // end()
                 io::stop);
     }
+    public Command stop(){
+        return runOnce(io::stop);
+    }
 
 //    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
 //        PIDController xController = new PIDController(10.0, 0, 0);

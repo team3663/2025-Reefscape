@@ -2,11 +2,19 @@ package frc.robot;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import choreo.auto.AutoFactory;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.utility.Gamepiece;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 
 public class AutoPaths {
@@ -16,6 +24,7 @@ public class AutoPaths {
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final CommandFactory commandFactory;
+    private final double INTERMEDIATE_LIMIT = 0.2;
 
 
     public AutoPaths(
@@ -28,6 +37,40 @@ public class AutoPaths {
         this.commandFactory = commandFactory;
 
         this.arm = arm;
+    }
+
+
+    public Command pickupFromCoralStation(RobotMode robotMode,
+                                          AutoTrajectory path) {
+        return Commands.parallel(
+                path.cmd().andThen(drivetrain.stop()),
+                superStructure.followPositions(
+                                () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                                () -> MathUtil.clamp(robotMode.getShoulderAngle(),
+                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
+                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                robotMode::getWristAngle)
+                        .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT))
+                        .andThen(superStructure.goToPositions(RobotMode.CORAL_STATION)
+                                .alongWith(grabber.grabCoral())));
+    }
+
+    public Command placeOnReef(RobotMode robotMode,
+                               AutoTrajectory path, boolean shouldZero) {
+        return Commands.parallel(
+                        path.cmd().andThen(drivetrain.stop()),
+                        Commands.sequence(
+                                shouldZero ? superStructure.zero() : Commands.none(),
+                                superStructure.followPositions(
+                                                () -> Math.min(robotMode.getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                                                () -> MathUtil.clamp(robotMode.getShoulderAngle(),
+                                                        Units.degreesToRadians(90.0) - (Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE - Units.degreesToRadians(90.0)),
+                                                        Constants.ArmPositions.SHOULDER_MAX_MOVING_ANGLE),
+                                                robotMode::getWristAngle)
+                                        .until(path.atTimeBeforeEnd(INTERMEDIATE_LIMIT)),
+                                superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
+                        ))
+                .andThen(grabber.placeCoral().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
     }
 
     public AutoRoutine facePlantD1() {
@@ -72,13 +115,11 @@ public class AutoPaths {
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        Commands.parallel(
-                                start.cmd(), superStructure.zero())
+                        placeOnReef(RobotMode.CORAL_LEVEL_4, start, true),
+                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, b2rs),
+                        placeOnReef(RobotMode.CORAL_LEVEL_4, rsb1, false),
+                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, b1rs)
                 ));
-
-        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(b2rs.cmd()));
-        b2rs.done().onTrue(commandFactory.grabCoral().andThen(rsb1.cmd()));
-        rsb1.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(b1rs.cmd()));
 
         return routine;
     }
@@ -94,14 +135,13 @@ public class AutoPaths {
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
-                        Commands.parallel(
-                                start.cmd(), superStructure.zero())
+                        placeOnReef(RobotMode.CORAL_LEVEL_4, start, true),
+                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, f1ls),
+                        placeOnReef(RobotMode.CORAL_LEVEL_4, lsf2, false),
+                        pickupFromCoralStation(RobotMode.CORAL_LEVEL_4, f2ls)
                 )
         );
 
-        start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(f1ls.cmd()));
-        f1ls.done().onTrue(commandFactory.grabCoral().andThen(lsf2.cmd()));
-        lsf2.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(f2ls.cmd()));
         return routine;
     }
 }

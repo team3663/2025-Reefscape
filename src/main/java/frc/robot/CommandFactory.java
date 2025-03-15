@@ -79,6 +79,8 @@ public class CommandFactory {
                 && robotMode != RobotMode.ALGAE_NET);
     }
 
+
+
     public Command alignToReef(Supplier<RobotMode> robotMode,
                                BooleanSupplier readyToPlace,
                                DoubleSupplier xVelocitySupplier,

@@ -126,7 +126,6 @@ public class Constants {
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
 
-
     public static class ArmPositions {
         // Coral Station
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
