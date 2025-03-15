@@ -163,6 +163,10 @@ public class Arm extends SubsystemBase {
         return Math.abs(inputs.currentShoulderPosition - position) < threshold;
     }
 
+    public boolean shoulderAtPosition(double position) {
+        return shoulderAtPosition(position, POSITION_THRESHOLD);
+    }
+
     public double getWristPosition() {
         return inputs.currentWristPosition;
     }
