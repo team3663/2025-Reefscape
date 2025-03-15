@@ -105,7 +105,9 @@ public class CommandFactory {
                 )
                 .alongWith(
                         Commands.either(Commands.waitUntil(readyToPlace).andThen(
-                                        Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
+                                        Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
+                                                Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
+                                                () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
                                 () -> robotMode.get().isPlacingMode())
                 );
