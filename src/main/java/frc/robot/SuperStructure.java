@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
-import frc.robot.utility.Gamepiece;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -173,12 +172,13 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private double shoulderHaveAlgaePosition(double position) {
-        return haveAlgae.getAsBoolean() ? Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
+        return haveAlgae.getAsBoolean() && elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ?
+                Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
     }
 
     private double wristHaveAlgaePosition(double position) {
-        return haveAlgae.getAsBoolean() && arm.getShoulderPosition() >= Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE - Arm.POSITION_THRESHOLD ?
-                Math.min(position, Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE) : position;
+        return haveAlgae.getAsBoolean() && arm.getShoulderPosition() >= Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE - Arm.POSITION_THRESHOLD &&
+                elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ? Math.min(position, Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE) : position;
     }
 
     /**
