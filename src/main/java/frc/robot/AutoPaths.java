@@ -62,7 +62,7 @@ public class AutoPaths {
                         Commands.sequence(
                                 shouldZero ? superStructure.zero() : Commands.none(),
                                 limitedArm(RobotMode.CORAL_LEVEL_4)
-                                        .until(path.atTimeBeforeEnd(0.25)),
+                                        .until(path.atTimeBeforeEnd(0.5)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
                 .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
