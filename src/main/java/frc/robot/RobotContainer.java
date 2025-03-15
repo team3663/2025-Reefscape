@@ -112,7 +112,6 @@ public class RobotContainer {
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
         driverController.a().whileTrue(grabber.eject());
-
         operatorController.leftBumper().whileTrue(climber.arm()
                 .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
         operatorController.leftBumper().onFalse(climber.stow());
@@ -131,6 +130,7 @@ public class RobotContainer {
         operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
         operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
         operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
 
         operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
         operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
@@ -159,6 +159,7 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Remove a Lower Algae", robotMode == RobotMode.ALGAE_REMOVE_LOWER);
         SmartDashboard.putBoolean("Remove an Upper Algae", robotMode == RobotMode.ALGAE_REMOVE_UPPER);
         SmartDashboard.putBoolean("Algae in Net", robotMode == RobotMode.ALGAE_NET);
+        SmartDashboard.putBoolean("Algae from Ground", robotMode == RobotMode.ALGAE_PICKUP_GROUND);
     }
 
     private double getDrivetrainXVelocity() {

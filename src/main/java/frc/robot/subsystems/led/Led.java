@@ -27,6 +27,7 @@ public class Led extends SubsystemBase {
     private static final Color ALGAE_REMOVE_LOWER_COLOR = new Color(0.8f, 0.25f, 0.25f);
     private static final Color ALGAE_REMOVE_UPPER_COLOR = Color.kDarkRed;
     private static final Color ALGAE_NET_COLOR = Color.kPurple;
+    private static final Color ALGAE_PICKUP_GROUND_COLOR = Color.kChocolate;
 
     private final double ANIMATION_SPEED = 0.001;
     private final double LED_BRIGHTNESS = 1.0;
@@ -128,6 +129,10 @@ public class Led extends SubsystemBase {
                         }
                         case ALGAE_REMOVE_UPPER -> {
                             currentColor = ALGAE_REMOVE_UPPER_COLOR;
+                            setPattern(ALGAE_PATTERN);
+                        }
+                        case ALGAE_PICKUP_GROUND -> {
+                            currentColor = ALGAE_PICKUP_GROUND_COLOR;
                             setPattern(ALGAE_PATTERN);
                         }
                     }
