@@ -38,30 +38,43 @@ public class LimelightIO implements VisionIO {
         visionInputs.poseUpdated = false;
 
         // Give the Limelight our current robot yaw as provided by the Pigeon.
+        double orientationStart = System.currentTimeMillis();
         LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(currentYaw), 0, 0, 0, 0, 0);
+        double orientationEnd = System.currentTimeMillis();
+        visionInputs.orientationDuration = orientationEnd - orientationStart;
 
         // reading the yaw from the limelights internal IMU
+        double imuStart = System.currentTimeMillis();
         LimelightHelpers.IMUData imuData = LimelightHelpers.getIMUData(cameraName);
         visionInputs.IMUYaw = imuData.Yaw;
+        double imuEnd = System.currentTimeMillis();
+        visionInputs.imuDataDuration = imuEnd - imuStart;
 
         // Get a new pose estimate
+        double poseStart = System.currentTimeMillis();
         LimelightHelpers.PoseEstimate estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraName);
+        double poseEnd = System.currentTimeMillis();
+        visionInputs.poseEstimateDuration = poseEnd - poseStart;
 
-        // If no tags were seen then return without doing anything.
-        if (estimate == null || estimate.tagCount == 0)
-            return;
 
-        visionInputs.estimatedPose = estimate.pose;
-        visionInputs.timestampSeconds = estimate.timestampSeconds;
+        // processed if valid estimate.
+        double filterStart = System.currentTimeMillis();
+        if (estimate != null && estimate.tagCount != 0) {
+            visionInputs.estimatedPose = estimate.pose;
+            visionInputs.timestampSeconds = estimate.timestampSeconds;
 
-        // Extract list of AprilTag Ids see in this pose estimate.
-        int[] targetIds = new int[estimate.rawFiducials.length];
-        int index = 0;
-        for (LimelightHelpers.RawFiducial tag : estimate.rawFiducials) {
-            targetIds[index++] = tag.id;
+            // Extract list of AprilTag Ids see in this pose estimate.
+            int[] targetIds = new int[estimate.rawFiducials.length];
+            int index = 0;
+            for (LimelightHelpers.RawFiducial tag : estimate.rawFiducials) {
+                targetIds[index++] = tag.id;
+            }
+            visionInputs.targetIds = targetIds;
+            visionInputs.poseUpdated = true;
         }
-        visionInputs.targetIds = targetIds;
-        visionInputs.poseUpdated = true;
+        double filterEnd = System.currentTimeMillis();
+        visionInputs.filterDuration = filterEnd - filterStart;
+
     }
 
     public void robotStateChanged() {

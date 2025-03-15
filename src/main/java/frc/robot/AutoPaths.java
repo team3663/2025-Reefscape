@@ -30,8 +30,8 @@ public class AutoPaths {
         this.arm = arm;
     }
 
-    public AutoRoutine facePlantG() {
-        AutoRoutine routine = autoFactory.newRoutine("FacePlantG");
+    public AutoRoutine facePlantD1() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
 
         AutoTrajectory facePlantGTraj = routine.trajectory("FacePlantG");
 
@@ -46,8 +46,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine facePlantH() {
-        AutoRoutine routine = autoFactory.newRoutine("FacePlantH");
+    public AutoRoutine facePlantD2() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D2");
 
         AutoTrajectory facePlantHTraj = routine.trajectory("FacePlantH");
 
@@ -62,12 +62,13 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine twoCoralDC() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoralDC");
+    public AutoRoutine twoCoralB2B1() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:B2-B1");
 
         AutoTrajectory start = routine.trajectory("PStart-D");
         AutoTrajectory dwcs = routine.trajectory("D-WCS");
         AutoTrajectory wcsc = routine.trajectory("WCS-C");
+        AutoTrajectory cwcs = routine.trajectory("C-WCS");
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -77,17 +78,19 @@ public class AutoPaths {
 
         start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(dwcs.cmd()));
         dwcs.done().onTrue(commandFactory.grabCoral().andThen(wcsc.cmd()));
-        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        wcsc.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(cwcs.cmd()));
 
         return routine;
     }
 
-    public AutoRoutine twoCoralKL() {
-        AutoRoutine routine = autoFactory.newRoutine("TwoCoralKL");
+    public AutoRoutine twoCoralF1F2() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:F1-F2");
 
         AutoTrajectory start = routine.trajectory("LStart-K");
         AutoTrajectory klwcs = routine.trajectory("K-LWCS");
         AutoTrajectory lwcsl = routine.trajectory("LWCS-L");
+        AutoTrajectory llwcs = routine.trajectory("L-LWCS");
+
         routine.active().onTrue(
                 Commands.sequence(
                         start.resetOdometry(),
@@ -98,7 +101,7 @@ public class AutoPaths {
 
         start.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(klwcs.cmd()));
         klwcs.done().onTrue(commandFactory.grabCoral().andThen(lwcsl.cmd()));
-        lwcsl.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()));
+        lwcsl.done().onTrue(superStructure.goToPositions(RobotMode.CORAL_LEVEL_4).andThen(commandFactory.placeCoral()).andThen(llwcs.cmd()));
         return routine;
     }
 }

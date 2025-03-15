@@ -22,8 +22,9 @@ public class Climber extends SubsystemBase {
     private static final double POSITION_THRESHOLD = Units.degreesToRadians(5.0);
     private static final double WAIT_TIME = 0.25;
 
-    private static final double DEPLOY_ANGLE = Units.degreesToRadians(0.0);
-    private static final double CLIMB_ANGLE = Units.degreesToRadians(170.0);
+    private static final double DEPLOY_ANGLE = Units.degreesToRadians(7.0);
+    private static final double CLIMB_ANGLE = Units.degreesToRadians(157.5);
+    private static final double STOW_THRESHOLD = Units.degreesToRadians(20);
 
     private final ClimberIO io;
     private final Constants constants;
@@ -104,7 +105,8 @@ public class Climber extends SubsystemBase {
         return Math.max(constants.minimumPosition, Math.min(constants.maximumPosition, position));
     }
     public Command stow(){
-        return goToPosition(constants.minimumPosition);
+        return goToPosition(constants.minimumPosition)
+                .withDeadline(Commands.waitUntil(()-> inputs.currentPosition <STOW_THRESHOLD).andThen(waitSeconds(0.5)));
     }
 
     public Command zero() {
