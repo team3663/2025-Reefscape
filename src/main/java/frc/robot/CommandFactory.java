@@ -51,35 +51,17 @@ public class CommandFactory {
         var alliance = DriverStation.getAlliance();
 
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            if (Constants.IS_ANDYMARK) {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
-                    return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES_CENTER);
-                } else {
-                    return robotPose.nearest(Constants.RED_ANDYMARK_BRANCH_POSES);
-                }
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
+                return robotPose.nearest(Constants.RED_CENTER_POSES);
             } else {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
-                    return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES_CENTER);
-                }
-                else {
-                    return robotPose.nearest(Constants.RED_WELDED_BRANCH_POSES);
-                }
+                return robotPose.nearest(Constants.RED_BRANCH_POSES);
             }
         } else {
-            if (Constants.IS_ANDYMARK) {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
-                    return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES_CENTER);
-                }
-                else {
-                    return robotPose.nearest(Constants.BLUE_ANDYMARK_BRANCH_POSES);
-                }
+
+            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
+                return robotPose.nearest(Constants.BLUE_CENTER_POSES);
             } else {
-                if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER){
-                    return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES_CENTER);
-                }
-                else {
-                    return robotPose.nearest(Constants.BLUE_WELDED_BRANCH_POSES);
-                }
+                return robotPose.nearest(Constants.BLUE_BRANCH_POSES);
             }
         }
     }
@@ -93,9 +75,9 @@ public class CommandFactory {
         }
     }
 
-    public Boolean shouldAlignToReef(RobotMode robotMode){
+    public Boolean shouldAlignToReef(RobotMode robotMode) {
         return (SmartDashboard.getBoolean("Auto Reef", true) && robotMode != RobotMode.ALGAE_PROCESSOR
-        && robotMode != RobotMode.ALGAE_NET);
+                && robotMode != RobotMode.ALGAE_NET);
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode,
@@ -122,7 +104,7 @@ public class CommandFactory {
                 )
                 .alongWith(
                         Commands.either(Commands.waitUntil(readyToPlace).andThen(
-                                Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
+                                        Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
                                 () -> robotMode.get().isPlacingMode())
                 );
@@ -136,7 +118,7 @@ public class CommandFactory {
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()).plus(Constants.ROBOT_CORAL_STATION_OFFSET), true)),
+                                getClosestCoralStationPosition(drivetrain.getPose()), true)),
                         Commands.none(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));
