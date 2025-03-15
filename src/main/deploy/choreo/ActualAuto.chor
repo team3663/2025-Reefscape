@@ -49,12 +49,12 @@
    },
    "B2":{
     "x":{
-     "exp":"4.05 m - 2 in * sin(60 deg)",
+     "exp":"4.05 m - 2 in * sin(120 deg)",
      "val":4.00600590948775
     },
     "y":{
-     "exp":"2.85 m - 2 in * cos(60 deg)",
-     "val":2.8246
+     "exp":"2.85 m - 2 in * cos(120 deg)",
+     "val":2.8754
     },
     "heading":{
      "exp":"60 deg",
