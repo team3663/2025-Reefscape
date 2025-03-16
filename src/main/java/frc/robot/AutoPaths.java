@@ -65,7 +65,7 @@ public class AutoPaths {
                                         .until(path.atTimeBeforeEnd(0.5)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
-                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::isGamePieceDetected).andThen(Commands.waitSeconds(0.25))));
+                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))));
     }
 
     public AutoRoutine facePlantD1() {
@@ -158,7 +158,8 @@ public class AutoPaths {
                         pickupFromCoralStation(b1rs),
                         placeOnReef(rsb2, false),
                         pickupFromCoralStation(b2rs)
-                ));
+                )
+        );
 
         return routine;
     }
@@ -185,4 +186,7 @@ public class AutoPaths {
 
         return routine;
     }
+
+
+
 }
