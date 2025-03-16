@@ -186,7 +186,4 @@ public class AutoPaths {
 
         return routine;
     }
-
-
-
 }
