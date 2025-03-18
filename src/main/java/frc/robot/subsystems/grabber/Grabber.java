@@ -80,9 +80,6 @@ public class Grabber extends SubsystemBase {
                         withVoltage(4.0), // algae
                         withVoltage(-6.0), // coral
                         this::hasAlgae
-                ).withDeadline(
-                        Commands.waitUntil(this::getGamePieceNotDetected))
-                .andThen(Commands.waitSeconds(0.25)
                 );
     }
 
