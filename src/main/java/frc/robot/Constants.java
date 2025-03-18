@@ -125,6 +125,14 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
+    public static final double BLUE_NET_LINE_X = Units.feetToMeters(25.28);
+    public static final Rotation2d BLUE_NET_ROTATION = Rotation2d.fromDegrees(0.0);
+    public static final double[] BLUE_NET_X_RANGE = {4.65, 7.6};
+    public static final double RED_NET_LINE_X = Units.feetToMeters(32.28);
+    public static final Rotation2d RED_NET_ROTATION = Rotation2d.fromDegrees(180.0);
+    public static final double[] RED_NET_X_RANGE = {0.5, 3.43};
+
+    public static final double NET_MAX_SPEED = Units.inchesToMeters(10.0);
 
     public static class ArmPositions {
         // Coral Station

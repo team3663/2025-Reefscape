@@ -50,14 +50,28 @@ public class CommandFactory {
         var alliance = DriverStation.getAlliance();
 
         if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
+            if (robotMode == RobotMode.ALGAE_NET) {
+                var blue_line_x = Constants.BLUE_NET_LINE_X;
+                var red_line_x = Constants.RED_NET_LINE_X;
+                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.RED_NET_X_RANGE[0], Constants.RED_NET_X_RANGE[1]);
+                if (Math.abs(robotPose.getX() - blue_line_x) < Math.abs(robotPose.getX() - red_line_x))
+                    return new Pose2d(blue_line_x, nearestY, Constants.BLUE_NET_ROTATION);
+                return new Pose2d(red_line_x, nearestY, Constants.RED_NET_ROTATION);
+            } else if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                 return robotPose.nearest(Constants.RED_CENTER_POSES);
             } else {
                 return robotPose.nearest(Constants.RED_BRANCH_POSES);
             }
         } else {
 
-            if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
+            if (robotMode == RobotMode.ALGAE_NET) {
+                var blue_line_x = Constants.BLUE_NET_LINE_X;
+                var red_line_x = Constants.RED_NET_LINE_X;
+                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.BLUE_NET_X_RANGE[0], Constants.BLUE_NET_X_RANGE[1]);
+                if (Math.abs(robotPose.getX() - blue_line_x) < Math.abs(robotPose.getX() - red_line_x))
+                    return new Pose2d(blue_line_x, nearestY, Constants.BLUE_NET_ROTATION);
+                return new Pose2d(red_line_x, nearestY, Constants.RED_NET_ROTATION);
+            } else if (robotMode == RobotMode.CORAL_LEVEL_1 || robotMode == RobotMode.ALGAE_REMOVE_LOWER || robotMode == RobotMode.ALGAE_REMOVE_UPPER) {
                 return robotPose.nearest(Constants.BLUE_CENTER_POSES);
             } else {
                 return robotPose.nearest(Constants.BLUE_BRANCH_POSES);
@@ -75,11 +89,9 @@ public class CommandFactory {
     }
 
     public Boolean shouldAlignToReef(RobotMode robotMode) {
-        return (SmartDashboard.getBoolean("Auto Reef", true) && robotMode != RobotMode.ALGAE_PROCESSOR
-                && robotMode != RobotMode.ALGAE_NET && robotMode != RobotMode.ALGAE_PICKUP_GROUND);
+        return SmartDashboard.getBoolean("Auto Reef", true) &&
+                robotMode != RobotMode.ALGAE_PROCESSOR && robotMode != RobotMode.ALGAE_PICKUP_GROUND;
     }
-
-
 
     public Command alignToReef(Supplier<RobotMode> robotMode,
                                BooleanSupplier readyToPlace,
@@ -87,7 +99,7 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false),
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -111,6 +123,14 @@ public class CommandFactory {
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
                                 () -> robotMode.get().isPlacingMode())
                 );
+    }
+
+    public Command doneAligning(Supplier<RobotMode> robotMode,
+                                DoubleSupplier xVelocitySupplier,
+                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
+        return Commands.either(drivetrain.drive(() -> 0.0, () -> MathUtil.clamp(yVelocitySupplier.getAsDouble(), -Constants.NET_MAX_SPEED, Constants.NET_MAX_SPEED), () -> 0.0),
+                drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier),
+                () -> robotMode.get() == RobotMode.ALGAE_NET);
     }
 
     public Command alignToCoralStation() {
