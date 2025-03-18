@@ -1,5 +1,6 @@
 package frc.robot;
 
+import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.MathUtil;
@@ -8,14 +9,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
-import choreo.auto.AutoFactory;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.utility.Gamepiece;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 
 public class AutoPaths {
     private final Drivetrain drivetrain;

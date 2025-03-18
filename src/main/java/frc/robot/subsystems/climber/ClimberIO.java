@@ -1,7 +1,6 @@
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.elevator.Elevator;
 
 public interface ClimberIO {
     default void updateInputs(ClimberInputs inputs) {
