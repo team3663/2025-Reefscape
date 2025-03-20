@@ -10,6 +10,7 @@ public enum RobotMode {
     CORAL_LEVEL_2(Units.inchesToMeters(3.6066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), Gamepiece.CORAL, true),
     CORAL_LEVEL_3(Units.inchesToMeters(20.1066), Units.degreesToRadians(51.5), Units.degreesToRadians(26.80), Gamepiece.CORAL, true),
     CORAL_LEVEL_4(Units.inchesToMeters(46.94498), Units.degreesToRadians(65.9277), Units.degreesToRadians(3.61), Gamepiece.CORAL, true),
+    CORAL_PICKUP_GROUND(Units.inchesToMeters(12.0), Units.degreesToRadians(-15.0), Units.degreesToRadians(-45.0), Gamepiece.ALGAE, false),
     ALGAE_PROCESSOR(0, Units.degreesToRadians(15.0), Units.degreesToRadians(70.0), Gamepiece.ALGAE, true),
     ALGAE_NET(Units.inchesToMeters(60.5), Units.degreesToRadians(90.0), Units.degreesToRadians(40.0), Gamepiece.ALGAE, true),
     // ALGAE_REMOVE_LOWER positions for when we are one coral length away from the reef to be implemented later:

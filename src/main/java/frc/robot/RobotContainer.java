@@ -112,6 +112,7 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode, driverController.rightTrigger(),
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
+        driverController.leftBumper().whileTrue(commandFactory.intakeFromGround());
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
