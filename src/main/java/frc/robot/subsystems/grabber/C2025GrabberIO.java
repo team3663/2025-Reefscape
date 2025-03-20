@@ -33,8 +33,6 @@ public class C2025GrabberIO implements GrabberIO {
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
         motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        motorConfig.CurrentLimits.SupplyCurrentLimit = 15.0;
-        motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
         motor.getConfigurator().apply(motorConfig);
     }

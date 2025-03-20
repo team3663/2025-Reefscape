@@ -30,7 +30,7 @@ public class Grabber extends SubsystemBase {
         holdingAlgae = algaeDebouncer.calculate(isGamePieceDetected() && gamepiece == Gamepiece.ALGAE);
         if (holdingAlgae && targetVoltage == 0.0)
         {
-            io.setTargetVoltage(-1.5);
+            io.setTargetVoltage(-2.5);
         }
     }
 
