@@ -67,6 +67,17 @@ public class AutoPaths {
                         ))
                 .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))));
     }
+    public Command placeOnReefl2(AutoTrajectory path, boolean shouldZero) {
+        return Commands.parallel(
+                        path.cmd().andThen(drivetrain.stop()),
+                        Commands.sequence(
+                                shouldZero ? superStructure.zero() : Commands.none(),
+                                limitedArm(RobotMode.CORAL_LEVEL_2)
+                                        .until(path.atTimeBeforeEnd(0.6)),
+                                superStructure.goToPositions(RobotMode.CORAL_LEVEL_2)
+                        ))
+                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))));
+    }
 
     public AutoRoutine facePlantD1() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
@@ -207,7 +218,7 @@ public class AutoPaths {
                         pickupFromCoralStation(f2ls),
                         placeOnReef(lsf1, false),
                         pickupFromCoralStation(f1ls),
-                        placeOnReef(lsA1, false)
+                        placeOnReefl2(lsA1, false)
                 ));
 
         return routine;
@@ -231,7 +242,7 @@ public class AutoPaths {
                         pickupFromCoralStation(b1rs),
                         placeOnReef(rsb2, false),
                         pickupFromCoralStation(b2rs),
-                        placeOnReef(rsa2, false)
+                        placeOnReefl2(rsa2, false)
                 )
         );
 
