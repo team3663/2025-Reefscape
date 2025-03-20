@@ -167,17 +167,17 @@ public class Constants {
     // TODO Get real values from CAD/Mech.
     public static final String FRONT_CAMERA_NAME = "limelight-front";
     public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(25.0);
+    public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(20.0);
     public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.25);
+    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.125);
     public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
-    public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.625);
+    public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.50);
 
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
-    public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(25.0);
+    public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(20.0);
     public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.25);
-    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
-    public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.625);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5625);
+    public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
 }
