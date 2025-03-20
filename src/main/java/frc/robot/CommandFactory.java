@@ -158,7 +158,7 @@ public class CommandFactory {
     public Command placeCoral() {
         return grabber.placeCoral().withDeadline(
                 Commands.waitUntil(grabber::getGamePieceNotDetected)
-                        .andThen(Commands.waitSeconds(0.25))
+                        .andThen(Commands.waitSeconds(0.12))
         ).andThen(superStructure.goToDefaultPositions());
     }
 }

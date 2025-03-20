@@ -109,7 +109,7 @@ public class Grabber extends SubsystemBase {
         return withVoltage(6.0)
                 .withDeadline(
                         Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.05)),
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected)

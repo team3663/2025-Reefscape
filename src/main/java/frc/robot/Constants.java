@@ -153,7 +153,7 @@ public class Constants {
         public static final double WRIST_DEFAULT_ANGLE = 0.0;
 
         // Max Positions when moving
-        public static final double ELEVATOR_MAX_MOVING_HEIGHT = Units.feetToMeters(2.0);
+        public static final double ELEVATOR_MAX_MOVING_HEIGHT = Units.feetToMeters(3.0);
         public static final double SHOULDER_MAX_MOVING_OFFSET = Units.degreesToRadians(10.0);
     }
 
