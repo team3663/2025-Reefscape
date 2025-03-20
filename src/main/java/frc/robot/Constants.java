@@ -110,12 +110,10 @@ public class Constants {
 
     public static final List<Pose2d> RED_CENTER_POSES = List.of(RED_CENTER_A, RED_CENTER_B, RED_CENTER_C,
             RED_CENTER_D, RED_CENTER_E, RED_CENTER_F
-
     );
 
     public static final List<Pose2d> BLUE_CENTER_POSES = List.of(BLUE_CENTER_A, BLUE_CENTER_B, BLUE_CENTER_C,
             BLUE_CENTER_D, BLUE_CENTER_E, BLUE_CENTER_F
-
     );
 
 
@@ -140,14 +138,16 @@ public class Constants {
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
 
-        // Shoulder max angle when we have an algae
+        // Angles and heights for when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(66.70);
         public static final double WRIST_ALGAE_MAX_ANGLE = Units.degreesToRadians(32.96);
+        // Elevator height where, when we have an algae, it is high enough that we don't need to limit the shoulder or wrist angle
+        public static final double ELEVATOR_ALGAE_SAFE_HEIGHT = Units.feetToMeters(1.0);
 
         // Shoulder Safe variables
         public static final double SHOULDER_REEF_ANGLE_CORAL = Units.degreesToRadians(15.0);
 
-        // Default positions and angles
+        // Default heights and angles
         public static final double ELEVATOR_DEFAULT_POSITION = 0.0;
         public static final double SHOULDER_DEFAULT_ANGLE = Units.degreesToRadians(90.0);
         public static final double WRIST_DEFAULT_ANGLE = 0.0;
