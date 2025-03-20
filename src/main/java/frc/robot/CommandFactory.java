@@ -147,15 +147,6 @@ public class CommandFactory {
                 ));
     }
 
-    public Command intakeFromGround(){
-        return Commands.deadline(
-                grabber.grabCoral(),
-                superStructure.followPositions(()-> RobotMode.CORAL_PICKUP_GROUND.getElevatorHeight(),
-                        ()-> RobotMode.CORAL_PICKUP_GROUND.getShoulderAngle(),
-                        ()-> RobotMode.CORAL_PICKUP_GROUND.getWristAngle())
-        );
-    }
-
     public Command grabCoral() {
         return Commands.sequence(
                 superStructure.goToPositions(RobotMode.CORAL_STATION),
