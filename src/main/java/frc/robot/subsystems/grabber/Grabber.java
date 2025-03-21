@@ -30,7 +30,7 @@ public class Grabber extends SubsystemBase {
         holdingAlgae = algaeDebouncer.calculate(isGamePieceDetected() && gamepiece == Gamepiece.ALGAE);
         if (holdingAlgae && targetVoltage == 0.0)
         {
-            io.setTargetVoltage(-2.0);
+            io.setTargetVoltage(-1.5);
         }
     }
 
@@ -92,7 +92,7 @@ public class Grabber extends SubsystemBase {
 
     public Command placeAlgae()
     {
-        return withVoltage(6.0).withDeadline(
+        return withVoltage(12.0).withDeadline(
                 Commands.waitUntil(this::getGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         );
@@ -109,7 +109,7 @@ public class Grabber extends SubsystemBase {
         return withVoltage(6.0)
                 .withDeadline(
                         Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.04)),
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.06)),
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected)

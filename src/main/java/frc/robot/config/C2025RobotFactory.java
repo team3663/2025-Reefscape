@@ -41,11 +41,8 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
     private static final double ROBOT_WEIGHT_KG = 61.235;
 
-    private static final MountPoseConfigs mountPose= new MountPoseConfigs()
-            .withMountPoseYaw(-178.1190643310547)
-            .withMountPosePitch(-0.13654977083206177)
-            .withMountPoseRoll(-0.49644964933395386);
-    private static final  GyroTrimConfigs gyroTrim= new GyroTrimConfigs().withGyroScalarZ(-4.45);
+    private static final MountPoseConfigs mountPose= new MountPoseConfigs();
+    private static final  GyroTrimConfigs gyroTrim= new GyroTrimConfigs();
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
