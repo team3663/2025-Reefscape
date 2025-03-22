@@ -140,12 +140,17 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
+        return followPositions(elevatorPosition, shoulderPosition,wristPosition, ()->false);
+
+    }
+
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet ) {
         return Commands.parallel(
                 arm.followPositions(
                         () -> {
                             double pos = shoulderHaveAlgaePosition(
                                     Math.max(shoulderPosition.getAsDouble(),
-                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())));
+                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),isNet.getAsBoolean());
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
                                 return MathUtil.clamp(pos,
@@ -171,9 +176,15 @@ public class SuperStructure extends SubsystemBase {
                 .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
     }
 
-    private double shoulderHaveAlgaePosition(double position) {
-        return haveAlgae.getAsBoolean() && elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ?
-                Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
+    private double shoulderHaveAlgaePosition(double position, boolean isNet) {
+        if (isNet) {
+            return haveAlgae.getAsBoolean() && elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ?
+                    Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
+        }
+        else{
+            return haveAlgae.getAsBoolean() && elevator.getPosition() <= Units.feetToMeters(2.5) ?
+                    Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
+        }
     }
 
     private double wristHaveAlgaePosition(double position) {
@@ -192,7 +203,7 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
-        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle);
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle,()-> robotMode.get() ==RobotMode.ALGAE_NET);
     }
 
     public Command goToPositions(RobotMode robotMode) {

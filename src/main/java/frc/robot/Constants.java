@@ -36,7 +36,7 @@ public class Constants {
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
     private static final Transform2d LEFT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(18.0), -Units.inchesToMeters(6.625), Rotation2d.fromDegrees(180));
-    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(18.0), Units.inchesToMeters(6.125), Rotation2d.fromDegrees(180));
+    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(18.0), Units.inchesToMeters(7.625), Rotation2d.fromDegrees(180));
 
     private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(18.0), 0.0, Rotation2d.fromDegrees(180));
 

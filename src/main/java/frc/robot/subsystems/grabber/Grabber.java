@@ -121,7 +121,7 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command placeCoralL4() {
-        return withVoltage(8.0);
+        return withVoltage(10.0);
     }
 
     public Command placeCoralSlow() {
