@@ -181,7 +181,7 @@ public class Drivetrain extends SubsystemBase {
      */
     public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip) {
         PathConstraints constraints = new PathConstraints(
-                3.0,
+                4.0,
                 3.0,
                 3.0,
                 3.0
