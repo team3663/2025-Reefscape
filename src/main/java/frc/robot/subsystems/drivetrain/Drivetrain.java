@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.vision.VisionMeasurement;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -179,15 +180,15 @@ public class Drivetrain extends SubsystemBase {
      * @param targetPose of where you want the robot to go
      * @return follows a pathplanner path command
      */
-    public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip) {
-        PathConstraints constraints = new PathConstraints(
-                4.0,
-                3.5,
-                3.0,
-                3.0
-        );
-
+    public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip, BooleanSupplier slowAccel) {
         return Commands.either(defer(() -> {
+                    PathConstraints constraints = new PathConstraints(
+                            4.0,
+                            slowAccel.getAsBoolean()? 3.0:3.5,
+                            3.0,
+                            3.0
+                    );
+
                             var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
                             var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
                             Rotation2d initialWaypointDirection;

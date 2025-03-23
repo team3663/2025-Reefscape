@@ -144,6 +144,7 @@ public class SuperStructure extends SubsystemBase {
 
     }
 
+
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet ) {
         return Commands.parallel(
                 arm.followPositions(
@@ -151,6 +152,7 @@ public class SuperStructure extends SubsystemBase {
                             double pos = shoulderHaveAlgaePosition(
                                     Math.max(shoulderPosition.getAsDouble(),
                                             getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),isNet.getAsBoolean());
+
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
                                 return MathUtil.clamp(pos,
@@ -168,7 +170,8 @@ public class SuperStructure extends SubsystemBase {
                     }
                     return elevator.getTargetPosition();
 
-                }), run(() -> {}));
+                }),
+                run(() -> {}));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
