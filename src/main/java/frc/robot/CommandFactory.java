@@ -99,7 +99,7 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false,()-> robotMode.get()==RobotMode.ALGAE_NET).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false, () -> robotMode.get() == RobotMode.ALGAE_NET).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -133,15 +133,31 @@ public class CommandFactory {
                 () -> robotMode.get() == RobotMode.ALGAE_NET);
     }
 
-    public Command alignToCoralStation() {
+    public Command alignToCoralStation(RobotMode robotMode) {
+        RobotMode[] coralStationMode = {null};
         return Commands.deadline(
+                Commands.runOnce(() -> coralStationMode[0] = robotMode == RobotMode.CORAL_STATION_WITH_CORAL ? robotMode : RobotMode.CORAL_STATION),
                 grabber.grabCoral(),
-                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                superStructure.followPositions(coralStationMode[0]::getElevatorHeight,
+                        coralStationMode[0]::getShoulderAngle,
+                        coralStationMode[0]::getWristAngle),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()), true, ()-> false)),
+                                getClosestCoralStationPosition(drivetrain.getPose()), true, () -> false)),
+                        Commands.none(),
+                        () -> SmartDashboard.getBoolean("Auto Coral Station", true)
+                ));
+    }
+
+    public Command alignToCoralStationWithCoral() {
+        return Commands.deadline(
+                grabber.grabCoral(),
+                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT_WITH_CORAL,
+                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE_WITH_CORAL,
+                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE_WITH_CORAL),
+                Commands.either(
+                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
+                                getClosestCoralStationPosition(drivetrain.getPose()), true, () -> false)),
                         Commands.none(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));

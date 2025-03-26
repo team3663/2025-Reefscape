@@ -113,7 +113,7 @@ public class RobotContainer {
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
+                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(robotMode), grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
@@ -122,6 +122,7 @@ public class RobotContainer {
         operatorController.leftBumper().whileTrue(climber.arm()
                 .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
         operatorController.leftBumper().onFalse(climber.stow());
+        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.CORAL_STATION_WITH_CORAL));
         driverController.a().onFalse(climber.stow());
         driverController.y().and(operatorController.leftBumper())
                 .onTrue(climber.climb()

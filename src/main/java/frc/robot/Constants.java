@@ -134,10 +134,15 @@ public class Constants {
     public static final double NET_MAX_SPEED = Units.inchesToMeters(10.0);
 
     public static class ArmPositions {
-        // Coral Station
+        // Coral Station Positions
+        // Normal
         public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
+        // With a Blocking Coral
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT_WITH_CORAL = Units.inchesToMeters(7.811);
+        public static final double CORAL_STATION_SHOULDER_ANGLE_WITH_CORAL = Units.degreesToRadians(137.0);
+        public static final double CORAL_STATION_WRIST_ANGLE_WITH_CORAL = Units.degreesToRadians(-70.0);
 
         // Angles and heights for when we have an algae
         public static final double SHOULDER_ALGAE_MAX_ANGLE = Units.degreesToRadians(66.70);
