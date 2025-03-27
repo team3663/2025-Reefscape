@@ -156,6 +156,8 @@ public class Constants {
         // Max Positions when moving
         public static final double ELEVATOR_MAX_MOVING_HEIGHT = Units.feetToMeters(2.0);
         public static final double SHOULDER_MAX_MOVING_OFFSET = Units.degreesToRadians(10.0);
+        public static final double WRIST_MOVING_OFFSET = Units.degreesToRadians(10.0);
+
     }
 
     // Arm buffers

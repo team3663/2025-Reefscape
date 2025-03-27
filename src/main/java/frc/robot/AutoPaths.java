@@ -43,11 +43,12 @@ public class AutoPaths {
                 () -> MathUtil.clamp(robotMode.getShoulderAngle(),
                         Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
                         Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
-                robotMode::getWristAngle);
+                ()-> (robotMode.getWristAngle()+ Constants.ArmPositions.WRIST_MOVING_OFFSET));
     }
 
     public Command pickupFromCoralStation(AutoTrajectory path) {
-        return Commands.parallel(
+        return
+                Commands.parallel(
                 path.cmd().andThen(drivetrain.stop()),
                 limitedArm(RobotMode.CORAL_STATION)
                         .until(path.atTimeBeforeEnd(1.0))
