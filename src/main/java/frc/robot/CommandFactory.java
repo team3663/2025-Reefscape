@@ -148,21 +148,6 @@ public class CommandFactory {
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));
     }
-
-    public Command alignToCoralStationWithCoral() {
-        return Commands.deadline(
-                grabber.grabCoral(),
-                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT_WITH_CORAL,
-                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE_WITH_CORAL,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE_WITH_CORAL),
-                Commands.either(
-                        Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()), true, () -> false)),
-                        Commands.none(),
-                        () -> SmartDashboard.getBoolean("Auto Coral Station", true)
-                ));
-    }
-
     public Command grabCoral() {
         return Commands.sequence(
                 superStructure.goToPositions(RobotMode.CORAL_STATION),
@@ -170,7 +155,6 @@ public class CommandFactory {
                 superStructure.goToDefaultPositions()
         );
     }
-
     public Command placeCoral() {
         return grabber.placeCoral().withDeadline(
                 Commands.waitUntil(grabber::getGamePieceNotDetected)
