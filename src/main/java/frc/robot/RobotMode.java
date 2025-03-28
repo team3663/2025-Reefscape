@@ -7,9 +7,9 @@ import frc.robot.utility.Gamepiece;
 public enum RobotMode {
     // TODO: get the actual values of these variables!!
     CORAL_LEVEL_1(Units.inchesToMeters(0.53), Units.degreesToRadians(28.48), Units.degreesToRadians(76.29), Gamepiece.CORAL, true),
-    CORAL_LEVEL_2(Units.inchesToMeters(5.5581), Units.degreesToRadians(38.408), Units.degreesToRadians(35.94726), Gamepiece.CORAL, true),
-    CORAL_LEVEL_3(Units.inchesToMeters(22.037), Units.degreesToRadians(40.16601), Units.degreesToRadians(31.37695), Gamepiece.CORAL, true),
-    CORAL_LEVEL_4(Units.inchesToMeters(51.521943), Units.degreesToRadians(47.1094), Units.degreesToRadians(-9.5801), Gamepiece.CORAL, true),
+    CORAL_LEVEL_2(Units.inchesToMeters(4.458), Units.degreesToRadians(44.121), Units.degreesToRadians(36.211), Gamepiece.CORAL, true),
+    CORAL_LEVEL_3(Units.inchesToMeters(22.037), Units.degreesToRadians(40.166), Units.degreesToRadians(31.377), Gamepiece.CORAL, true),
+    CORAL_LEVEL_4(Units.inchesToMeters(51.522), Units.degreesToRadians(47.109), Units.degreesToRadians(-9.580), Gamepiece.CORAL, true),
     ALGAE_PROCESSOR(0, Units.degreesToRadians(7.0), Units.degreesToRadians(70.0), Gamepiece.ALGAE, true),
     ALGAE_NET(Units.inchesToMeters(60.5), Units.degreesToRadians(90.0), Units.degreesToRadians(40.0), Gamepiece.ALGAE, true),
     // ALGAE_REMOVE_LOWER positions for when we are one coral length away from the reef to be implemented later:
