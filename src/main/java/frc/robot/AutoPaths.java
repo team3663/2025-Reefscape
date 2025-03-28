@@ -10,11 +10,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.grabber.Grabber;
-import frc.robot.utility.Gamepiece;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 public class AutoPaths {
     private final Drivetrain drivetrain;

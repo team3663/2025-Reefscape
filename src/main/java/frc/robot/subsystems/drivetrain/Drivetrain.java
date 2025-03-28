@@ -15,6 +15,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,6 +51,7 @@ public class Drivetrain extends SubsystemBase {
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
                 (SwerveSample sample) -> {
+                    System.out.println("targetPathPose.toString() = " + targetPathPose.toString());
                     targetPathPose = sample.getPose();
 
                     io.followTrajectory(sample);
@@ -184,7 +186,7 @@ public class Drivetrain extends SubsystemBase {
         return Commands.either(defer(() -> {
                     PathConstraints constraints = new PathConstraints(
                             4.0,
-                            slowAccel.getAsBoolean()? 3.0:3.5,
+                            slowAccel.getAsBoolean() ? 3.0 : 3.5,
                             3.0,
                             3.0,
                             11.0,
@@ -215,9 +217,17 @@ public class Drivetrain extends SubsystemBase {
                             return AutoBuilder.followPath(path);
                         }),
                         Commands.none(),
-                        () -> targetPose.get().getTranslation().minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0))
+                () -> atPosition(targetPose.get().getTranslation()))
 //                .andThen(PID_GoToPos(targetPose));
         ;
+    }
+
+    public boolean atTargetPosition() {
+        return atPosition(targetPathPose.getTranslation());
+    }
+
+    public boolean atPosition(Translation2d target) {
+        return target.minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0);
     }
 
     public record Constants(
