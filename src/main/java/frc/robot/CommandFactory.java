@@ -134,7 +134,7 @@ public class CommandFactory {
     }
 
     public Command alignToCoralStation(RobotMode robotMode) {
-        RobotMode[] coralStationMode = {null};
+        RobotMode[] coralStationMode = {RobotMode.CORAL_STATION};
         return Commands.deadline(
                 Commands.runOnce(() -> coralStationMode[0] = robotMode == RobotMode.CORAL_STATION_WITH_CORAL ? robotMode : RobotMode.CORAL_STATION),
                 grabber.grabCoral(),
