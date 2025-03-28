@@ -41,7 +41,8 @@ public class Drivetrain extends SubsystemBase {
     private final AutoFactory autoFactory;
     private final SysIdRoutine sysIdTranslationRoutine;
 
-    private Pose2d targetPathPose = new Pose2d();
+    private Pose2d targetAutoPose = new Pose2d();
+    private Pose2d targetTelePose = new Pose2d();
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -51,8 +52,7 @@ public class Drivetrain extends SubsystemBase {
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
                 (SwerveSample sample) -> {
-                    System.out.println("targetPathPose.toString() = " + targetPathPose.toString());
-                    targetPathPose = sample.getPose();
+                    targetAutoPose = sample.getPose();
 
                     io.followTrajectory(sample);
                 }, // trajectory follower
@@ -109,6 +109,10 @@ public class Drivetrain extends SubsystemBase {
 
     public AutoFactory getAutoFactory() {
         return autoFactory;
+    }
+
+    public Pose2d getTargetAutoAlignPose() {
+        return targetTelePose;
     }
 
     public void addVisionMeasurements(List<VisionMeasurement> measurements) {
@@ -193,41 +197,42 @@ public class Drivetrain extends SubsystemBase {
                             false
                     );
 
-                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
-                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                            Rotation2d initialWaypointDirection;
-                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
-                            if (currentVelocity < 0.1) {
+                    var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+                    var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                    Rotation2d initialWaypointDirection;
+                    var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+                    if (currentVelocity < 0.1) {
 
-                                initialWaypointDirection = delta.getAngle();
-                            } else {
-                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                            }
+                        initialWaypointDirection = delta.getAngle();
+                    } else {
+                        initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                    }
 
-                            var path = new PathPlannerPath(
-                                    PathPlannerPath.waypointsFromPoses(
-                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
-                                    ),
-                                    constraints,
-                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
-                                    new GoalEndState(0.0, targetPose.get().getRotation())
-                            );
+                    this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
+                    var path = new PathPlannerPath(
+                            PathPlannerPath.waypointsFromPoses(
+                                    new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+                                    this.targetTelePose
+                            ),
+                            constraints,
+                            new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+                            new GoalEndState(0.0, targetPose.get().getRotation())
+                    );
 
-                            return AutoBuilder.followPath(path);
-                        }),
-                        Commands.none(),
-                () -> atPosition(targetPose.get().getTranslation()))
-//                .andThen(PID_GoToPos(targetPose));
-        ;
+                    return AutoBuilder.followPath(path);
+                }),
+                Commands.none(),
+                () -> !atPosition(targetPose.get().getTranslation()))
+//                .andThen(PID_GoToPos(targetPose))
+                ;
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetPathPose.getTranslation());
+        return atPosition(targetTelePose.getTranslation());
     }
 
     public boolean atPosition(Translation2d target) {
-        return target.minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0);
+        return target.minus(inputs.pose.getTranslation()).getNorm() < Units.inchesToMeters(6.0);
     }
 
     public record Constants(
