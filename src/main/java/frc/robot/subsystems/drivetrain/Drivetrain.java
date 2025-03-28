@@ -84,7 +84,7 @@ public class Drivetrain extends SubsystemBase {
                 () -> inputs.chassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 io::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(10.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(20.0, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(10.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 constants.robotConfig, // The robot configuration
@@ -186,7 +186,9 @@ public class Drivetrain extends SubsystemBase {
                             4.0,
                             slowAccel.getAsBoolean()? 3.0:3.5,
                             3.0,
-                            3.0
+                            3.0,
+                            11.0,
+                            false
                     );
 
                             var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());

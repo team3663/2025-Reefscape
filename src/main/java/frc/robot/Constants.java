@@ -36,7 +36,7 @@ public class Constants {
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
     private static final Transform2d LEFT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(19.0), -Units.inchesToMeters(6.875), Rotation2d.fromDegrees(180));
-    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(19.0), Units.inchesToMeters(7.625), Rotation2d.fromDegrees(180));
+    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(19.0), Units.inchesToMeters(7.125), Rotation2d.fromDegrees(180));
 
     private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(18.0), 0.0, Rotation2d.fromDegrees(180));
 
@@ -167,14 +167,21 @@ public class Constants {
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
     // X, Y & Z translation values are in meters
-    // TODO Get real values from CAD/Mech.
-    public static final String FRONT_CAMERA_NAME = "limelight-front";
-    public static final double FRONT_CAMERA_ROLL = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_PITCH = Units.degreesToRadians(20.0);
-    public static final double FRONT_CAMERA_YAW = Units.degreesToRadians(0.0);
-    public static final double FRONT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.125);
-    public static final double FRONT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
-    public static final double FRONT_CAMERA_Z = Units.inchesToMeters(8.50);
+    public static final String FRONT_RIGHT_CAMERA_NAME = "limelight-right";
+    public static final double FRONT_RIGHT_CAMERA_ROLL = Units.degreesToRadians(0.0);
+    public static final double FRONT_RIGHT_CAMERA_PITCH = Units.degreesToRadians(20.0);
+    public static final double FRONT_RIGHT_CAMERA_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_RIGHT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.125);
+    public static final double FRONT_RIGHT_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5);
+    public static final double FRONT_RIGHT_CAMERA_Z = Units.inchesToMeters(8.50);
+
+    public static final String FRONT_LEFT_CAMERA_NAME = "limelight-left";
+    public static final double FRONT_LEFT_CAMERA_ROLL = Units.degreesToRadians(0.0);
+    public static final double FRONT_LEFT_CAMERA_PITCH = Units.degreesToRadians(20.0);
+    public static final double FRONT_LEFT_CAMERA_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_LEFT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.0);
+    public static final double FRONT_LEFT_CAMERA_Y = Units.inchesToMeters(27.0 / 2.0 - 5.3);
+    public static final double FRONT_LEFT_CAMERA_Z = Units.inchesToMeters(8.8125);
 
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
