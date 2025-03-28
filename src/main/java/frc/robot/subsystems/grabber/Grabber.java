@@ -92,7 +92,7 @@ public class Grabber extends SubsystemBase {
 
     public Command placeAlgae()
     {
-        return withVoltage(6.0).withDeadline(
+        return withVoltage(12.0).withDeadline(
                 Commands.waitUntil(this::getGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         );
@@ -109,7 +109,7 @@ public class Grabber extends SubsystemBase {
         return withVoltage(6.0)
                 .withDeadline(
                         Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.05)),
+                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.06)),
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected)
@@ -121,7 +121,7 @@ public class Grabber extends SubsystemBase {
     }
 
     public Command placeCoralL4() {
-        return withVoltage(8.0);
+        return withVoltage(10.0);
     }
 
     public Command placeCoralSlow() {

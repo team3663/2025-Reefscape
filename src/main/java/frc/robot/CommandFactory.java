@@ -99,7 +99,7 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), false,()-> robotMode.get()==RobotMode.ALGAE_NET).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -141,7 +141,7 @@ public class CommandFactory {
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()), true)),
+                                getClosestCoralStationPosition(drivetrain.getPose()), true, ()-> false)),
                         Commands.none(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));
@@ -158,7 +158,7 @@ public class CommandFactory {
     public Command placeCoral() {
         return grabber.placeCoral().withDeadline(
                 Commands.waitUntil(grabber::getGamePieceNotDetected)
-                        .andThen(Commands.waitSeconds(0.25))
+                        .andThen(Commands.waitSeconds(0.12))
         ).andThen(superStructure.goToDefaultPositions());
     }
 }
