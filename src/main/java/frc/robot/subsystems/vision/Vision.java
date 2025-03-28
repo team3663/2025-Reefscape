@@ -31,7 +31,8 @@ public class Vision extends SubsystemBase {
     @NotLogged
     private final VisionInputs[] visionInputs;
 
-    private final VisionInputs frontInputs;
+    private final VisionInputs leftInputs;
+    private final VisionInputs rightInputs;
     private final VisionInputs backInputs;
 
     // current yaw of robot as provided by the pigeon
@@ -57,10 +58,16 @@ public class Vision extends SubsystemBase {
             visionInputs[i] = new VisionInputs();
         }
         if (visionInputs.length > 0) {
-            frontInputs = visionInputs[0];
+            leftInputs = visionInputs[0];
         } else {
-            frontInputs = new VisionInputs();
+            leftInputs = new VisionInputs();
         }
+        if (visionInputs.length > 1) {
+            rightInputs = visionInputs[1];
+        } else {
+            rightInputs = new VisionInputs();
+        }
+
         if (visionInputs.length > 1) {
             backInputs = visionInputs[1];
         } else {
