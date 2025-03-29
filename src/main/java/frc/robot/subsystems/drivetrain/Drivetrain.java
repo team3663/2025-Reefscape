@@ -15,6 +15,7 @@ import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +34,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 @Logged
 public class Drivetrain extends SubsystemBase {
+    private static final double DISTANCE_THRESHOLD = Units.inchesToMeters(3.0);
+
     @NotLogged
     private final DrivetrainIO io;
     private final DrivetrainInputs inputs = new DrivetrainInputs();
@@ -40,7 +43,9 @@ public class Drivetrain extends SubsystemBase {
     private final AutoFactory autoFactory;
     private final SysIdRoutine sysIdTranslationRoutine;
 
-    private Pose2d targetPathPose = new Pose2d();
+    private Pose2d targetAutoPose = new Pose2d();
+    private Pose2d targetTelePose = new Pose2d();
+    private boolean isAutoAligning = false;
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -50,7 +55,7 @@ public class Drivetrain extends SubsystemBase {
                 this::getPose, // returns current robot pose
                 io::resetOdometry, // resets current robot pose to provided pose 2d
                 (SwerveSample sample) -> {
-                    targetPathPose = sample.getPose();
+                    targetAutoPose = sample.getPose();
 
                     io.followTrajectory(sample);
                 }, // trajectory follower
@@ -109,6 +114,10 @@ public class Drivetrain extends SubsystemBase {
         return autoFactory;
     }
 
+    public Pose2d getTargetAutoAlignPose() {
+        return targetTelePose;
+    }
+
     public void addVisionMeasurements(List<VisionMeasurement> measurements) {
         for (VisionMeasurement measurement : measurements) {
             io.addVisionMeasurement(measurement.timestamp, measurement.estimatedPose, measurement.stdDevs);
@@ -151,7 +160,7 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
-    public Command stop(){
+    public Command stop() {
         return runOnce(io::stop);
     }
 
@@ -182,14 +191,16 @@ public class Drivetrain extends SubsystemBase {
      */
     public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip, BooleanSupplier slowAccel) {
         return Commands.either(defer(() -> {
-                    PathConstraints constraints = new PathConstraints(
-                            4.0,
-                            slowAccel.getAsBoolean()? 3.0:3.75,
-                            3.0,
-                            3.0,
-                            11.0,
-                            false
-                    );
+                            isAutoAligning = true;
+
+                            PathConstraints constraints = new PathConstraints(
+                                    4.0,
+                                    slowAccel.getAsBoolean() ? 3.0 : 3.75,
+                                    3.0,
+                                    3.0,
+                                    11.0,
+                                    false
+                            );
 
                             var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
                             var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
@@ -202,11 +213,11 @@ public class Drivetrain extends SubsystemBase {
                                 initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
                             }
 
+                            this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
                             var path = new PathPlannerPath(
                                     PathPlannerPath.waypointsFromPoses(
                                             new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                                            new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero))
-                                    ),
+                                            this.targetTelePose),
                                     constraints,
                                     new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
                                     new GoalEndState(0.0, targetPose.get().getRotation())
@@ -215,9 +226,25 @@ public class Drivetrain extends SubsystemBase {
                             return AutoBuilder.followPath(path);
                         }),
                         Commands.none(),
-                        () -> targetPose.get().getTranslation().minus(inputs.pose.getTranslation()).getNorm() > Units.inchesToMeters(6.0))
-//                .andThen(PID_GoToPos(targetPose));
-        ;
+                        () -> !atPosition(targetPose.get().getTranslation()))
+//                .andThen(PID_GoToPos(targetPose))
+                .andThen(() -> isAutoAligning = false);
+    }
+
+    public boolean isAutoAligning() {
+        return isAutoAligning;
+    }
+
+    public boolean atTargetPosition() {
+        return atPosition(targetTelePose.getTranslation());
+    }
+
+    public boolean atPosition(Translation2d target, double threshold) {
+        return target.minus(inputs.pose.getTranslation()).getNorm() < threshold;
+    }
+
+    public boolean atPosition(Translation2d target) {
+        return atPosition(target, DISTANCE_THRESHOLD);
     }
 
     public record Constants(
