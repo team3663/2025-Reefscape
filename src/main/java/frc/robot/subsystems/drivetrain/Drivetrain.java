@@ -34,6 +34,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 @Logged
 public class Drivetrain extends SubsystemBase {
+    private static final double DISTANCE_THRESHOLD = Units.inchesToMeters(3.0);
+
     @NotLogged
     private final DrivetrainIO io;
     private final DrivetrainInputs inputs = new DrivetrainInputs();
@@ -43,6 +45,7 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d targetAutoPose = new Pose2d();
     private Pose2d targetTelePose = new Pose2d();
+    private boolean isAutoAligning = false;
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -157,7 +160,7 @@ public class Drivetrain extends SubsystemBase {
                 io::stop);
     }
 
-    public Command stop(){
+    public Command stop() {
         return runOnce(io::stop);
     }
 
@@ -188,51 +191,60 @@ public class Drivetrain extends SubsystemBase {
      */
     public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip, BooleanSupplier slowAccel) {
         return Commands.either(defer(() -> {
-                    PathConstraints constraints = new PathConstraints(
-                            4.0,
-                            slowAccel.getAsBoolean() ? 3.0 : 3.5,
-                            3.0,
-                            3.0,
-                            11.0,
-                            false
-                    );
+                            isAutoAligning = true;
 
-                    var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
-                    var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                    Rotation2d initialWaypointDirection;
-                    var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
-                    if (currentVelocity < 0.1) {
+                            PathConstraints constraints = new PathConstraints(
+                                    4.0,
+                                    slowAccel.getAsBoolean() ? 3.0 : 3.5,
+                                    3.0,
+                                    3.0,
+                                    11.0,
+                                    false
+                            );
 
-                        initialWaypointDirection = delta.getAngle();
-                    } else {
-                        initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                    }
+                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            Rotation2d initialWaypointDirection;
+                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+                            if (currentVelocity < 0.1) {
 
-                    this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
-                    var path = new PathPlannerPath(
-                            PathPlannerPath.waypointsFromPoses(
-                                    new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                                    this.targetTelePose
-                            ),
-                            constraints,
-                            new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
-                            new GoalEndState(0.0, targetPose.get().getRotation())
-                    );
+                                initialWaypointDirection = delta.getAngle();
+                            } else {
+                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+                            }
 
-                    return AutoBuilder.followPath(path);
-                }),
-                Commands.none(),
-                () -> !atPosition(targetPose.get().getTranslation()))
+                            this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
+                            var path = new PathPlannerPath(
+                                    PathPlannerPath.waypointsFromPoses(
+                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+                                            this.targetTelePose),
+                                    constraints,
+                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+                                    new GoalEndState(0.0, targetPose.get().getRotation())
+                            );
+
+                            return AutoBuilder.followPath(path);
+                        }),
+                        Commands.none(),
+                        () -> !atPosition(targetPose.get().getTranslation()))
 //                .andThen(PID_GoToPos(targetPose))
-                ;
+                .andThen(() -> isAutoAligning = false);
+    }
+
+    public boolean isAutoAligning() {
+        return isAutoAligning;
     }
 
     public boolean atTargetPosition() {
         return atPosition(targetTelePose.getTranslation());
     }
 
+    public boolean atPosition(Translation2d target, double threshold) {
+        return target.minus(inputs.pose.getTranslation()).getNorm() < threshold;
+    }
+
     public boolean atPosition(Translation2d target) {
-        return target.minus(inputs.pose.getTranslation()).getNorm() < Units.inchesToMeters(6.0);
+        return atPosition(target, DISTANCE_THRESHOLD);
     }
 
     public record Constants(

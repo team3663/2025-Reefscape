@@ -117,7 +117,7 @@ public class CommandFactory {
                         () -> shouldAlignToReef(robotMode.get())
                 )
                 .alongWith(
-                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atTargetPositions() && drivetrain.atTargetPosition()).andThen(
+                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atTargetPositions() && !drivetrain.isAutoAligning()).andThen(
                                         Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
                                                 Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
                                                 () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
@@ -142,7 +142,7 @@ public class CommandFactory {
                         () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
-                                getClosestCoralStationPosition(drivetrain.getPose()), true, ()-> false)),
+                                getClosestCoralStationPosition(drivetrain.getPose()), true, () -> false)),
                         Commands.none(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));
