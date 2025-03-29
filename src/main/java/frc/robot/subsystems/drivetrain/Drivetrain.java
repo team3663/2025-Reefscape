@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -190,45 +191,69 @@ public class Drivetrain extends SubsystemBase {
      * @return follows a pathplanner path command
      */
     public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip, BooleanSupplier slowAccel) {
-        return Commands.either(defer(() -> {
-                            isAutoAligning = true;
+        PIDController controller = new PIDController(7.0,0.0,1.0);
+        PIDController rotationController = new PIDController(10.0,0.0,0.0);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
-                            PathConstraints constraints = new PathConstraints(
-                                    4.0,
-                                    slowAccel.getAsBoolean() ? 3.0 : 3.5,
-                                    3.0,
-                                    3.0,
-                                    11.0,
-                                    false
-                            );
+        return startRun(
+                ()-> {controller.reset();
+                    if (slowAccel.getAsBoolean()){
+                        controller.setP(5.0);
+                    }
+                    rotationController.reset();
+                controller.setSetpoint(0.0);
+                rotationController.setSetpoint(targetPose.get().getRotation().getRadians());
+                },
 
-                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
-                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                            Rotation2d initialWaypointDirection;
-                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
-                            if (currentVelocity < 0.1) {
+                ()->{
+                    var target = targetPose.get().getTranslation();
+                    var current = inputs.pose.getTranslation();
+                    var error = target.minus(current);
+                    var linearVelocity =controller.calculate(error.getNorm());
+                    var velocity = new Translation2d(-linearVelocity, error.getAngle());
+                    var angularVel = rotationController.calculate(inputs.pose.getRotation().getRadians());
 
-                                initialWaypointDirection = delta.getAngle();
-                            } else {
-                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-                            }
-
-                            this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
-                            var path = new PathPlannerPath(
-                                    PathPlannerPath.waypointsFromPoses(
-                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-                                            this.targetTelePose),
-                                    constraints,
-                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
-                                    new GoalEndState(0.0, targetPose.get().getRotation())
-                            );
-
-                            return AutoBuilder.followPath(path);
-                        }),
-                        Commands.none(),
-                        () -> !atPosition(targetPose.get().getTranslation()))
-//                .andThen(PID_GoToPos(targetPose))
-                .andThen(() -> isAutoAligning = false);
+                    io.driveBlueAllianceOriented(velocity.getX(),velocity.getY(),angularVel);
+                });
+//        return Commands.either(defer(() -> {
+//                            isAutoAligning = true;
+//
+//                            PathConstraints constraints = new PathConstraints(
+//                                    4.0,
+//                                    slowAccel.getAsBoolean() ? 3.0 : 3.5,
+//                                    3.0,
+//                                    3.0,
+//                                    11.0,
+//                                    false
+//                            );
+//
+//                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
+//                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+//                            Rotation2d initialWaypointDirection;
+//                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
+//                            if (currentVelocity < 0.1) {
+//
+//                                initialWaypointDirection = delta.getAngle();
+//                            } else {
+//                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
+//                            }
+//
+//                            this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
+//                            var path = new PathPlannerPath(
+//                                    PathPlannerPath.waypointsFromPoses(
+//                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
+//                                            this.targetTelePose),
+//                                    constraints,
+//                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
+//                                    new GoalEndState(0.0, targetPose.get().getRotation())
+//                            );
+//
+//                            return AutoBuilder.followPath(path);
+//                        }),
+//                        Commands.none(),
+//                        () -> !atPosition(targetPose.get().getTranslation()))
+////                .andThen(PID_GoToPos(targetPose))
+//                .andThen(() -> isAutoAligning = false);
     }
 
     public boolean isAutoAligning() {

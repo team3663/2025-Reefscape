@@ -35,10 +35,10 @@ public class Constants {
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
-    private static final Transform2d LEFT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(19.0), -Units.inchesToMeters(6.875), Rotation2d.fromDegrees(180));
-    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(19.0), Units.inchesToMeters(7.125), Rotation2d.fromDegrees(180));
+    private static final Transform2d LEFT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(18.0), -Units.inchesToMeters(6.875), Rotation2d.fromDegrees(180));
+    private static final Transform2d RIGHT_BRANCH_ARM_OFFSET = new Transform2d(Units.inchesToMeters(18.0), Units.inchesToMeters(7.125), Rotation2d.fromDegrees(180));
 
-    private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(18.0), 0.0, Rotation2d.fromDegrees(180));
+    private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(16.5), 0.0, Rotation2d.fromDegrees(180));
 
     public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(14.5), Rotation2d.kZero);
     public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(19.0), Rotation2d.kZero);
