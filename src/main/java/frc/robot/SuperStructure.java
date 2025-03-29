@@ -162,11 +162,12 @@ public class SuperStructure extends SubsystemBase {
                             return shoulderPos;
                         },
                         () -> {
+
                             double wristPos = wristHaveAlgaePosition(
                                     Math.max(wristPosition.getAsDouble(),
                                             getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition())));
-                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0))) {
-                                return arm.getTargetWristPosition();
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0))&& !haveAlgae.getAsBoolean()) {
+                                return Constants.ArmPositions.WRIST_DEFAULT_ANGLE;
                             }
                             return wristPos;
                         }),

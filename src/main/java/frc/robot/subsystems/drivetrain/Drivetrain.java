@@ -195,7 +195,7 @@ public class Drivetrain extends SubsystemBase {
 
                             PathConstraints constraints = new PathConstraints(
                                     4.0,
-                                    slowAccel.getAsBoolean() ? 3.0 : 3.75,
+                                    slowAccel.getAsBoolean() ? 3.0 : 3.5,
                                     3.0,
                                     3.0,
                                     11.0,
