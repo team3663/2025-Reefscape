@@ -64,7 +64,7 @@ public class C2025ArmIO implements ArmIO {
         shoulderConfig.Feedback.RotorToSensorRatio = SHOULDER_GEAR_RATIO;
 
         shoulderConfig.MotionMagic.MotionMagicJerk = 15.0;
-        shoulderConfig.MotionMagic.MotionMagicAcceleration = 3.0;
+        shoulderConfig.MotionMagic.MotionMagicAcceleration = 3.5;
         shoulderConfig.MotionMagic.MotionMagicCruiseVelocity = 1.63;
 
 
