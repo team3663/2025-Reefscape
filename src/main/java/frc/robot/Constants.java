@@ -158,6 +158,18 @@ public class Constants {
         public static final double SHOULDER_MAX_MOVING_OFFSET = Units.degreesToRadians(10.0);
         public static final double WRIST_MOVING_OFFSET = Units.degreesToRadians(10.0);
 
+        // Coral handoff
+        public static final double ELEVATOR_HANDOFF_HEIGHT = Units.inchesToMeters(0.0);
+        public static final double SHOULDER_HANDOFF_ANGLE = Units.degreesToRadians(0.0);
+        public static final double WRIST_HANDOFF_ANGLE = Units.degreesToRadians(0.0);
+
+    }
+
+    public static class GroundIntakePositions {
+        // Ground intake pivot positions
+        public static final double DEFAULT_ANGLE = 0.0;
+        public static final double INTAKING_ANGLE = 0.0;
+        public static final double HANDOFF_ANGLE = 0.0;
     }
 
     // Arm buffers

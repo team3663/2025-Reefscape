@@ -22,6 +22,7 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.groundIntake.GroundIntake;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
@@ -39,6 +40,7 @@ public class RobotContainer {
     private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoChooser autoChooser;
+    private final GroundIntake groundIntake;
 
     private final CommandFactory commandFactory;
     private final AutoPaths autoPaths;
@@ -55,15 +57,16 @@ public class RobotContainer {
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        groundIntake = new GroundIntake(robotFactory.createGroundIntakeIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark), robotFactory.createVisionIo());
-        superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
+        superStructure = new SuperStructure(elevator, arm, groundIntake, grabber::hasAlgae);
 
-        commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
+        commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure, groundIntake);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotMode).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw, () -> robotMode).ignoringDisable(true));
 
         configureBindings();
 
@@ -83,11 +86,11 @@ public class RobotContainer {
         autoChooser.addRoutine("TwoCoral:B2-B1", autoPaths::twoCoralB2B1);
         autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
-        autoChooser.addRoutine("ThreeCoral:C1-B1-B2",autoPaths::threeCoralC1B1B2);
-        autoChooser.addRoutine("ThreeCoral:E2-F2-F1",autoPaths::threeCoralE2F2F1);
+        autoChooser.addRoutine("ThreeCoral:C1-B1-B2", autoPaths::threeCoralC1B1B2);
+        autoChooser.addRoutine("ThreeCoral:E2-F2-F1", autoPaths::threeCoralE2F2F1);
 
-        autoChooser.addRoutine("FourCoral:C1-B1-B2-A2",autoPaths::fourCoralC1B1B2A2);
-        autoChooser.addRoutine("FourCoral:E2-F2-F1-A1",autoPaths::fourCoralE2F2F1A1);
+        autoChooser.addRoutine("FourCoral:C1-B1-B2-A2", autoPaths::fourCoralC1B1B2A2);
+        autoChooser.addRoutine("FourCoral:E2-F2-F1-A1", autoPaths::fourCoralE2F2F1A1);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);
@@ -106,7 +109,6 @@ public class RobotContainer {
         SmartDashboard.putString("F2 Branch", Constants.BLUE_BRANCH_F2.toString());
 
 
-
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
                 Commands.sequence(
@@ -118,7 +120,6 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Auto Coral Station", false);
 
 
-
         new Trigger(() -> robotMode == RobotMode.CORAL_LEVEL_1)
                 .whileTrue(led.setLedColor(Color.kYellow).andThen(Commands.idle(led)));
     }
@@ -128,7 +129,8 @@ public class RobotContainer {
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
+                Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(), grabber::isGamePieceDetected));
+        driverController.leftBumper().onTrue(commandFactory.handoffCoral());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
@@ -146,6 +148,7 @@ public class RobotContainer {
                         .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
+        new Trigger(groundIntake::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));

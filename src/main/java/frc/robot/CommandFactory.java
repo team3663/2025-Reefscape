@@ -12,6 +12,7 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.groundIntake.GroundIntake;
 import frc.robot.subsystems.led.Led;
 import frc.robot.utility.Gamepiece;
 
@@ -27,6 +28,7 @@ public class CommandFactory {
     private final Climber climber;
     private final Led led;
     private final SuperStructure superStructure;
+    private final GroundIntake groundIntake;
 
     public CommandFactory(
             Drivetrain drivetrain,
@@ -35,7 +37,8 @@ public class CommandFactory {
             Grabber grabber,
             Climber climber,
             Led led,
-            SuperStructure superStructure
+            SuperStructure superStructure,
+            GroundIntake groundIntake
     ) {
         this.drivetrain = drivetrain;
         this.elevator = elevator;
@@ -44,6 +47,7 @@ public class CommandFactory {
         this.climber = climber;
         this.led = led;
         this.superStructure = superStructure;
+        this.groundIntake = groundIntake;
     }
 
     public Pose2d getClosestBranch(Pose2d robotPose, RobotMode robotMode) {
@@ -161,5 +165,24 @@ public class CommandFactory {
                 Commands.waitUntil(grabber::getGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.12))
         ).andThen(superStructure.goToDefaultPositions());
+    }
+
+    public Command groundIntakeCoral() {
+        return Commands.deadline(
+                groundIntake.grabCoral(),
+                groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
+        );
+    }
+
+    public Command handoffCoral() {
+        return Commands.deadline(
+                grabber.grabCoral(),
+                superStructure.followPositions(() -> Constants.ArmPositions.ELEVATOR_HANDOFF_HEIGHT,
+                        () -> Constants.ArmPositions.SHOULDER_HANDOFF_ANGLE,
+                        () -> Constants.ArmPositions.WRIST_HANDOFF_ANGLE,
+                        () -> Constants.GroundIntakePositions.HANDOFF_ANGLE).andThen(
+                        Commands.waitUntil(() -> superStructure.atTargetPositions() && groundIntake.atTargetPosition())
+                                .andThen(groundIntake.eject()))
+        );
     }
 }
