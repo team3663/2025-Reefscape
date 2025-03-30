@@ -45,6 +45,7 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
         CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
         canRangeConfig.ProximityParams.ProximityThreshold = PROXIMITY_THRESHOLD;
         canRangeConfig.ProximityParams.ProximityHysteresis = PROXIMITY_HYSTERESIS;
+        gamePieceDetector.getConfigurator().apply(canRangeConfig);
 
         // CANCoder config
         CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
