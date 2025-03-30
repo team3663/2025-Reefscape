@@ -18,7 +18,7 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
             Units.degreesToRadians(0.0), Units.degreesToRadians(0.0)
     );
 
-    // TODO Confirm I did the INTAKE_GEAR_RATIO correctly, get PIVOT_GEAR_RATIO
+    // TODO Confirm I did the INTAKE_GEAR_RATIO correctly, get PIVOT_GEAR_RATIO, and proximity sensor threshold/hystereis
     private final double INTAKE_GEAR_RATIO = 10.0;
     private final double PIVOT_GEAR_RATIO = 0.0;
     private final double PROXIMITY_THRESHOLD = 0.0;
@@ -100,7 +100,7 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
         inputs.intakeMotorTemperature = intakeMotor.getDeviceTemp().getValueAsDouble();
         inputs.intakeCurrentDraw = intakeMotor.getSupplyCurrent().getValueAsDouble();
 
-        inputs.gamePieceDetected = gamePieceDetector.getIsDetected().getValue();
+        inputs.gamePieceDetected = gamePieceDetector.getIsDetected().getValue().booleanValue();
     }
 
     // Pivot Motor
