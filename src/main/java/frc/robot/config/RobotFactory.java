@@ -5,6 +5,7 @@ import frc.robot.subsystems.climber.ClimberIO;
 import frc.robot.subsystems.drivetrain.DrivetrainIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.GrabberIO;
+import frc.robot.subsystems.groundIntake.GroundIntakeIO;
 import frc.robot.subsystems.led.LedIo;
 import frc.robot.subsystems.vision.VisionIO;
 
@@ -40,7 +41,12 @@ public interface RobotFactory {
     }
 
     default VisionIO[] createVisionIo() {
-        return new VisionIO[] {
+        return new VisionIO[]{
+        };
+    }
+
+    default GroundIntakeIO createGroundIntakeIo() {
+        return new GroundIntakeIO() {
         };
     }
 }

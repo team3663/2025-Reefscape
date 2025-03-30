@@ -23,6 +23,7 @@ import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
+import frc.robot.subsystems.groundIntake.GroundIntake;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
@@ -40,6 +41,7 @@ public class RobotContainer {
     private final Vision vision;
     private final SuperStructure superStructure;
     private final AutoChooser autoChooser;
+    private final GroundIntake groundIntake;
 
     private final CommandFactory commandFactory;
     private final AutoPaths autoPaths;
@@ -57,12 +59,13 @@ public class RobotContainer {
         elevator = new Elevator(robotFactory.createElevatorIo());
         arm = new Arm(robotFactory.createArmIo());
         grabber = new Grabber(robotFactory.createGrabberIo());
+        groundIntake = new GroundIntake(robotFactory.createGroundIntakeIo());
         climber = new Climber(robotFactory.createClimberIo());
         led = new Led(robotFactory.createLedIo());
         vision = new Vision(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark), robotFactory.createVisionIo());
-        superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
+        superStructure = new SuperStructure(elevator, arm, groundIntake, grabber::hasAlgae);
 
-        commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
+        commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure, groundIntake);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
@@ -128,6 +131,8 @@ public class RobotContainer {
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
                         grabber::isGamePieceDetected));
+                Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(), grabber::isGamePieceDetected));
+        driverController.leftBumper().onTrue(commandFactory.handoffCoral());
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
@@ -146,6 +151,7 @@ public class RobotContainer {
                         .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
+        new Trigger(groundIntake::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
         operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));

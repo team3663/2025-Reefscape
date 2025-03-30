@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.groundIntake.GroundIntake;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -26,6 +27,8 @@ public class SuperStructure extends SubsystemBase {
     private final Elevator elevator;
     @NotLogged
     private final Arm arm;
+    @NotLogged
+    private final GroundIntake groundIntake;
     private final BooleanSupplier haveAlgae;
 
     private final Mechanism2d mechanism;
@@ -36,9 +39,10 @@ public class SuperStructure extends SubsystemBase {
     private final MechanismLigament2d currentShoulderMechanism;
     private final MechanismLigament2d currentWristMechanism;
 
-    public SuperStructure(Elevator elevator, Arm arm, BooleanSupplier haveAlgae) {
+    public SuperStructure(Elevator elevator, Arm arm, GroundIntake groundIntake, BooleanSupplier haveAlgae) {
         this.elevator = elevator;
         this.arm = arm;
+        this.groundIntake = groundIntake;
         this.haveAlgae = haveAlgae;
 
         mechanism = new Mechanism2d(
@@ -147,13 +151,14 @@ public class SuperStructure extends SubsystemBase {
         return followPositions(elevatorPosition, shoulderPosition, wristPosition, () -> false);
     }
 
+
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet) {
         return Commands.parallel(
                 arm.followPositions(
                         () -> {
                             double shoulderPos = shoulderHaveAlgaePosition(
                                     Math.max(shoulderPosition.getAsDouble(),
-                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),isNet.getAsBoolean());
+                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())), isNet.getAsBoolean());
 
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
@@ -168,7 +173,7 @@ public class SuperStructure extends SubsystemBase {
                             double wristPos = wristHaveAlgaePosition(
                                     Math.max(wristPosition.getAsDouble(),
                                             getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition())));
-                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0))&& !haveAlgae.getAsBoolean()) {
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean()) {
                                 return Constants.ArmPositions.WRIST_DEFAULT_ANGLE;
                             }
                             return wristPos;
@@ -183,7 +188,14 @@ public class SuperStructure extends SubsystemBase {
                     return elevator.getTargetPosition();
 
                 }),
-                run(() -> {}));
+                run(() -> {
+                }));
+    }
+
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition,
+                                   DoubleSupplier wristPosition, DoubleSupplier groundIntakePosition) {
+        return followPositions(elevatorPosition, shoulderPosition, wristPosition, () -> false)
+                .alongWith(groundIntake.followPositions(groundIntakePosition));
     }
 
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
@@ -195,8 +207,7 @@ public class SuperStructure extends SubsystemBase {
         if (isNet) {
             return haveAlgae.getAsBoolean() && elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ?
                     Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
-        }
-        else{
+        } else {
             return haveAlgae.getAsBoolean() && elevator.getPosition() <= Units.feetToMeters(2.5) ?
                     Math.min(position, Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE) : position;
         }
@@ -218,7 +229,7 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
-        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle,()-> robotMode.get() ==RobotMode.ALGAE_NET);
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle, () -> robotMode.get() == RobotMode.ALGAE_NET);
     }
 
     public Command goToPositions(RobotMode robotMode) {
@@ -227,14 +238,16 @@ public class SuperStructure extends SubsystemBase {
 
     public Command goToDefaultPositions() {
         return followPositions(() -> Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, () -> Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE,
-                () -> haveAlgae.getAsBoolean() ? Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE : Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
+                () -> haveAlgae.getAsBoolean() ? Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE : Constants.ArmPositions.WRIST_DEFAULT_ANGLE,
+                () -> Constants.GroundIntakePositions.DEFAULT_ANGLE);
     }
 
     public Command zero() {
         return Commands.parallel(
                 arm.zeroWrist(),
                 elevator.zero(),
-                runOnce(() -> {})
+                runOnce(() -> {
+                })
         );
     }
 

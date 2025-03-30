@@ -4,6 +4,7 @@ import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -24,6 +25,9 @@ import frc.robot.subsystems.elevator.C2025ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.C2025GrabberIO;
 import frc.robot.subsystems.grabber.GrabberIO;
+import frc.robot.subsystems.groundIntake.C2025GroundIntakeIO;
+import frc.robot.subsystems.groundIntake.GroundIntake;
+import frc.robot.subsystems.groundIntake.GroundIntakeIO;
 import frc.robot.subsystems.led.LedCandleIo;
 import frc.robot.subsystems.led.LedIo;
 import frc.robot.subsystems.vision.LimelightIO;
@@ -41,8 +45,8 @@ public class C2025RobotFactory implements RobotFactory {
     private static final double ROBOT_MOMENT_OF_INERTIA = 6.0;
     private static final double ROBOT_WEIGHT_KG = 61.235;
 
-    private static final MountPoseConfigs mountPose= new MountPoseConfigs();
-    private static final  GyroTrimConfigs gyroTrim= new GyroTrimConfigs();
+    private static final MountPoseConfigs mountPose = new MountPoseConfigs();
+    private static final GyroTrimConfigs gyroTrim = new GyroTrimConfigs();
 
     private static final SwerveDrivetrainConstants DRIVETRAIN_CONSTANTS = new SwerveDrivetrainConstants()
             .withCANBusName(DRIVETRAIN_CAN_BUS.getName())
@@ -182,6 +186,12 @@ public class C2025RobotFactory implements RobotFactory {
     }
 
     @Override
+    public GroundIntakeIO createGroundIntakeIo() {
+        return new C2025GroundIntakeIO(new TalonFX(15), new TalonFX(16), new CANcoder(15), new CANrange(16)) {
+        };
+    }
+
+    @Override
     public LedIo createLedIo() {
         return new LedCandleIo(new CANdle(1, DRIVETRAIN_CAN_BUS.getName()));
     }
@@ -199,9 +209,9 @@ public class C2025RobotFactory implements RobotFactory {
         Transform3d backTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, backRotation);
 
         return new VisionIO[]{
-                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform,false),
+                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform, false),
                 new LimelightIO(Constants.FRONT_RIGHT_CAMERA_NAME, frontRightTransform, false),
-                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform,true),
+                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform, true),
 
         };
     }
