@@ -60,7 +60,8 @@ public class AutoPaths {
                                         .until(path.atTimeBeforeEnd(0.5)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4)
                         ))
-                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))));
+                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected)
+                        .andThen(Commands.waitSeconds(0.05))));
     }
     public Command placeOnReefl2(AutoTrajectory path, boolean shouldZero) {
         return Commands.parallel(
@@ -71,7 +72,7 @@ public class AutoPaths {
                                         .until(path.atTimeBeforeEnd(0.6)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_2)
                         ))
-                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.25))));
+                .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected).andThen(Commands.waitSeconds(0.15))));
     }
 
     public AutoRoutine facePlantD1() {
@@ -150,6 +151,30 @@ public class AutoPaths {
         AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-B1-B2");
 
         AutoTrajectory start = routine.trajectory("RStart-C1");
+        AutoTrajectory c1rs = routine.trajectory("C1-RS");
+        AutoTrajectory rsb1 = routine.trajectory("RS-B1");
+        AutoTrajectory b1rs = routine.trajectory("B1-RS");
+        AutoTrajectory rsb2 = routine.trajectory("RS-B2");
+        AutoTrajectory b2rs = routine.trajectory("B2-RS");
+        routine.active().onTrue(
+                Commands.sequence(
+                        start.resetOdometry(),
+                        placeOnReef(start, true),
+                        pickupFromCoralStation(c1rs),
+                        placeOnReef(rsb1, false),
+                        pickupFromCoralStation(b1rs),
+                        placeOnReef(rsb2, false),
+                        pickupFromCoralStation(b2rs)
+                )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine threeCoralC17B1B2() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C17-B1-B2");
+
+        AutoTrajectory start = routine.trajectory("R7Start-C1");
         AutoTrajectory c1rs = routine.trajectory("C1-RS");
         AutoTrajectory rsb1 = routine.trajectory("RS-B1");
         AutoTrajectory b1rs = routine.trajectory("B1-RS");

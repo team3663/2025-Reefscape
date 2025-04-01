@@ -3,7 +3,7 @@
  "version":1,
  "snapshot":{
   "waypoints":[
-    {"x":7.264399999999999, "y":1.6383, "heading":1.5707963267948966, "intervals":48, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":7.264399999999999, "y":1.6383, "heading":1.5707963267948966, "intervals":48, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":true},
     {"x":4.96, "y":2.87, "heading":2.0943951023931953, "intervals":49, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
@@ -13,7 +13,7 @@
  },
  "params":{
   "waypoints":[
-    {"x":{"exp":"RStart.x", "val":7.264399999999999}, "y":{"exp":"RStart.y", "val":1.6383}, "heading":{"exp":"RStart.heading", "val":1.5707963267948966}, "intervals":48, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
+    {"x":{"exp":"RStart.x", "val":7.264399999999999}, "y":{"exp":"RStart.y", "val":1.6383}, "heading":{"exp":"RStart.heading", "val":1.5707963267948966}, "intervals":48, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":true},
     {"x":{"exp":"C1.x", "val":4.96}, "y":{"exp":"C1.y", "val":2.87}, "heading":{"exp":"C1.heading", "val":2.0943951023931953}, "intervals":49, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},

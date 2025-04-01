@@ -178,7 +178,7 @@ public class Constants {
     public static final String FRONT_LEFT_CAMERA_NAME = "limelight-left";
     public static final double FRONT_LEFT_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double FRONT_LEFT_CAMERA_PITCH = Units.degreesToRadians(20.0);
-    public static final double FRONT_LEFT_CAMERA_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_LEFT_CAMERA_YAW = Units.degreesToRadians(0.0477);
     public static final double FRONT_LEFT_CAMERA_X = Units.inchesToMeters(27.0 / 2 - 5.0);
     public static final double FRONT_LEFT_CAMERA_Y = Units.inchesToMeters(27.0 / 2.0 - 5.3);
     public static final double FRONT_LEFT_CAMERA_Z = Units.inchesToMeters(8.8125);
