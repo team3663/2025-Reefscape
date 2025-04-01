@@ -137,7 +137,7 @@ public class Constants {
             Units.inchesToMeters(16.5 + 84), Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d(Units.inchesToMeters(300 - 14),
             Units.inchesToMeters(16.5 + 48), Rotation2d.fromDegrees(90));
-    public static final Pose2d BLUE_CENTER_STARTING_POSITION = new Pose2d(7.244603633880615, 4.07481050491333,
+    public static final Pose2d BLUE_AUTO_CENTER_STARTING_POSITION = new Pose2d(7.244603633880615, 4.07481050491333,
             Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE_AUTO_LEFT_STARTING_POSITION_7FT = new Pose2d(Units.inchesToMeters(300 - 14),
             Units.inchesToMeters(316 - 84), Rotation2d.fromDegrees(180));
@@ -148,8 +148,8 @@ public class Constants {
             Units.inchesToMeters(16.5 + 84), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_LEFT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(16.5 + 48), Rotation2d.fromDegrees(90));
-    public static final Pose2d RED_CENTER_STARTING_POSITION = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
-            4.07481050491333, Rotation2d.fromDegrees(180));
+    public static final Pose2d RED_AUTO_CENTER_STARTING_POSITION = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
+            4.07481050491333, Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_7FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(316 - 84), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
