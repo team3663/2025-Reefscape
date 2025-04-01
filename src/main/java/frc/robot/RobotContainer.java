@@ -48,7 +48,8 @@ public class RobotContainer {
     @NotLogged
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
-    private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
+    private RobotMode robotModeReef = RobotMode.CORAL_LEVEL_1;
+    private boolean isCSWithCoral = false;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -63,14 +64,14 @@ public class RobotContainer {
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotMode).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
 
         configureBindings();
 
         drivetrain.setDefaultCommand(
                 drivetrain.drive(this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity)
         );
-        led.setDefaultCommand(led.signalCommand(() -> robotMode));
+        led.setDefaultCommand(led.signalCommand(() -> robotModeReef));
         superStructure.setDefaultCommand(superStructure.goToDefaultPositions());
 
         // Creates Auto Chooser
@@ -120,16 +121,17 @@ public class RobotContainer {
 
 
 
-        new Trigger(() -> robotMode == RobotMode.CORAL_LEVEL_1)
+        new Trigger(() -> robotModeReef == RobotMode.CORAL_LEVEL_1)
                 .whileTrue(led.setLedColor(Color.kYellow).andThen(Commands.idle(led)));
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode, driverController.rightTrigger(),
+        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(), grabber::isGamePieceDetected));
+                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
+                        grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
@@ -160,6 +162,9 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
+        operatorController.leftTrigger().onTrue(setCSWithCoral(true));
+        operatorController.leftTrigger().onFalse(setCSWithCoral(false));
+
         // Test code for SysID
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
 //        driverController.rightStick().onTrue(Commands.runOnce(SignalLogger::stop));
@@ -170,19 +175,24 @@ public class RobotContainer {
     }
 
     private Command setRobotMode(RobotMode robotMode) {
-        return runOnce(() -> this.robotMode = robotMode);
+        return runOnce(() -> this.robotModeReef = robotMode);
+    }
+
+    public Command setCSWithCoral(boolean isCSWithCoral) {
+        return runOnce(() -> this.isCSWithCoral = isCSWithCoral);
     }
 
     public void updateDashboard() {
-        SmartDashboard.putBoolean("Coral Level 1", robotMode == RobotMode.CORAL_LEVEL_1);
-        SmartDashboard.putBoolean("Coral Level 2", robotMode == RobotMode.CORAL_LEVEL_2);
-        SmartDashboard.putBoolean("Coral Level 3", robotMode == RobotMode.CORAL_LEVEL_3);
-        SmartDashboard.putBoolean("Coral Level 4", robotMode == RobotMode.CORAL_LEVEL_4);
-        SmartDashboard.putBoolean("Algae in Processor", robotMode == RobotMode.ALGAE_PROCESSOR);
-        SmartDashboard.putBoolean("Remove a Lower Algae", robotMode == RobotMode.ALGAE_REMOVE_LOWER);
-        SmartDashboard.putBoolean("Remove an Upper Algae", robotMode == RobotMode.ALGAE_REMOVE_UPPER);
-        SmartDashboard.putBoolean("Algae in Net", robotMode == RobotMode.ALGAE_NET);
-        SmartDashboard.putBoolean("Algae from Ground", robotMode == RobotMode.ALGAE_PICKUP_GROUND);
+        SmartDashboard.putBoolean("Coral Level 1", robotModeReef == RobotMode.CORAL_LEVEL_1);
+        SmartDashboard.putBoolean("Coral Level 2", robotModeReef == RobotMode.CORAL_LEVEL_2);
+        SmartDashboard.putBoolean("Coral Level 3", robotModeReef == RobotMode.CORAL_LEVEL_3);
+        SmartDashboard.putBoolean("Coral Level 4", robotModeReef == RobotMode.CORAL_LEVEL_4);
+        SmartDashboard.putBoolean("Algae in Processor", robotModeReef == RobotMode.ALGAE_PROCESSOR);
+        SmartDashboard.putBoolean("Remove a Lower Algae", robotModeReef == RobotMode.ALGAE_REMOVE_LOWER);
+        SmartDashboard.putBoolean("Remove an Upper Algae", robotModeReef == RobotMode.ALGAE_REMOVE_UPPER);
+        SmartDashboard.putBoolean("Algae in Net", robotModeReef == RobotMode.ALGAE_NET);
+        SmartDashboard.putBoolean("Algae from Ground", robotModeReef == RobotMode.ALGAE_PICKUP_GROUND);
+        SmartDashboard.putBoolean("CS With Coral", isCSWithCoral);
     }
 
     private double getDrivetrainXVelocity() {

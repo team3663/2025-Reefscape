@@ -144,10 +144,10 @@ public class SuperStructure extends SubsystemBase {
     }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
-        return followPositions(elevatorPosition, shoulderPosition,wristPosition, () -> false);
+        return followPositions(elevatorPosition, shoulderPosition, wristPosition, () -> false);
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet ) {
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet) {
         return Commands.parallel(
                 arm.followPositions(
                         () -> {

@@ -134,12 +134,12 @@ public class CommandFactory {
                 () -> robotMode.get() == RobotMode.ALGAE_NET);
     }
 
-    public Command alignToCoralStation() {
+    public Command alignToCoralStation(BooleanSupplier coralInTheWay) {
         return Commands.deadline(
                 grabber.grabCoral(),
-                superStructure.followPositions(() -> Constants.ArmPositions.CORAL_STATION_ELEVATOR_HEIGHT,
-                        () -> Constants.ArmPositions.CORAL_STATION_SHOULDER_ANGLE,
-                        () -> Constants.ArmPositions.CORAL_STATION_WRIST_ANGLE),
+                superStructure.followPositions(() -> coralInTheWay.getAsBoolean() ? RobotMode.CORAL_STATION_WITH_CORAL.getElevatorHeight() : RobotMode.CORAL_STATION.getElevatorHeight(),
+                        () -> coralInTheWay.getAsBoolean() ? RobotMode.CORAL_STATION_WITH_CORAL.getShoulderAngle() : RobotMode.CORAL_STATION.getShoulderAngle(),
+                        () -> coralInTheWay.getAsBoolean() ? RobotMode.CORAL_STATION_WITH_CORAL.getWristAngle() : RobotMode.CORAL_STATION.getWristAngle()),
                 Commands.either(
                         Commands.deferredProxy(() -> drivetrain.goToPosition(() ->
                                 getClosestCoralStationPosition(drivetrain.getPose()), () -> false)),
