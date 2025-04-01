@@ -155,12 +155,19 @@ public class Constants {
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(316 - 48), Rotation2d.fromDegrees(-90));
 
-    public static final Transform2d RIGHT_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
-    public static final Transform2d LEFT_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
-    public static final Pose2d RED_RIGHT_INTERMEDIATE = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_INTERMEDIATE_POSE_OFFSET);
-    public static final Pose2d RED_LEFT_INTERMEDIATE = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_INTERMEDIATE_POSE_OFFSET);
-    public static final Pose2d BLUE_RIGHT_INTERMEDIATE = FIELD.getTagPose(22).get().toPose2d().plus(RIGHT_INTERMEDIATE_POSE_OFFSET);
-    public static final Pose2d BLUE_LEFT_INTERMEDIATE = FIELD.getTagPose(20).get().toPose2d().plus(LEFT_INTERMEDIATE_POSE_OFFSET);
+    public static final Transform2d RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
+    public static final Transform2d LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
+    public static final Pose2d RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d RED_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d BLUE_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(22).get().toPose2d().plus(RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d BLUE_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(20).get().toPose2d().plus(LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+
+    public static final Transform2d RIGHT_PLACE_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, Units.feetToMeters(3.0), Rotation2d.fromDegrees(0.0)));
+    public static final Transform2d LEFT_PLACE_AROUND_REEF__INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, -Units.feetToMeters(3.0), Rotation2d.fromDegrees(0.0)));
+    public static final Pose2d RED_RIGHT_PLACE_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_PLACE_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d RED_LEFT_PLACE_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_PLACE_AROUND_REEF__INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d BLUE_RIGHT_PLACE_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(22).get().toPose2d().plus(RIGHT_PLACE_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
+    public static final Pose2d BLUE_LEFT_PLACE_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(20).get().toPose2d().plus(LEFT_PLACE_AROUND_REEF__INTERMEDIATE_POSE_OFFSET);
 
     public static class ArmPositions {
         // Coral Station Positions
