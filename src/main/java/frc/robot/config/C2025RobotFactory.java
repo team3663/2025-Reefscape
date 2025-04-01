@@ -199,9 +199,9 @@ public class C2025RobotFactory implements RobotFactory {
         Transform3d backTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, backRotation);
 
         return new VisionIO[]{
-                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform),
-                new LimelightIO(Constants.FRONT_RIGHT_CAMERA_NAME, frontRightTransform),
-                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform),
+                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform,false),
+                new LimelightIO(Constants.FRONT_RIGHT_CAMERA_NAME, frontRightTransform, false),
+                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform,true),
 
         };
     }

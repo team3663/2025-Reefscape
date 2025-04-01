@@ -139,28 +139,41 @@ public class SuperStructure extends SubsystemBase {
         return elevator.atTargetPosition() && arm.atTargetPositions();
     }
 
+    public boolean atPosition(RobotMode robotMode) {
+        return elevator.atPosition(robotMode.getElevatorHeight()) && arm.atPositions(robotMode.getShoulderAngle(), robotMode.getWristAngle());
+    }
+
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
         return followPositions(elevatorPosition, shoulderPosition, wristPosition, () -> false);
     }
-
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet) {
         return Commands.parallel(
                 arm.followPositions(
                         () -> {
-                            double pos = shoulderHaveAlgaePosition(
+                            double shoulderPos = shoulderHaveAlgaePosition(
                                     Math.max(shoulderPosition.getAsDouble(),
                                             getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),isNet.getAsBoolean());
 
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
-                                return MathUtil.clamp(pos,
+                                return MathUtil.clamp(shoulderPos,
                                         Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL - Arm.POSITION_THRESHOLD,
                                         Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD);
 
-                            return pos;
+                            return shoulderPos;
                         },
-                        () -> wristHaveAlgaePosition(Math.max(wristPosition.getAsDouble(), getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition())))),
+                        () -> {
+
+                            double wristPos = wristHaveAlgaePosition(
+                                    Math.max(wristPosition.getAsDouble(),
+                                            getMinimumAllowableWristAngle(elevator.getPosition(), arm.getShoulderPosition())));
+                            if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0))&& !haveAlgae.getAsBoolean()) {
+                                return Constants.ArmPositions.WRIST_DEFAULT_ANGLE;
+                            }
+                            return wristPos;
+                        }),
+
                 elevator.followPosition(() -> {
                     if (elevator.atPosition(elevatorPosition.getAsDouble()) ||
                             arm.shoulderAtPosition(Units.degreesToRadians(90.0), Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD) ||

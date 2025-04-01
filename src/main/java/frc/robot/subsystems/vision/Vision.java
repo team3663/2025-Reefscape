@@ -14,8 +14,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.RobotMode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,6 +44,7 @@ public class Vision extends SubsystemBase {
     private final List<VisionMeasurement> acceptedMeasurements = new ArrayList<>();
     private final double[] ioUpdateDurations;
     private final double[] processingDurations;
+    private RobotMode robotMode= RobotMode.CORAL_LEVEL_1;
 
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
@@ -50,6 +54,7 @@ public class Vision extends SubsystemBase {
     public Vision(AprilTagFieldLayout fieldLayout, VisionIO... ios) {
         this.ios = ios;
         this.fieldLayout = fieldLayout;
+
         this.ioUpdateDurations = new double[ios.length];
         this.processingDurations = new double[ios.length];
 
@@ -68,8 +73,8 @@ public class Vision extends SubsystemBase {
             rightInputs = new VisionInputs();
         }
 
-        if (visionInputs.length > 1) {
-            backInputs = visionInputs[1];
+        if (visionInputs.length > 2) {
+            backInputs = visionInputs[2];
         } else {
             backInputs = new VisionInputs();
         }
@@ -102,6 +107,8 @@ public class Vision extends SubsystemBase {
             // Skip measurements that are not with in the field boundary
             if (pose.getX() < 0.0 || pose.getX() > fieldLayout.getFieldLength() ||
                     pose.getY() < 0.0 || pose.getY() > fieldLayout.getFieldWidth())
+                continue;
+            if (ios[i].isIgnoredIfNotNet() && robotMode != RobotMode.ALGAE_NET)
                 continue;
 
             // Compute the standard deviation to use based on the distance to the closest tag
@@ -137,10 +144,11 @@ public class Vision extends SubsystemBase {
      * @return Command that consumes vision measurements
      */
     public Command consumeVisionMeasurements(Consumer<List<VisionMeasurement>> visionMeasurementConsumer,
-                                             Supplier<Rotation2d> yawSupplier) {
+                                             Supplier<Rotation2d> yawSupplier,Supplier<RobotMode> robotmode) {
         return run(() -> {
             visionMeasurementConsumer.accept(acceptedMeasurements);
             currentYaw = yawSupplier.get();
+            robotMode = robotmode.get();
         });
     }
 
