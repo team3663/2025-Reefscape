@@ -191,8 +191,8 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Remove an Upper Algae", robotModeReef == RobotMode.ALGAE_REMOVE_UPPER);
         SmartDashboard.putBoolean("Algae in Net", robotModeReef == RobotMode.ALGAE_NET);
         SmartDashboard.putBoolean("Algae from Ground", robotModeReef == RobotMode.ALGAE_PICKUP_GROUND);
-        SmartDashboard.putBoolean("Coral Station With Coral", robotModeReef == RobotMode.CORAL_STATION_WITH_CORAL);
-        SmartDashboard.putBoolean("Coral Station Without Coral", robotModeReef == RobotMode.CORAL_STATION);
+        SmartDashboard.putBoolean("CS With Coral", robotModeCS == RobotMode.CORAL_STATION_WITH_CORAL);
+        SmartDashboard.putBoolean("CS Without Coral", robotModeCS == RobotMode.CORAL_STATION);
     }
 
     private double getDrivetrainXVelocity() {
