@@ -49,7 +49,7 @@ public class RobotContainer {
     private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotModeReef = RobotMode.CORAL_LEVEL_1;
-    private RobotMode robotModeCS = RobotMode.CORAL_STATION;
+    private boolean isCSWithCoral = false;
 
     public RobotContainer(RobotFactory robotFactory) {
         drivetrain = new Drivetrain(robotFactory.createDrivetrainIo());
@@ -130,7 +130,7 @@ public class RobotContainer {
                 this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> robotModeCS == RobotMode.CORAL_STATION_WITH_CORAL),
+                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
                         grabber::isGamePieceDetected));
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
@@ -162,8 +162,8 @@ public class RobotContainer {
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
         operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
-        operatorController.leftTrigger().onTrue(setCSRobotMode(RobotMode.CORAL_STATION_WITH_CORAL));
-        operatorController.leftTrigger().onFalse(setCSRobotMode(RobotMode.CORAL_STATION));
+        operatorController.leftTrigger().onTrue(setCSWithCoral(true));
+        operatorController.leftTrigger().onFalse(setCSWithCoral(false));
 
         // Test code for SysID
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));
@@ -178,8 +178,8 @@ public class RobotContainer {
         return runOnce(() -> this.robotModeReef = robotMode);
     }
 
-    private Command setCSRobotMode(RobotMode robotMode) {
-        return runOnce(() -> this.robotModeCS = robotMode);
+    public Command setCSWithCoral(boolean isCSWithCoral) {
+        return runOnce(() -> this.isCSWithCoral = isCSWithCoral);
     }
 
     public void updateDashboard() {
@@ -192,8 +192,7 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Remove an Upper Algae", robotModeReef == RobotMode.ALGAE_REMOVE_UPPER);
         SmartDashboard.putBoolean("Algae in Net", robotModeReef == RobotMode.ALGAE_NET);
         SmartDashboard.putBoolean("Algae from Ground", robotModeReef == RobotMode.ALGAE_PICKUP_GROUND);
-        SmartDashboard.putBoolean("CS With Coral", robotModeCS == RobotMode.CORAL_STATION_WITH_CORAL);
-        SmartDashboard.putBoolean("CS Without Coral", robotModeCS == RobotMode.CORAL_STATION);
+        SmartDashboard.putBoolean("CS With Coral", isCSWithCoral);
     }
 
     private double getDrivetrainXVelocity() {
