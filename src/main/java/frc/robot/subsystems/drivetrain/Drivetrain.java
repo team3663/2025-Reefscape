@@ -191,7 +191,9 @@ public class Drivetrain extends SubsystemBase {
                     io.driveBlueAllianceOriented(velocity.getX(), velocity.getY(), angularVel);
                 });
     }
-
+    public Command resetOdometry(Pose2d targetPose) {
+        return runOnce(()-> io.resetOdometry(targetPose));
+    }
     public boolean atTargetPosition() {
         return atPosition(targetTelePose.getTranslation());
     }
