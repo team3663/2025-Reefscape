@@ -321,7 +321,7 @@ public class AutoPaths {
                 // Pickup fourth piece
                 pickup(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION),
                 // Go back to F1 to prep for teleop
-                Commands.defer(() -> goToPosition(alliancePose(Constants.BLUE_BRANCH_F2, Constants.RED_BRANCH_F2)), Set.of(drivetrain))
+                Commands.defer(() -> goToPosition(alliancePose(Constants.BLUE_BRANCH_F2, Constants.RED_BRANCH_F2)), Set.of(drivetrain)).alongWith(superStructure.goToDefaultPositions())
         ));
 
         return routine;
@@ -347,7 +347,8 @@ public class AutoPaths {
                 // Place fourth piece B2-L3
                 place(Constants.BLUE_BRANCH_B2, Constants.RED_BRANCH_B2, RobotMode.CORAL_LEVEL_3),
                 // Pickup fifth piece (likely not happening)
-                pickup(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION)
+                pickup(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION),
+                superStructure.goToDefaultPositions()
         ));
 
         return routine;
@@ -373,7 +374,8 @@ public class AutoPaths {
                 // Place fourth piece B1-L3
                 place(Constants.BLUE_BRANCH_F1, Constants.RED_BRANCH_F1, RobotMode.CORAL_LEVEL_3),
                 // Pickup fifth piece (likely not happening)
-                pickup(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION)
+                pickup(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION),
+                superStructure.goToDefaultPositions()
         ));
 
         return routine;
