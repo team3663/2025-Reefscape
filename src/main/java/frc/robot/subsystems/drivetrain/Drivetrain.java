@@ -7,20 +7,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.IdealStartingState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.vision.VisionMeasurement;
@@ -46,7 +40,6 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d targetAutoPose = new Pose2d();
     private Pose2d targetTelePose = new Pose2d();
-    private boolean isAutoAligning = false;
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -165,99 +158,38 @@ public class Drivetrain extends SubsystemBase {
         return runOnce(io::stop);
     }
 
-//    public Command PID_GoToPos(Supplier<Pose2d> targetPose) {
-//        PIDController xController = new PIDController(10.0, 0, 0);
-//        PIDController yController = new PIDController(10.0, 0, 0);
-//        PIDController rotationController = new PIDController(20.0, 0, 0);
-//        rotationController.enableContinuousInput(-Math.PI, Math.PI);
-//
-//        return runEnd(
-//                () -> {
-//                    targetPathPose = targetPose.get();
-//                    io.driveBlueAllianceOriented(
-//                            xController.calculate(inputs.pose.getX(), targetPose.get().getX()),
-//                            yController.calculate(inputs.pose.getY(), targetPose.get().getY()),
-//                            rotationController.calculate(inputs.pose.getRotation().getRadians(), targetPose.get().getRotation().getRadians())
-//                    );
-//                },
-//                io::stop
-//        );
-//    }
-
     /**
      * Drives the robot to a given pose fromm the robot's current position using a pathplanner path
      *
      * @param targetPose of where you want the robot to go
      * @return follows a pathplanner path command
      */
-    public Command goToPosition(Supplier<Pose2d> targetPose, boolean flip, BooleanSupplier slowAccel) {
-        PIDController controller = new PIDController(7.0,0.0,1.0);
-        PIDController rotationController = new PIDController(10.0,0.0,0.0);
+    public Command goToPosition(Supplier<Pose2d> targetPose, BooleanSupplier slowAccel) {
+        PIDController controller = new PIDController(7.0, 0.0, 1.0);
+        PIDController rotationController = new PIDController(10.0, 0.0, 0.0);
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         return startRun(
-                ()-> {controller.reset();
-                    if (slowAccel.getAsBoolean()){
-                        controller.setP(5.0);
-                    }
+                () -> {
+                    controller.reset();
+                    controller.setP(slowAccel.getAsBoolean() ? 5.0 : 7.0);
                     rotationController.reset();
-                controller.setSetpoint(0.0);
-                rotationController.setSetpoint(targetPose.get().getRotation().getRadians());
+                    controller.setSetpoint(0.0);
+                    rotationController.setSetpoint(targetPose.get().getRotation().getRadians());
                 },
 
-                ()->{
+                () -> {
                     var target = targetPose.get().getTranslation();
                     var current = inputs.pose.getTranslation();
                     var error = target.minus(current);
-                    var linearVelocity =controller.calculate(error.getNorm());
+                    var linearVelocity = controller.calculate(error.getNorm());
                     var velocity = new Translation2d(-linearVelocity, error.getAngle());
                     var angularVel = rotationController.calculate(inputs.pose.getRotation().getRadians());
 
-                    io.driveBlueAllianceOriented(velocity.getX(),velocity.getY(),angularVel);
-                });
-//        return Commands.either(defer(() -> {
-//                            isAutoAligning = true;
-//
-//                            PathConstraints constraints = new PathConstraints(
-//                                    4.0,
-//                                    slowAccel.getAsBoolean() ? 3.0 : 3.5,
-//                                    3.0,
-//                                    3.0,
-//                                    11.0,
-//                                    false
-//                            );
-//
-//                            var fieldChassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(inputs.chassisSpeeds, inputs.pose.getRotation());
-//                            var currentVelocity = Math.hypot(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-//                            Rotation2d initialWaypointDirection;
-//                            var delta = targetPose.get().getTranslation().minus(inputs.pose.getTranslation());
-//                            if (currentVelocity < 0.1) {
-//
-//                                initialWaypointDirection = delta.getAngle();
-//                            } else {
-//                                initialWaypointDirection = new Rotation2d(fieldChassisSpeeds.vxMetersPerSecond, fieldChassisSpeeds.vyMetersPerSecond);
-//                            }
-//
-//                            this.targetTelePose = new Pose2d(targetPose.get().getTranslation(), targetPose.get().getRotation().rotateBy(flip ? Rotation2d.k180deg : Rotation2d.kZero));
-//                            var path = new PathPlannerPath(
-//                                    PathPlannerPath.waypointsFromPoses(
-//                                            new Pose2d(inputs.pose.getTranslation(), initialWaypointDirection),
-//                                            this.targetTelePose),
-//                                    constraints,
-//                                    new IdealStartingState(currentVelocity, inputs.pose.getRotation()),
-//                                    new GoalEndState(0.0, targetPose.get().getRotation())
-//                            );
-//
-//                            return AutoBuilder.followPath(path);
-//                        }),
-//                        Commands.none(),
-//                        () -> !atPosition(targetPose.get().getTranslation()))
-////                .andThen(PID_GoToPos(targetPose))
-//                .andThen(() -> isAutoAligning = false);
-    }
+                    targetTelePose = targetPose.get();
 
-    public boolean isAutoAligning() {
-        return isAutoAligning;
+                    io.driveBlueAllianceOriented(velocity.getX(), velocity.getY(), angularVel);
+                });
     }
 
     public boolean atTargetPosition() {

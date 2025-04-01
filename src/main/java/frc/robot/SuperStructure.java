@@ -139,11 +139,13 @@ public class SuperStructure extends SubsystemBase {
         return elevator.atTargetPosition() && arm.atTargetPositions();
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
-        return followPositions(elevatorPosition, shoulderPosition,wristPosition, ()->false);
-
+    public boolean atPosition(RobotMode robotMode) {
+        return elevator.atPosition(robotMode.getElevatorHeight()) && arm.atPositions(robotMode.getShoulderAngle(), robotMode.getWristAngle());
     }
 
+    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition) {
+        return followPositions(elevatorPosition, shoulderPosition,wristPosition, () -> false);
+    }
 
     public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition, DoubleSupplier wristPosition, BooleanSupplier isNet ) {
         return Commands.parallel(
