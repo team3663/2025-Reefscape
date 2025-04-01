@@ -2,7 +2,6 @@ package frc.robot;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
@@ -146,6 +145,14 @@ public class AutoPaths {
         return place(targetPoseSupplier, robotMode, false, () -> null);
     }
 
+    private Command placeAroundReef(Supplier<Pose2d> targetPoseSupplier, Supplier<Pose2d> intermediatePoseSupplier, RobotMode robotMode) {
+        final double INTERMEDIATE_POSE_DISTANCE = Units.feetToMeters(2.0);
+
+        Pose2d[] intermediatePoseHolder = new Pose2d[]{null};
+        return place(targetPoseSupplier, robotMode, false, () -> drivetrain.atPosition(intermediatePoseHolder[0].getTranslation(), INTERMEDIATE_POSE_DISTANCE) ? null : intermediatePoseHolder[0])
+                .beforeStarting(() -> intermediatePoseHolder[0] = intermediatePoseSupplier.get());
+    }
+
     public AutoRoutine facePlantD1() {
         AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
 
@@ -178,7 +185,7 @@ public class AutoPaths {
                 // Place first piece C1-L4
                 place(() -> alliancePose(Constants.BLUE_BRANCH_C1, Constants.RED_BRANCH_C1), RobotMode.CORAL_LEVEL_4, true),
                 // Pickup second piece by driving around the reef
-                pickupAroundReef(() -> alliancePose(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_RIGHT_INTERMEDIATE, Constants.RED_RIGHT_INTERMEDIATE)),
+                pickupAroundReef(() -> alliancePose(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE)),
                 // Place second piece B1-L4
                 place(() -> alliancePose(Constants.BLUE_BRANCH_B1, Constants.RED_BRANCH_B1), RobotMode.CORAL_LEVEL_4),
                 // Pickup third piece
@@ -202,7 +209,7 @@ public class AutoPaths {
                 // Place first piece E2-L4
                 place(() -> alliancePose(Constants.BLUE_BRANCH_E2, Constants.RED_BRANCH_E2), RobotMode.CORAL_LEVEL_4, true),
                 // Pickup second piece by driving around the reef
-                pickupAroundReef(() -> alliancePose(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_LEFT_INTERMEDIATE, Constants.RED_LEFT_INTERMEDIATE)),
+                pickupAroundReef(() -> alliancePose(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE)),
                 // Place second piece F2-L4
                 place(() -> alliancePose(Constants.BLUE_BRANCH_F2, Constants.RED_BRANCH_F2), RobotMode.CORAL_LEVEL_4),
                 // Pickup third piece
@@ -215,6 +222,54 @@ public class AutoPaths {
                 Commands.defer(() -> goToPosition(alliancePose(Constants.BLUE_BRANCH_F2, Constants.RED_BRANCH_F2)), Set.of(drivetrain))
         ));
 
+        return routine;
+    }
+
+    public AutoRoutine fourCoralC2B1B2C1() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C2-B1-B2-C1");
+
+        routine.active().onTrue(Commands.sequence(
+                resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
+                // Place first piece C2-L2
+                place(() -> alliancePose(Constants.BLUE_BRANCH_C2, Constants.RED_BRANCH_C2), RobotMode.CORAL_LEVEL_2, true),
+                // Pickup second piece by driving around the reef
+                pickupAroundReef(() -> alliancePose(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE)),
+                // Place second piece B1-L4
+                place(() -> alliancePose(Constants.BLUE_BRANCH_B1, Constants.RED_BRANCH_B1), RobotMode.CORAL_LEVEL_4),
+                // Pickup third piece
+                pickup(() -> alliancePose(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION)),
+                // Place third piece B2-L4
+                place(() -> alliancePose(Constants.BLUE_BRANCH_B2, Constants.RED_BRANCH_B2), RobotMode.CORAL_LEVEL_4),
+                // Pickup fourth piece
+                pickup(() -> alliancePose(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION)),
+                // Place fourth piece C1-L2 by driving around the reef
+                placeAroundReef(() -> alliancePose(Constants.BLUE_BRANCH_C1, Constants.RED_BRANCH_C1), () -> alliancePose(Constants.BLUE_RIGHT_PLACE_AROUND_REEF_INTERMEDIATE, Constants.RED_RIGHT_PLACE_AROUND_REEF_INTERMEDIATE), RobotMode.CORAL_LEVEL_2),
+                superStructure.goToDefaultPositions()
+        ));
+        return routine;
+    }
+
+    public AutoRoutine fourCoralE1F2F1E2() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E1-F2-F1-E2");
+
+        routine.active().onTrue(Commands.sequence(
+                resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
+                // Place first piece E1-L2
+                place(() -> alliancePose(Constants.BLUE_BRANCH_E1, Constants.RED_BRANCH_E1), RobotMode.CORAL_LEVEL_2, true),
+                // Pickup second piece by driving around the reef
+                pickupAroundReef(() -> alliancePose(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION), () -> alliancePose(Constants.BLUE_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE)),
+                // Place second piece F2-L4
+                place(() -> alliancePose(Constants.BLUE_BRANCH_F2, Constants.RED_BRANCH_F2), RobotMode.CORAL_LEVEL_4),
+                // Pickup third piece
+                pickup(() -> alliancePose(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION)),
+                // Place third piece F1-L4
+                place(() -> alliancePose(Constants.BLUE_BRANCH_F1, Constants.RED_BRANCH_F1), RobotMode.CORAL_LEVEL_4),
+                // Pickup fourth piece
+                pickup(() -> alliancePose(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION)),
+                // Place fourth piece E2-L2 by driving around the reef
+                placeAroundReef(() -> alliancePose(Constants.BLUE_BRANCH_E2, Constants.RED_BRANCH_E2), () -> alliancePose(Constants.BLUE_LEFT_PLACE_AROUND_REEF_INTERMEDIATE, Constants.RED_LEFT_PLACE_AROUND_REEF_INTERMEDIATE), RobotMode.CORAL_LEVEL_2),
+                superStructure.goToDefaultPositions()
+        ));
         return routine;
     }
 }
