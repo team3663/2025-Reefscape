@@ -10,13 +10,18 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.grabber.Grabber;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class AutoPaths {
     private final Drivetrain drivetrain;
     private final Grabber grabber;
     private final Arm arm;
+    private final Elevator elevator;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
     private final CommandFactory commandFactory;
@@ -24,13 +29,13 @@ public class AutoPaths {
 
     public AutoPaths(
             Drivetrain drivetrain, Grabber grabber,
-            SuperStructure superStructure, AutoFactory autoFactory, Arm arm, CommandFactory commandFactory) {
+            SuperStructure superStructure, AutoFactory autoFactory, Arm arm, CommandFactory commandFactory, Elevator elevator) {
         this.drivetrain = drivetrain;
         this.grabber = grabber;
         this.superStructure = superStructure;
         this.autoFactory = autoFactory;
         this.commandFactory = commandFactory;
-
+        this.elevator = elevator;
         this.arm = arm;
     }
 
@@ -53,18 +58,30 @@ public class AutoPaths {
                                         .alongWith(grabber.grabCoral())));
     }
 
-    public Command pickupFromCoralStation(Pose2d branch) {
-        return drivetrain.goToPosition(() -> branch, false, () -> false)
+    public Command pickupFromCoralStation(Pose2d branch, Pose2d intermediatePose) {
+        Pose2d[] intermediateHolder = new Pose2d[]{null};
+
+        return drivetrain.goToPosition(() -> {
+                    if (intermediateHolder[0] != null && drivetrain.getPose().getTranslation().getDistance(
+                            intermediateHolder[0].getTranslation()) > Units.feetToMeters(5.0)) {
+                        return intermediateHolder[0];
+                    }
+                    intermediateHolder[0] = null;
+                    return branch;
+                }, () -> false, () -> getMaxVelocity(elevator.getPosition()))
                 .withDeadline(
                         Commands.sequence(
                                 limitedArm(RobotMode.CORAL_STATION)
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
                                                 branch.getTranslation()
-                                        ) < Units.feetToMeters(1.0)),
-                                Commands.waitUntil(() -> drivetrain.getPose().getTranslation().getDistance(
-                                        branch.getTranslation()) < Units.inchesToMeters(2.0))))
-                .andThen(superStructure.goToPositions(RobotMode.CORAL_STATION)
-                        .alongWith(grabber.grabCoral()));
+                                        ) < Units.feetToMeters(3.0)),
+                                superStructure.goToPositions(RobotMode.CORAL_STATION)
+                                        .alongWith(grabber.grabCoral())))
+                .beforeStarting(() -> intermediateHolder[0] = intermediatePose);
+    }
+
+    public Command pickupFromCoralStation(Pose2d branch) {
+        return pickupFromCoralStation(branch, null);
     }
 
     public Command placeOnReef(AutoTrajectory path, boolean shouldZero) {
@@ -81,19 +98,21 @@ public class AutoPaths {
     }
 
     public Command placeOnReef(Pose2d branch, boolean shouldZero) {
-        return drivetrain.goToPosition(() -> branch, false, () -> false)
+        return drivetrain.goToPosition(() -> branch, () -> false,
+                        () -> getMaxVelocity(elevator.getPosition()))
                 .withDeadline(
                         Commands.sequence(
                                 shouldZero ? superStructure.zero() : Commands.none(),
                                 limitedArm(RobotMode.CORAL_LEVEL_4)
                                         .until(() -> drivetrain.getPose().getTranslation().getDistance(
                                                 branch.getTranslation()
-                                        ) < Units.feetToMeters(1.0)),
+                                        ) < Units.feetToMeters(3.0)),
                                 superStructure.goToPositions(RobotMode.CORAL_LEVEL_4),
                                 Commands.waitUntil(() -> drivetrain.getPose().getTranslation().getDistance(
                                         branch.getTranslation()) < Units.inchesToMeters(2.0))))
                 .andThen(grabber.placeCoralL4().withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected)
-                        .andThen(Commands.waitSeconds(0.25))));
+//                        .andThen(Commands.waitSeconds(0.25))
+                ));
     }
 
     public Command placeOnReefl2(AutoTrajectory path, boolean shouldZero) {
@@ -230,13 +249,13 @@ public class AutoPaths {
 
     public AutoRoutine threeCoralPIDC1B1B2() {
         AutoRoutine routine = autoFactory.newRoutine("ThreeCoralPID:C1-B1-B2");
-        AutoTrajectory c1rs = routine.trajectory("C1-RS");
 
         routine.active().onTrue(
                 Commands.sequence(
                         drivetrain.resetOdometry(getAllianceRed() ? Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT : Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT),
                         placeOnReef(getAllianceRed() ? Constants.RED_BRANCH_C1 : Constants.BLUE_BRANCH_C1, true),
-                        pickupFromCoralStation(c1rs),
+                        pickupFromCoralStation(getAllianceRed() ? Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION : Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION,
+                                getAllianceRed() ? Constants.RED_RIGHT_INTERMEDIATE : Constants.BLUE_RIGHT_INTERMEDIATE),
                         placeOnReef(getAllianceRed() ? Constants.RED_BRANCH_B1 : Constants.BLUE_BRANCH_B1, false),
                         pickupFromCoralStation(getAllianceRed() ? Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION : Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION),
                         placeOnReef(getAllianceRed() ? Constants.RED_BRANCH_B2 : Constants.BLUE_BRANCH_B2, false),
@@ -324,5 +343,24 @@ public class AutoPaths {
 
     public boolean getAllianceRed() {
         return DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+    }
+
+    public double getMaxVelocity(double elevatorHeight){
+        final double UPPER_HEIGHT = Units.inchesToMeters(36.0);
+        final double LOWER_HEIGHT = Units.inchesToMeters(24.0);
+
+        final double SLOW_VELOCITY = 2.0;
+
+        if (elevatorHeight > UPPER_HEIGHT)
+            return SLOW_VELOCITY;
+        else if (elevatorHeight < LOWER_HEIGHT)
+            return drivetrain.getConstants().maxLinearVelocity();
+
+        double t = MathUtil.inverseInterpolate(LOWER_HEIGHT, UPPER_HEIGHT, elevatorHeight);
+
+        return MathUtil.interpolate(
+                drivetrain.getConstants().maxLinearVelocity(),
+                SLOW_VELOCITY,
+                t);
     }
 }

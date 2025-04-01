@@ -62,7 +62,7 @@ public class RobotContainer {
         superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory);
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory, elevator);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
 
@@ -85,6 +85,7 @@ public class RobotContainer {
         autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
 
         autoChooser.addRoutine("ThreeCoral:C1-B1-B2",autoPaths::threeCoralC1B1B2);
+        autoChooser.addRoutine("ThreeCoralPID:C1-B1-B2",autoPaths::threeCoralPIDC1B1B2);
         autoChooser.addRoutine("ThreeCoral:E2-F2-F1",autoPaths::threeCoralE2F2F1);
         autoChooser.addRoutine("ThreeCoral:C17-B1-B2", autoPaths::threeCoralC17B1B2);
 
