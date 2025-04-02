@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 
 public class Constants {
-    public static final boolean SUPERSTRUCTURE_COAST = false;
+    public static final boolean SUPERSTRUCTURE_COAST = true;
 
     public static final double MK4_2PLUS_REDUCTION = (50.0 / 16.0) * (17.0 / 27.0) * (45.0 / 15.0);
     public static final double MK4_3PLUS_REDUCTION = (50.0 / 16.0) * (16.0 / 28.0) * (45.0 / 15.0);
@@ -136,7 +136,7 @@ public class Constants {
     public static class ArmPositions {
         // Coral Station Positions
         // Normal
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(8.311);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
         // With a Blocking Coral
