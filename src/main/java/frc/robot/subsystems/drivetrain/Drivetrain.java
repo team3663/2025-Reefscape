@@ -189,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
                     targetTelePose = targetPose.get();
 
                     io.driveBlueAllianceOriented(velocity.getX(), velocity.getY(), angularVel);
-                });
+                }).until(this::atTargetPosition);
     }
 
     public boolean atTargetPosition() {
