@@ -127,4 +127,9 @@ public class Grabber extends SubsystemBase {
     public Command placeCoralSlow() {
         return withVoltage(5.0);
     }
+
+    public Command grabGamepiece(Gamepiece gamepiece)
+    {
+        return gamepiece == Gamepiece.CORAL ? grabCoral() : grabAlgae();
+    }
 }
