@@ -99,7 +99,8 @@ public class CommandFactory {
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier) {
         return Commands.either(
                         Commands.parallel(
-                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), () -> robotMode.get() == RobotMode.ALGAE_NET).andThen(
+                                drivetrain.goToPosition(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), () -> robotMode.get() == RobotMode.ALGAE_NET).until(
+                                        () -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(
                                         doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
