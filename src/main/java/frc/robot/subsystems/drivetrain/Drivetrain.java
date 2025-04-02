@@ -173,7 +173,7 @@ public class Drivetrain extends SubsystemBase {
         return startRun(
                 () -> {
                     controller.reset();
-                    controller.setP(slowAccel.getAsBoolean() ? 5.0 : 5.0);
+                    controller.setP(slowAccel.getAsBoolean() ? 5.0 : 6.0);
                     rotationController.reset();
                     controller.setSetpoint(0.0);
                     rotationController.setSetpoint(targetPose.get().getRotation().getRadians());

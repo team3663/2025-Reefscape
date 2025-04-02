@@ -180,7 +180,7 @@ public class AutoPaths {
         return Commands.defer(() -> goToPosition(targetPoseHolder[0], intermediatePoseSupplier), Set.of(drivetrain))
                 .withDeadline(Commands.sequence(
                         limitedArm(RobotMode.CORAL_STATION).until(() -> drivetrain.atPosition(targetPoseHolder[0].getTranslation(), PICKUP_LIMITED_ARM_DISTANCE)),
-                        superStructure.goToPositions(RobotMode.CORAL_STATION).alongWith(grabber.grabCoral())))
+                        superStructure.goToPositions(RobotMode.CORAL_STATION).withDeadline(grabber.grabCoral())))
                 .beforeStarting(() -> targetPoseHolder[0] = alliancePose(blueAllianceTargetPose, redAllianceTargetPose));
     }
 
