@@ -62,7 +62,7 @@ public class RobotContainer {
         superStructure = new SuperStructure(elevator, arm, grabber::hasAlgae);
 
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
-        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, commandFactory);
+        autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
 
@@ -81,15 +81,14 @@ public class RobotContainer {
         autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
         autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
 
-        autoChooser.addRoutine("TwoCoral:B2-B1", autoPaths::twoCoralB2B1);
-        autoChooser.addRoutine("TwoCoral:F1-F2", autoPaths::twoCoralF1F2);
+        autoChooser.addRoutine("ThreeCoral:C1-B1-B2", autoPaths::threeCoralC1B1B2);
+        autoChooser.addRoutine("ThreeCoral:E2-F2-F1", autoPaths::threeCoralE2F2F1);
 
-        autoChooser.addRoutine("ThreeCoral:C1-B1-B2",autoPaths::threeCoralC1B1B2);
-        autoChooser.addRoutine("ThreeCoral:E2-F2-F1",autoPaths::threeCoralE2F2F1);
-        autoChooser.addRoutine("ThreeCoral:C17-B1-B2", autoPaths::threeCoralC17B1B2);
+        autoChooser.addRoutine("FourCoral:C1-B1-B1-B2", autoPaths::fourCoralC1B1B1B2);
+        autoChooser.addRoutine("FourCoral:E2-F2-F2-F1", autoPaths::fourCoralE2F2F2F1);
 
-        autoChooser.addRoutine("FourCoral:C1-B1-B2-A2",autoPaths::fourCoralC1B1B2A2);
-        autoChooser.addRoutine("FourCoral:E2-F2-F1-A1",autoPaths::fourCoralE2F2F1A1);
+        autoChooser.addRoutine("FourCoral:C2-B1-B2-C1", autoPaths::fourCoralC2B1B2C1);
+        autoChooser.addRoutine("FourCoral:E1-F2-F1-E2", autoPaths::fourCoralE1F2F1E2);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);

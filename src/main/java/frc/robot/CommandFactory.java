@@ -149,19 +149,4 @@ public class CommandFactory {
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
                 ));
     }
-
-    public Command grabCoral() {
-        return Commands.sequence(
-                superStructure.goToPositions(RobotMode.CORAL_STATION),
-                grabber.grabCoral(),
-                superStructure.goToDefaultPositions()
-        );
-    }
-
-    public Command placeCoral() {
-        return grabber.placeCoral().withDeadline(
-                Commands.waitUntil(grabber::getGamePieceNotDetected)
-                        .andThen(Commands.waitSeconds(0.12))
-        ).andThen(superStructure.goToDefaultPositions());
-    }
 }

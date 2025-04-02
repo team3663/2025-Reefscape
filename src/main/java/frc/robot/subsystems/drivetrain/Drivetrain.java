@@ -9,6 +9,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +30,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 @Logged
 public class Drivetrain extends SubsystemBase {
-    private static final double DISTANCE_THRESHOLD = Units.inchesToMeters(3.0);
+    private static final double DISTANCE_THRESHOLD = Units.inchesToMeters(1.5);
 
     @NotLogged
     private final DrivetrainIO io;
@@ -164,7 +165,7 @@ public class Drivetrain extends SubsystemBase {
      * @param targetPose of where you want the robot to go
      * @return follows a pathplanner path command
      */
-    public Command goToPosition(Supplier<Pose2d> targetPose, BooleanSupplier slowAccel) {
+    public Command goToPosition(Supplier<Pose2d> targetPose, BooleanSupplier slowAccel, Supplier<Double> maxVelocity) {
         PIDController controller = new PIDController(7.0, 0.0, 1.0);
         PIDController rotationController = new PIDController(10.0, 0.0, 0.0);
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
@@ -172,26 +173,37 @@ public class Drivetrain extends SubsystemBase {
         return startRun(
                 () -> {
                     controller.reset();
-                    controller.setP(slowAccel.getAsBoolean() ? 5.0 : 7.0);
+                    controller.setP(slowAccel.getAsBoolean() ? 5.0 : 6.0);
                     rotationController.reset();
                     controller.setSetpoint(0.0);
                     rotationController.setSetpoint(targetPose.get().getRotation().getRadians());
                 },
-
                 () -> {
-                    var target = targetPose.get().getTranslation();
-                    var current = inputs.pose.getTranslation();
-                    var error = target.minus(current);
-                    var linearVelocity = controller.calculate(error.getNorm());
+                    var target = targetPose.get();
+                    var current = inputs.pose;
+                    var error = target.getTranslation().minus(current.getTranslation());
+                    var linearVelocity = MathUtil.clamp(
+                            controller.calculate(error.getNorm()),
+                            -maxVelocity.get(),
+                            maxVelocity.get());
                     var velocity = new Translation2d(-linearVelocity, error.getAngle());
-                    var angularVel = rotationController.calculate(inputs.pose.getRotation().getRadians());
+                    var angularVel = rotationController.calculate(
+                            current.getRotation().getRadians(), target.getRotation().getRadians());
 
-                    targetTelePose = targetPose.get();
+                    targetTelePose = target;
 
                     io.driveBlueAllianceOriented(velocity.getX(), velocity.getY(), angularVel);
-                });
+                })
+                .finallyDo(io::stop);
     }
 
+    public Command goToPosition(Supplier<Pose2d> targetPose, BooleanSupplier slowAccel) {
+        return goToPosition(targetPose, slowAccel, ()-> io.getConstants().maxLinearVelocity);
+    }
+
+    public Command resetOdometry(Pose2d targetPose) {
+        return runOnce(()-> io.resetOdometry(targetPose));
+    }
     public boolean atTargetPosition() {
         return atPosition(targetTelePose.getTranslation());
     }
