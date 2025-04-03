@@ -201,7 +201,7 @@ public class Constants {
 
         public static final double ELEVATOR_CLIMB_POSITION = 0.0;
         public static final double SHOULDER_CLIMB_ANGLE = Units.degreesToRadians(180.0-15.0);
-        public static final double WRIST_CLIMB_ANGLE = Units.degreesToRadians(0.0);
+        public static final double WRIST_CLIMB_ANGLE = Units.degreesToRadians(-80.0);
 
     }
 

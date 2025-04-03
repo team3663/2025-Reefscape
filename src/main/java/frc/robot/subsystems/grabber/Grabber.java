@@ -92,7 +92,7 @@ public class Grabber extends SubsystemBase {
 
     public Command placeAlgae()
     {
-        return withVoltage(10.0).withDeadline(
+        return withVoltage(12.0).withDeadline(
                 Commands.waitUntil(this::getGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         );
