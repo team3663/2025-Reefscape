@@ -118,8 +118,9 @@ public class CommandFactory {
                         () -> shouldAlignToReef(robotMode.get())
                 )
                 .alongWith(
-                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
-                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)).andThen(
+                        Commands.either(Commands.waitUntil(() -> (readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
+                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)) ||
+                                        (readyToPlace.getAsBoolean() && robotMode.get()== RobotMode.ALGAE_NET)).andThen(
                                         Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
                                                 Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
                                                 () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),

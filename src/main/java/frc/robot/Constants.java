@@ -172,7 +172,7 @@ public class Constants {
     public static class ArmPositions {
         // Coral Station Positions
         // Normal
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(8.311);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
         // With a Blocking Coral
