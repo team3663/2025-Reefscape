@@ -87,14 +87,17 @@ public class RobotContainer {
         autoChooser.addRoutine("ThreeCoral:C1(L4) B1(L4) B2(L4)", autoPaths::threeCoralC1L4B1L4B2L4);
         autoChooser.addRoutine("ThreeCoral:E2(L4) F2(L4) F1(L4)", autoPaths::threeCoralE2L4F2L4F1L4);
 
+        autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) A2(L2)", autoPaths::fourCoralC1L4B1L4B2L4A2L2);
+        autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) A1(L2)", autoPaths::fourCoralE2L4F2L4F1L4A1L2);
+
         autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC1L4B1L4B2L4C1L2);
         autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE2L4F2L4F1L4E2L2);
 
         autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B1(L3) B2(L3)", autoPaths::fourCoralC1L4B1L4B1L3B2L3);
         autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F2(L3) F1(L3)", autoPaths::fourCoralE2L4F2L4F2L3F1L3);
 
-        autoChooser.addRoutine("FourCoral:C2(L2) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC2L2B1L4B2L4C1L2);
-        autoChooser.addRoutine("FourCoral:E1(L2) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE1L2F2L4F1L4E2L2);
+//        autoChooser.addRoutine("FourCoral:C2(L2) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC2L2B1L4B2L4C1L2);
+//        autoChooser.addRoutine("FourCoral:E1(L2) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE1L2F2L4F1L4E2L2);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);
