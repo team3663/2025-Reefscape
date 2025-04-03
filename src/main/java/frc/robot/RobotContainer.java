@@ -78,23 +78,23 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
-        autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
+        autoChooser.addRoutine("FacePlant:D1-L4", autoPaths::facePlantD1L4);
+        autoChooser.addRoutine("FacePlant:D2-L4", autoPaths::facePlantD2L4);
 
-        autoChooser.addRoutine("TwoCoral:C1-B1", autoPaths::twoCoralC1B1);
-        autoChooser.addRoutine("TwoCoral:E2-F2", autoPaths::twoCoralE2F2);
+        autoChooser.addRoutine("TwoCoral:C1-L4-B1-L4", autoPaths::twoCoralC1L4B1L4);
+        autoChooser.addRoutine("TwoCoral:E2-L4-F2-L4", autoPaths::twoCoralE2L4F2L4);
 
-        autoChooser.addRoutine("ThreeCoral:C1-B1-B2", autoPaths::threeCoralC1B1B2);
-        autoChooser.addRoutine("ThreeCoral:E2-F2-F1", autoPaths::threeCoralE2F2F1);
+        autoChooser.addRoutine("ThreeCoral:C1-L4-B1-L4-B2-L4", autoPaths::threeCoralC1L4B1L4B2L4);
+        autoChooser.addRoutine("ThreeCoral:E2-L4-F2-L4-F1-L4", autoPaths::threeCoralE2L4F2L4F1L4);
 
-        autoChooser.addRoutine("FourCoral:C1-B1-B2-C1", autoPaths::fourCoralC1B1B2C1);
-        autoChooser.addRoutine("FourCoral:E2-F2-F1-E2", autoPaths::fourCoralE2F2F1E2);
+        autoChooser.addRoutine("FourCoral:C1-L4-B1-L4-B2-L4-C1-L2", autoPaths::fourCoralC1L4B1L4B2L4C1L2);
+        autoChooser.addRoutine("FourCoral:E2-L4-F2-L4-F1-L4-E2-L2", autoPaths::fourCoralE2L4F2L4F1L4E2L2);
 
-        autoChooser.addRoutine("FourCoral:C1-B1-B1-B2", autoPaths::fourCoralC1B1B1B2);
-        autoChooser.addRoutine("FourCoral:E2-F2-F2-F1", autoPaths::fourCoralE2F2F2F1);
+        autoChooser.addRoutine("FourCoral:C1-L4-B1-L4-B1-L3-B2-L3", autoPaths::fourCoralC1L4B1L4B1L3B2L3);
+        autoChooser.addRoutine("FourCoral:E2-L4-F2-L4-F2-L3-F1-L3", autoPaths::fourCoralE2L4F2L4F2L3F1L3);
 
-        autoChooser.addRoutine("FourCoral:C2-B1-B2-C1", autoPaths::fourCoralC2B1B2C1);
-        autoChooser.addRoutine("FourCoral:E1-F2-F1-E2", autoPaths::fourCoralE1F2F1E2);
+        autoChooser.addRoutine("FourCoral:C2-L2-B1-L4-B2-L4-C1-L2", autoPaths::fourCoralC2L2B1L4B2L4C1L2);
+        autoChooser.addRoutine("FourCoral:E1-L2-F2-L4-F1-L4-E2-L2", autoPaths::fourCoralE1L2F2L4F1L4E2L2);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);

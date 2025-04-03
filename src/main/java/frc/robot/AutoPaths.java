@@ -255,8 +255,8 @@ public class AutoPaths {
                 .beforeStarting(() -> intermediatePoseHolder[0] = alliancePose(blueAllianceIntermediatePose, redAllianceIntermediatePose));
     }
 
-    public AutoRoutine facePlantD1() {
-        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1");
+    public AutoRoutine facePlantD1L4() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D1-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_CENTER_STARTING_POSITION, Constants.RED_AUTO_CENTER_STARTING_POSITION),
@@ -267,8 +267,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine facePlantD2() {
-        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D2");
+    public AutoRoutine facePlantD2L4() {
+        AutoRoutine routine = autoFactory.newRoutine("FacePlant:D2-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_CENTER_STARTING_POSITION, Constants.RED_AUTO_CENTER_STARTING_POSITION),
@@ -279,8 +279,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine twoCoralC1B1() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-B1-B2");
+    public AutoRoutine twoCoralC1L4B1L4() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:C1-L4-B1-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
@@ -298,8 +298,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine twoCoralE2F2() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:E2-F2-F1");
+    public AutoRoutine twoCoralE2L4F2L4() {
+        AutoRoutine routine = autoFactory.newRoutine("TwoCoral:E2-L4-F2-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
@@ -318,8 +318,8 @@ public class AutoPaths {
     }
 
 
-    public AutoRoutine threeCoralC1B1B2() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-B1-B2");
+    public AutoRoutine threeCoralC1L4B1L4B2L4() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-L4-B1-L4-B2-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
@@ -341,8 +341,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine threeCoralE2F2F1() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:E2-F2-F1");
+    public AutoRoutine threeCoralE2L4F2L4F1L4() {
+        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:E2-L4-F2-L4-F1-L4");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
@@ -365,8 +365,8 @@ public class AutoPaths {
     }
 
 
-    public AutoRoutine fourCoralC1B1B2C1() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:C1-B1-B2");
+    public AutoRoutine fourCoralC1L4B1L4B2L4C1L2() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C1-L4-B1-L4-B2-L4-C1-L2");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
@@ -392,8 +392,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine fourCoralE2F2F1E2() {
-        AutoRoutine routine = autoFactory.newRoutine("ThreeCoral:E2-F2-F1");
+    public AutoRoutine fourCoralE2L4F2L4F1L4E2L2() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E2-L4-F2-L4-F1-L4-E2-L2");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
@@ -419,8 +419,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine fourCoralC1B1B1B2() {
-        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C1-B1-B1-B2");
+    public AutoRoutine fourCoralC1L4B1L4B1L3B2L3() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C1-L4-B1-L4-B1-L3-B2-L3");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
@@ -446,8 +446,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine fourCoralE2F2F2F1() {
-        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E2-F2-F2-F1");
+    public AutoRoutine fourCoralE2L4F2L4F2L3F1L3() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E2-L4-F2-L4-F2-L3-F1-L3");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
@@ -473,8 +473,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine fourCoralC2B1B2C1() {
-        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C2-B1-B2-C1");
+    public AutoRoutine fourCoralC2L2B1L4B2L4C1L2() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:C2-L2-B1-L4-B2-L4-C1-L2");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_RIGHT_STARTING_POSITION_7FT, Constants.RED_AUTO_RIGHT_STARTING_POSITION_7FT),
@@ -497,8 +497,8 @@ public class AutoPaths {
         return routine;
     }
 
-    public AutoRoutine fourCoralE1F2F1E2() {
-        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E1-F2-F1-E2");
+    public AutoRoutine fourCoralE1L2F2L4F1L4E2L2() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E1-L2-F2-L4-F1-L4-E2-L2");
 
         routine.active().onTrue(Commands.sequence(
                 resetOdometry(Constants.BLUE_AUTO_LEFT_STARTING_POSITION_7FT, Constants.RED_AUTO_LEFT_STARTING_POSITION_7FT),
