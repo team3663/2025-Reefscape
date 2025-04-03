@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -122,7 +123,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
-                driverController.rightBumper(),this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
+                driverController.leftBumper(),this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
@@ -133,13 +134,13 @@ public class RobotContainer {
         driverController.b().whileTrue(grabber.eject());
 
         operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+                .alongWith(superStructure.goToPositions(0.0, Units.radiansToDegrees(180.0-15.0), arm.getConstants().minimumWristAngle())));
         operatorController.leftBumper().onFalse(climber.stow());
         driverController.a().onFalse(climber.stow());
         driverController.y().and(operatorController.leftBumper())
                 .onTrue(climber.climb()
                         .alongWith(
-                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
+                                superStructure.followPositions(() -> 0.0, () -> Units.degreesToRadians(180.0-15.0), () -> arm.getConstants().minimumWristAngle())
                         )
                         .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
