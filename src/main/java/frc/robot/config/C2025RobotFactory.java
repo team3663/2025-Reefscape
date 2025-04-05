@@ -92,7 +92,7 @@ public class C2025RobotFactory implements RobotFactory {
     private static final int DRIVETRAIN_FRONT_LEFT_STEER_ID = 2;
     private static final int DRIVETRAIN_FRONT_LEFT_DRIVE_ID = 1;
     private static final int DRIVETRAIN_FRONT_LEFT_ENCODER_ID = 2;
-    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRotations(100.195);
+    private static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = Units.degreesToRotations(106.35);
 
     // Front Right
     private static final int DRIVETRAIN_FRONT_RIGHT_STEER_ID = 4;
