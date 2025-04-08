@@ -165,54 +165,54 @@ public class C2025RobotFactory implements RobotFactory {
                 backLeftConfig, backRightConfig);
     }
 
-    @Override
-    public ArmIO createArmIo() {
-        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
-    }
-
-    @Override
-    public ClimberIO createClimberIo() {
-        return new C2025ClimberIO(new TalonFX(11, DRIVETRAIN_CAN_BUS), new CANcoder(11, DRIVETRAIN_CAN_BUS));
-    }
-
-    @Override
-    public ElevatorIO createElevatorIo() {
-        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
-    }
-
-    @Override
-    public GrabberIO createGrabberIo() {
-        return new C2025GrabberIO(new TalonFX(14), new DigitalInput(0));
-    }
+//    @Override
+//    public ArmIO createArmIo() {
+//        return new C2025ArmIO(new TalonFX(12), new TalonFX(13), new CANcoder(12));
+//    }
+//
+//    @Override
+//    public ClimberIO createClimberIo() {
+//        return new C2025ClimberIO(new TalonFX(11, DRIVETRAIN_CAN_BUS), new CANcoder(11, DRIVETRAIN_CAN_BUS));
+//    }
+//
+//    @Override
+//    public ElevatorIO createElevatorIo() {
+//        return new C2025ElevatorIO(new TalonFX(9, DRIVETRAIN_CAN_BUS), new TalonFX(10, DRIVETRAIN_CAN_BUS));
+//    }
+//
+//    @Override
+//    public GrabberIO createGrabberIo() {
+//        return new C2025GrabberIO(new TalonFX(14, DRIVETRAIN_CAN_BUS), new DigitalInput(0));
+//    }
 
     @Override
     public GroundIntakeIO createGroundIntakeIo() {
-        return new C2025GroundIntakeIO(new TalonFX(15), new TalonFX(16), new CANcoder(15), new CANrange(16)) {
+        return new C2025GroundIntakeIO(new TalonFX(15, DRIVETRAIN_CAN_BUS), new TalonFX(16, DRIVETRAIN_CAN_BUS), new CANcoder(15), new CANrange(16)) {
         };
     }
-
-    @Override
-    public LedIo createLedIo() {
-        return new LedCandleIo(new CANdle(1, DRIVETRAIN_CAN_BUS.getName()));
-    }
-
-    @Override
-    public VisionIO[] createVisionIo() {
-
-        Rotation3d frontRightRotation = new Rotation3d(Constants.FRONT_RIGHT_CAMERA_ROLL, Constants.FRONT_RIGHT_CAMERA_PITCH, Constants.FRONT_RIGHT_CAMERA_YAW);
-        Transform3d frontRightTransform = new Transform3d(Constants.FRONT_RIGHT_CAMERA_X, Constants.FRONT_RIGHT_CAMERA_Y, Constants.FRONT_RIGHT_CAMERA_Z, frontRightRotation);
-
-        Rotation3d frontLeftRotation = new Rotation3d(Constants.FRONT_LEFT_CAMERA_ROLL, Constants.FRONT_LEFT_CAMERA_PITCH, Constants.FRONT_LEFT_CAMERA_YAW);
-        Transform3d frontLeftTransform = new Transform3d(Constants.FRONT_LEFT_CAMERA_X, Constants.FRONT_LEFT_CAMERA_Y, Constants.FRONT_LEFT_CAMERA_Z, frontLeftRotation);
-
-        Rotation3d backRotation = new Rotation3d(Constants.BACK_CAMERA_ROLL, Constants.BACK_CAMERA_PITCH, Constants.BACK_CAMERA_YAW);
-        Transform3d backTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, backRotation);
-
-        return new VisionIO[]{
-                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform, false),
-                new LimelightIO(Constants.FRONT_RIGHT_CAMERA_NAME, frontRightTransform, false),
-                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform, true),
-
-        };
-    }
+//
+//    @Override
+//    public LedIo createLedIo() {
+//        return new LedCandleIo(new CANdle(1, DRIVETRAIN_CAN_BUS.getName()));
+//    }
+//
+//    @Override
+//    public VisionIO[] createVisionIo() {
+//
+//        Rotation3d frontRightRotation = new Rotation3d(Constants.FRONT_RIGHT_CAMERA_ROLL, Constants.FRONT_RIGHT_CAMERA_PITCH, Constants.FRONT_RIGHT_CAMERA_YAW);
+//        Transform3d frontRightTransform = new Transform3d(Constants.FRONT_RIGHT_CAMERA_X, Constants.FRONT_RIGHT_CAMERA_Y, Constants.FRONT_RIGHT_CAMERA_Z, frontRightRotation);
+//
+//        Rotation3d frontLeftRotation = new Rotation3d(Constants.FRONT_LEFT_CAMERA_ROLL, Constants.FRONT_LEFT_CAMERA_PITCH, Constants.FRONT_LEFT_CAMERA_YAW);
+//        Transform3d frontLeftTransform = new Transform3d(Constants.FRONT_LEFT_CAMERA_X, Constants.FRONT_LEFT_CAMERA_Y, Constants.FRONT_LEFT_CAMERA_Z, frontLeftRotation);
+//
+//        Rotation3d backRotation = new Rotation3d(Constants.BACK_CAMERA_ROLL, Constants.BACK_CAMERA_PITCH, Constants.BACK_CAMERA_YAW);
+//        Transform3d backTransform = new Transform3d(Constants.BACK_CAMERA_X, Constants.BACK_CAMERA_Y, Constants.BACK_CAMERA_Z, backRotation);
+//
+//        return new VisionIO[]{
+//                new LimelightIO(Constants.FRONT_LEFT_CAMERA_NAME, frontLeftTransform, false),
+//                new LimelightIO(Constants.FRONT_RIGHT_CAMERA_NAME, frontRightTransform, false),
+//                new LimelightIO(Constants.BACK_CAMERA_NAME, backTransform, true),
+//
+//        };
+//    }
 }

@@ -154,9 +154,9 @@ public class CommandFactory {
 
     public Command grabCoral() {
         return Commands.sequence(
-                superStructure.goToPositions(RobotMode.CORAL_STATION),
-                grabber.grabCoral(),
-                superStructure.goToDefaultPositions()
+//                superStructure.goToPositions(RobotMode.CORAL_STATION),
+                grabber.grabCoral()
+//                superStructure.goToDefaultPositions()
         );
     }
 
@@ -168,10 +168,12 @@ public class CommandFactory {
     }
 
     public Command groundIntakeCoral() {
-        return Commands.deadline(
-                groundIntake.grabCoral(),
-                groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
-        );
+        return Commands.run(()-> groundIntake.grabCoral()).alongWith(Commands.print("It got here"));
+//        Commands.run(
+//               deadline(
+//                groundIntake.grabCoral()//,
+//                //groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
+//        );
     }
 
     public Command handoffCoral() {

@@ -47,8 +47,8 @@ public class RobotContainer {
 
     @NotLogged
     private final CommandXboxController driverController = new CommandXboxController(0);
-    @NotLogged
-    private final CommandXboxController operatorController = new CommandXboxController(1);
+//    @NotLogged
+//    private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotMode = RobotMode.CORAL_LEVEL_1;
 
@@ -125,42 +125,45 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode, driverController.rightTrigger(),
-                this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
+//        driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotMode, driverController.rightTrigger(),
+//                this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
-        driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(), grabber::isGamePieceDetected));
-        driverController.leftBumper().onTrue(commandFactory.handoffCoral());
-        driverController.back().onTrue(drivetrain.resetFieldOriented());
-        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
-
-        driverController.b().whileTrue(grabber.eject());
-
-        operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
-        operatorController.leftBumper().onFalse(climber.stow());
-        driverController.a().onFalse(climber.stow());
-        driverController.y().and(operatorController.leftBumper())
-                .onTrue(climber.climb()
-                        .alongWith(
-                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
-                        )
-                        .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+        driverController.leftTrigger().onTrue(
+//                Commands.either(Commands.idle(),
+                        commandFactory.grabCoral());
+//                        , grabber::isGamePieceDetected));
+        //driverController.leftBumper().onTrue(commandFactory.handoffCoral());
+        driverController.x().whileTrue(grabber.eject());
+//        driverController.back().onTrue(drivetrain.resetFieldOriented());
+//        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
+//
+//        driverController.b().whileTrue(grabber.eject());
+//
+//        operatorController.leftBumper().whileTrue(climber.arm()
+//                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+//        operatorController.leftBumper().onFalse(climber.stow());
+//        driverController.a().onFalse(climber.stow());
+//        driverController.y().and(operatorController.leftBumper())
+//                .onTrue(climber.climb()
+//                        .alongWith(
+//                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
+//                        )
+//                        .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
         new Trigger(groundIntake::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
-        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));
-        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
-        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
-        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
-        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
-
-        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
-        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
-        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
-        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+//        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));
+//        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
+//        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+//        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+//        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
+//
+//        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+//        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+//        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+//        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
 
         // Test code for SysID
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));

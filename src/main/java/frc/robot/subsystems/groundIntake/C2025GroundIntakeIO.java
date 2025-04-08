@@ -18,11 +18,11 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
             Units.degreesToRadians(0.0), Units.degreesToRadians(0.0)
     );
 
-    // TODO Confirm I did the INTAKE_GEAR_RATIO correctly, get PIVOT_GEAR_RATIO, and proximity sensor threshold/hystereis
     private final double INTAKE_GEAR_RATIO = 10.0;
     private final double PIVOT_GEAR_RATIO = 0.0;
-    private final double PROXIMITY_THRESHOLD = 0.0;
-    private final double PROXIMITY_HYSTERESIS = 0.0;
+    //TODO figure out actual proximity values
+    private final double PROXIMITY_THRESHOLD = 0.05;
+    private final double PROXIMITY_HYSTERESIS = 1.0;
 
     private final TalonFX pivotMotor;
     private final TalonFX intakeMotor;
@@ -43,8 +43,8 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
 
         // Proximity Sensor config
         CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
-        canRangeConfig.ProximityParams.ProximityThreshold = PROXIMITY_THRESHOLD;
-        canRangeConfig.ProximityParams.ProximityHysteresis = PROXIMITY_HYSTERESIS;
+        canRangeConfig.ProximityParams.ProximityThreshold = Units.inchesToMeters(PROXIMITY_THRESHOLD);
+        canRangeConfig.ProximityParams.ProximityHysteresis = Units.inchesToMeters(PROXIMITY_HYSTERESIS);
         gamePieceDetector.getConfigurator().apply(canRangeConfig);
 
         // CANCoder config
@@ -82,11 +82,6 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
     }
 
     @Override
-    public GroundIntake.Constants getConstants() {
-        return CONSTANTS;
-    }
-
-    @Override
     public void updateInputs(GroundIntakeInputs inputs) {
         // Pivot Motor
         inputs.pivotCurrentVelocity = Units.rotationsToRadians(pivotMotor.getVelocity().getValueAsDouble());
@@ -102,6 +97,11 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
         inputs.intakeCurrentDraw = intakeMotor.getSupplyCurrent().getValueAsDouble();
 
         inputs.gamePieceDetected = gamePieceDetector.getIsDetected().getValue().booleanValue();
+    }
+
+    @Override
+    public GroundIntake.Constants getConstants() {
+        return CONSTANTS;
     }
 
     // Pivot Motor
