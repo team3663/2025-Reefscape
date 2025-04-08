@@ -136,7 +136,7 @@ public class RobotContainer {
         driverController.x().whileTrue(groundIntake.eject());
 
         driverController.back().onTrue(drivetrain.resetFieldOriented());
-        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
+        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()).alongWith(groundIntake.zeroPivot()));
 
         driverController.b().whileTrue(grabber.eject());
 
