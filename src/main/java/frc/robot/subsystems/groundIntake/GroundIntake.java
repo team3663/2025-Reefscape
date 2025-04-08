@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 @Logged
 public class GroundIntake extends SubsystemBase {
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(2.0);
+
     private final GroundIntakeIO io;
     private final Constants constants;
     private final GroundIntakeInputs inputs = new GroundIntakeInputs();
@@ -34,11 +35,7 @@ public class GroundIntake extends SubsystemBase {
     }
 
     public Command stop() {
-        return runOnce(() -> {
-            targetPivotPosition = 0.0;
-            io.stopPivot();
-            io.stopIntake();
-        });
+        return runOnce(this::stopIntakeInternal);
     }
 
     public boolean isGamePieceDetected() {
@@ -84,20 +81,20 @@ public class GroundIntake extends SubsystemBase {
     }
 
     private Command withVoltage(double voltage) {
-        return runEnd(() -> {
+        return Commands.runEnd(() -> {
             targetVoltage = voltage;
-            io.setTargetVoltageIntake(voltage);
+            io.setTargetVoltageIntake(targetVoltage);
         }, this::stopIntakeInternal);
     }
 
     public Command eject() {
-        return withVoltage(-6.0);
+        return Commands.run(() -> withVoltage(-2.0));
     }
 
     public Command grabCoral() {
         Debouncer[] debouncerHolder = new Debouncer[1];
 
-        return withVoltage(6.0)
+        return withVoltage(2.0)
                 .withDeadline(
                         Commands.sequence(
                                 Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.06)),

@@ -48,8 +48,8 @@ public class RobotContainer {
 
     @NotLogged
     private final CommandXboxController driverController = new CommandXboxController(0);
-    @NotLogged
-    private final CommandXboxController operatorController = new CommandXboxController(1);
+//    @NotLogged
+//    private final CommandXboxController operatorController = new CommandXboxController(1);
 
     private RobotMode robotModeReef = RobotMode.CORAL_LEVEL_1;
     private boolean isCSWithCoral = false;
