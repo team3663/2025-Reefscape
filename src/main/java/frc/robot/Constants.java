@@ -200,8 +200,8 @@ public class Constants {
         public static final double WRIST_MOVING_OFFSET = Units.degreesToRadians(10.0);
 
         public static final double ELEVATOR_CLIMB_POSITION = 0.0;
-        public static final double SHOULDER_CLIMB_ANGLE = Units.degreesToRadians(0.0);
-        public static final double WRIST_CLIMB_ANGLE = Units.degreesToRadians(90.0);
+        public static final double SHOULDER_CLIMB_ANGLE = Units.degreesToRadians(180.0-15.0);
+        public static final double WRIST_CLIMB_ANGLE = Units.degreesToRadians(-80.0);
 
         // Shoulder angle when we release the algae to go into the net
         public static final double NET_RELEASE_ANGLE = Units.degreesToRadians(97);
