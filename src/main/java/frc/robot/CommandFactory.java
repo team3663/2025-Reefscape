@@ -122,11 +122,10 @@ public class CommandFactory {
                                DoubleSupplier xVelocitySupplier,
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier,
                                BooleanSupplier leftShift, BooleanSupplier rightShift) {
-        return Commands.either(
-                        Commands.parallel(
-                                drivetrain.goToPosition(() -> shiftTargetBranch(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), () -> leftShift.getAsBoolean(), () -> rightShift.getAsBoolean()),
+        return Commands.either(Commands.parallel(
+                                drivetrain.goToPosition(() -> shiftTargetBranch(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), leftShift, rightShift),
                                                 () -> robotMode.get() == RobotMode.ALGAE_NET)
-                                        .andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
+                                        .until(() -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
                                                 () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
                                                 () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
@@ -143,13 +142,13 @@ public class CommandFactory {
                         () -> shouldAlignToReef(robotMode.get())
                 )
                 .alongWith(
-                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) && (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()))).andThen(
+                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
+                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)).andThen(
                                         Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
                                                 Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
                                                 () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
                                 Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
-                                () -> robotMode.get().isPlacingMode())
-                );
+                                () -> robotMode.get().isPlacingMode()));
     }
 
     public Command doneAligning(Supplier<RobotMode> robotMode,
