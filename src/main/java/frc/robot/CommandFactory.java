@@ -128,19 +128,25 @@ public class CommandFactory {
                                         () -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(
                                         doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
+                                                () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
+                                                () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
+                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
+                                                () -> robotMode.get().getWristAngle())
+                                        .until(() -> drivetrain.getPose().getTranslation().getDistance(
+                                                getClosestBranch(drivetrain.getPose(), robotMode.get()).getTranslation()
+                                        ) < Units.feetToMeters(1.0))
+                                        .andThen(
+                                                superStructure.followPositions(
+                                                        () -> robotMode.get().getElevatorHeight(),
                                         () -> {
-                                            if (drivetrain.atTargetPosition())
-                                                return robotMode.get().getElevatorHeight();
-                                            return Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT);
-                                        },
-                                        () -> {
-                                            if (drivetrain.atTargetPosition())
+                                            if (atY(drivetrain.getPose(), targetPose[0]))
                                                 return robotMode.get().getShoulderAngle();
                                             return MathUtil.clamp(robotMode.get().getShoulderAngle(),
                                                     Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
                                                     Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET);
                                         },
-                                        () -> robotMode.get().getWristAngle())
+                                                        () -> robotMode.get().getWristAngle()))
                         ),
                         drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
                                 .alongWith(superStructure.followPositions(robotMode, readyToPlace)),
@@ -158,6 +164,11 @@ public class CommandFactory {
                                         () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)), Commands.either(grabber.grabAlgae(), grabber.grabCoral(),
                                 () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE), () -> robotMode.get().isPlacingMode())
                 );
+    }
+
+    public boolean atY(Pose2d curr, Pose2d target) {
+        Pose2d diff = target.relativeTo(curr);
+        return diff.getY() < Units.inchesToMeters(2.0);
     }
 
     public Command doneAligning(Supplier<RobotMode> robotMode,
