@@ -218,7 +218,7 @@ public class SuperStructure extends SubsystemBase {
         DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
-        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle,()-> robotMode.get() ==RobotMode.ALGAE_NET);
+        return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle, () -> robotMode.get() == RobotMode.ALGAE_NET);
     }
 
     public Command goToPositions(RobotMode robotMode) {

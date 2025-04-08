@@ -126,8 +126,8 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
-                this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity,
-                driverController.povLeft(), driverController.povRight()));
+                driverController.leftBumper(), this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity,
+                driverController.povUp()));
 
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),

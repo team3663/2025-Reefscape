@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.Drivetrain;
@@ -18,6 +19,8 @@ import frc.robot.utility.Gamepiece;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 public class CommandFactory {
     private final Drivetrain drivetrain;
@@ -44,6 +47,21 @@ public class CommandFactory {
         this.climber = climber;
         this.led = led;
         this.superStructure = superStructure;
+    }
+
+    public Pose2d shiftBranch(Pose2d robotPose, boolean shift) {
+        if (!shift) return robotPose;
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+            int id = Constants.BLUE_BRANCH_POSES.indexOf(robotPose);
+            if (id == -1) return robotPose;
+            if (id % 2 == 0) return Constants.BLUE_BRANCH_POSES_SHIFTED_RIGHT.get(id);
+            return Constants.BLUE_BRANCH_POSES_SHIFTED_LEFT.get(id);
+        } else {
+            int id = Constants.RED_BRANCH_POSES.indexOf(robotPose);
+            if (id == -1) return robotPose;
+            if (id % 2 == 0) return Constants.RED_BRANCH_POSES_SHIFTED_RIGHT.get(id);
+            return Constants.RED_BRANCH_POSES_SHIFTED_LEFT.get(id);
+        }
     }
 
     public Pose2d getClosestBranch(Pose2d robotPose, RobotMode robotMode) {
@@ -90,40 +108,23 @@ public class CommandFactory {
 
     public Boolean shouldAlignToReef(RobotMode robotMode) {
         return SmartDashboard.getBoolean("Auto Reef", true) &&
-                robotMode != RobotMode.ALGAE_PROCESSOR && robotMode != RobotMode.ALGAE_PICKUP_GROUND;
-    }
-
-    public Pose2d shiftTargetBranch(Supplier<Pose2d> targetPose, BooleanSupplier leftShift, BooleanSupplier rightShift) {
-        if (DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == DriverStation.Alliance.Red)) {
-            int branchIndex = Constants.RED_BRANCH_POSES.indexOf(targetPose.get());
-            if (branchIndex == -1) return targetPose.get();
-            if (leftShift.getAsBoolean()) {
-                if (branchIndex % 2 != 0) branchIndex--;
-                return Constants.RED_BRANCH_POSES.get(branchIndex);
-            } else if (rightShift.getAsBoolean()) {
-                if (branchIndex % 2 == 0) branchIndex++;
-                return Constants.RED_BRANCH_POSES.get(branchIndex);
-            } else return targetPose.get();
-        } else {
-            int branchIndex = Constants.BLUE_BRANCH_POSES.indexOf(targetPose.get());
-            if (branchIndex == -1) return targetPose.get();
-            if (leftShift.getAsBoolean()) {
-                if (branchIndex % 2 != 0) branchIndex--;
-                return Constants.BLUE_BRANCH_POSES.get(branchIndex);
-            } else if (rightShift.getAsBoolean()) {
-                if (branchIndex % 2 == 0) branchIndex++;
-                return Constants.BLUE_BRANCH_POSES.get(branchIndex);
-            } else return targetPose.get();
-        }
+                robotMode != RobotMode.ALGAE_PROCESSOR && robotMode != RobotMode.ALGAE_PICKUP_GROUND && robotMode != RobotMode.ALGAE_NET;
     }
 
     public Command alignToReef(Supplier<RobotMode> robotMode,
                                BooleanSupplier readyToPlace,
+                               BooleanSupplier override,
                                DoubleSupplier xVelocitySupplier,
                                DoubleSupplier yVelocitySupplier, DoubleSupplier angularVelocitySupplier,
-                               BooleanSupplier leftShift, BooleanSupplier rightShift) {
-        return Commands.either(Commands.parallel(
-                                drivetrain.goToPosition(() -> shiftTargetBranch(() -> getClosestBranch(drivetrain.getPose(), robotMode.get()), leftShift, rightShift),
+                               BooleanSupplier shift) {
+        Pose2d[] targetPose = new Pose2d[]{new Pose2d()};
+        RobotMode[] prevRobotMode = new RobotMode[]{robotMode.get()};
+        return Commands.either(Commands.parallel(runOnce(() -> new Trigger(() -> shift.getAsBoolean() || prevRobotMode[0] != robotMode.get()).onTrue(
+                                        runOnce(() -> {
+                                            targetPose[0] = shiftBranch(getClosestBranch(drivetrain.getPose(), robotMode.get()), shift.getAsBoolean());
+                                            prevRobotMode[0] = robotMode.get();
+                                        }))),
+                                drivetrain.goToPosition(() -> targetPose[0],
                                                 () -> robotMode.get() == RobotMode.ALGAE_NET)
                                         .until(() -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
@@ -132,18 +133,17 @@ public class CommandFactory {
                                                         Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
                                                         Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
                                                 () -> robotMode.get().getWristAngle())
-                                        .until(() -> drivetrain.getPose().getTranslation().getDistance(
-                                                getClosestBranch(drivetrain.getPose(), robotMode.get()).getTranslation()
-                                        ) < Units.feetToMeters(1.0))
-                                        .andThen(superStructure.followPositions(robotMode))
+
                         ),
                         drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
                                 .alongWith(superStructure.followPositions(robotMode)),
                         () -> shouldAlignToReef(robotMode.get())
-                )
+                ).beforeStarting(runOnce(() -> targetPose[0] = shiftBranch(getClosestBranch(drivetrain.getPose(), robotMode.get()), shift.getAsBoolean())))
                 .alongWith(
-                        Commands.either(Commands.waitUntil(() -> readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
-                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)).andThen(
+                        Commands.either(Commands.waitUntil(() -> (readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
+                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)) ||
+                                        (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.ALGAE_NET) ||
+                                        (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.CORAL_LEVEL_1) || override.getAsBoolean()).andThen(
                                         Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
                                                 Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
                                                 () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),

@@ -137,21 +137,9 @@ public class AutoPaths {
 
                     return targetPose;
                 },
-                () -> false,
+                () -> false
                 // Limit the drive speed based on the elevator position
-                () -> {
-                    var elevatorHeight = elevator.getPosition();
-
-                    if (elevatorHeight > ELEVATOR_EXTENDED_UPPER_HEIGHT) {
-                        return ELEVATOR_EXTENDED_MAX_VELOCITY;
-                    } else if (elevatorHeight < ELEVATOR_EXTENDED_LOWER_HEIGHT) {
-                        return drivetrain.getConstants().maxLinearVelocity();
-                    }
-
-                    double t = MathUtil.inverseInterpolate(ELEVATOR_EXTENDED_LOWER_HEIGHT, ELEVATOR_EXTENDED_UPPER_HEIGHT, elevatorHeight);
-
-                    return MathUtil.interpolate(drivetrain.getConstants().maxLinearVelocity(), ELEVATOR_EXTENDED_MAX_VELOCITY, t);
-                }).beforeStarting(() -> intermediateHolder[0] = intermediatePoseSupplier.get());
+        ).beforeStarting(() -> intermediateHolder[0] = intermediatePoseSupplier.get());
     }
 
     /**
