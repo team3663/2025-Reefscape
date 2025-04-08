@@ -36,7 +36,7 @@ public class C2025ArmIO implements ArmIO {
         // CANCoder config
         CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
         canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-        canCoderConfig.MagnetSensor.MagnetOffset = -0.032470703125;
+        canCoderConfig.MagnetSensor.MagnetOffset = -0.029541015625;;
 
         shoulderCanCoder.getConfigurator().apply(canCoderConfig);
 
