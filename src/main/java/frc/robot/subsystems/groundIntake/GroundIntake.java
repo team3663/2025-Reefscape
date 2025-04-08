@@ -81,14 +81,14 @@ public class GroundIntake extends SubsystemBase {
     }
 
     private Command withVoltage(double voltage) {
-        return Commands.runEnd(() -> {
+        return runEnd(() -> {
             targetVoltage = voltage;
             io.setTargetVoltageIntake(targetVoltage);
         }, this::stopIntakeInternal);
     }
 
     public Command eject() {
-        return Commands.run(() -> withVoltage(-2.0));
+        return withVoltage(-2.0);
     }
 
     public Command grabCoral() {
