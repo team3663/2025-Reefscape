@@ -187,7 +187,7 @@ public class C2025RobotFactory implements RobotFactory {
 
     @Override
     public GroundIntakeIO createGroundIntakeIo() {
-        return new C2025GroundIntakeIO(new TalonFX(15, DRIVETRAIN_CAN_BUS), new TalonFX(16, DRIVETRAIN_CAN_BUS), new CANcoder(15), new CANrange(16)) {
+        return new C2025GroundIntakeIO(new TalonFX(15, DRIVETRAIN_CAN_BUS), new TalonFX(16, DRIVETRAIN_CAN_BUS), new CANrange(16)) {
         };
     }
 //

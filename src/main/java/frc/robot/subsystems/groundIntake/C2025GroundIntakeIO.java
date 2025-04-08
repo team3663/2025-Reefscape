@@ -19,14 +19,13 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
     );
 
     private final double INTAKE_GEAR_RATIO = 10.0;
-    private final double PIVOT_GEAR_RATIO = 0.0;
+    private final double PIVOT_GEAR_RATIO = (58.0 / 12.0) * (56.0 / 22.0) * (32.0 / 12.0);
     //TODO figure out actual proximity values
     private final double PROXIMITY_THRESHOLD = 0.05;
     private final double PROXIMITY_HYSTERESIS = 1.0;
 
     private final TalonFX pivotMotor;
     private final TalonFX intakeMotor;
-    private final CANcoder pivotCanCoder;
     private final CANrange gamePieceDetector;
 
     // TODO add sims
@@ -35,10 +34,9 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
     private final VoltageOut voltageRequest = new VoltageOut(0.0);
     private final MotionMagicVoltage positionRequest = new MotionMagicVoltage(0.0);
 
-    public C2025GroundIntakeIO(TalonFX pivotMotor, TalonFX intakeMotor, CANcoder pivotCanCoder, CANrange gamePieceDetector) {
+    public C2025GroundIntakeIO(TalonFX pivotMotor, TalonFX intakeMotor, CANrange gamePieceDetector) {
         this.pivotMotor = pivotMotor;
         this.intakeMotor = intakeMotor;
-        this.pivotCanCoder = pivotCanCoder;
         this.gamePieceDetector = gamePieceDetector;
 
         // Proximity Sensor config
@@ -46,13 +44,6 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
         canRangeConfig.ProximityParams.ProximityThreshold = Units.inchesToMeters(PROXIMITY_THRESHOLD);
         canRangeConfig.ProximityParams.ProximityHysteresis = Units.inchesToMeters(PROXIMITY_HYSTERESIS);
         gamePieceDetector.getConfigurator().apply(canRangeConfig);
-
-        // CANCoder config
-        CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
-        canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-        // TODO Get offset value
-        canCoderConfig.MagnetSensor.MagnetOffset = 0.0;
-        pivotCanCoder.getConfigurator().apply(canCoderConfig);
 
         // Pivot motor
         TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
@@ -66,7 +57,6 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
         pivotConfig.Slot0.kG = 0.0;
         pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-        pivotConfig.Feedback.FeedbackRemoteSensorID = this.pivotCanCoder.getDeviceID();
         pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         pivotConfig.Feedback.RotorToSensorRatio = PIVOT_GEAR_RATIO;
 
@@ -108,6 +98,11 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
     @Override
     public void stopPivot() {
         pivotMotor.setControl(stopRequest);
+    }
+
+    @Override
+    public void resetPivotPosition(double position){
+        pivotMotor.setPosition(Units.radiansToRotations(position));
     }
 
     @Override

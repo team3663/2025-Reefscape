@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.DoubleSupplier;
 
+import static edu.wpi.first.wpilibj2.command.Commands.waitSeconds;
+import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
+
 @Logged
 public class GroundIntake extends SubsystemBase {
     public static final double POSITION_THRESHOLD = Units.degreesToRadians(2.0);
@@ -17,6 +20,7 @@ public class GroundIntake extends SubsystemBase {
     private final Constants constants;
     private final GroundIntakeInputs inputs = new GroundIntakeInputs();
 
+    private boolean pivotZeroed = false;
     private double targetVoltage = 0.0;
     private double targetPivotPosition = 0.0;
 
@@ -61,8 +65,10 @@ public class GroundIntake extends SubsystemBase {
 
     public Command followPositions(DoubleSupplier pivotPosition) {
         return run(() -> {
-            targetPivotPosition = getValidPositionPivot(pivotPosition.getAsDouble());
-            io.setTargetPositionPivot(targetPivotPosition);
+            if (pivotZeroed) {
+                targetPivotPosition = getValidPositionPivot(pivotPosition.getAsDouble());
+                io.setTargetPositionPivot(targetPivotPosition);
+            }
         });
     }
 
@@ -78,6 +84,13 @@ public class GroundIntake extends SubsystemBase {
     private void stopIntakeInternal() {
         targetVoltage = 0.0;
         io.stopIntake();
+    }
+
+    public Command resetPivotPositionToDefault() {
+        return Commands.runOnce(() -> {
+            io.resetPivotPosition(constants.minimumPivotAngle + Units.degreesToRadians(1.0));
+            pivotZeroed = true;
+        });
     }
 
     private Command withVoltage(double voltage) {
@@ -101,6 +114,19 @@ public class GroundIntake extends SubsystemBase {
                                 Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
                         ))
                 .unless(this::isGamePieceDetected);
+    }
+
+    public Command zeroPivot() {
+        return runEnd(() -> {
+            io.setTargetVoltagePivot(1.5);
+            targetPivotPosition = constants.minimumPivotAngle;
+        }, io::stopPivot)
+                .withDeadline(waitUntil(() -> Math.abs(inputs.pivotCurrentVelocity) < 0.01)
+                        .beforeStarting(waitSeconds(0.25))
+                        .andThen(() -> {
+                            io.resetPivotPosition(constants.minimumPivotAngle());
+                            pivotZeroed = true;
+                        }));
     }
 
     public record Constants(double minimumPivotAngle, double maximumPivotAngle) {

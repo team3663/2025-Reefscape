@@ -21,6 +21,10 @@ public interface GroundIntakeIO {
     default void setTargetVoltageIntake(double voltage) {
     }
 
+    default void resetPivotPosition(double position){
+
+    }
+
     default void stopPivot() {
         setTargetVoltagePivot(0.0);
     }
