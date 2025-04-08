@@ -68,7 +68,7 @@ public class RobotContainer {
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure, groundIntake);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw, () -> robotModeReef).ignoringDisable(true));
 
         configureBindings();
 
@@ -107,7 +107,6 @@ public class RobotContainer {
         SmartDashboard.putData("Auto Select", autoChooser);
 
 
-
         // Schedule the selected auto during the autonomous period
         RobotModeTriggers.autonomous().whileTrue(
                 Commands.sequence(
@@ -119,54 +118,57 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Auto Coral Station", false);
 
 
-
         new Trigger(() -> robotModeReef == RobotMode.CORAL_LEVEL_1)
                 .whileTrue(led.setLedColor(Color.kYellow).andThen(Commands.idle(led)));
     }
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
-                driverController.leftBumper(),this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
+                driverController.leftBumper(), this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
                         grabber::isGamePieceDetected));
-                Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(), grabber::isGamePieceDetected));
+
         driverController.leftBumper().onTrue(commandFactory.handoffCoral());
+        driverController.leftTrigger().whileTrue(Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(),
+                groundIntake::isGamePieceDetected));
+        driverController.x().whileTrue(groundIntake.eject());
+
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
         driverController.b().whileTrue(grabber.eject());
 
-        operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(Constants.ArmPositions.ELEVATOR_CLIMB_POSITION,
-                        Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, Constants.ArmPositions.WRIST_CLIMB_ANGLE)));
-        operatorController.leftBumper().onFalse(climber.stow());
-        driverController.a().onFalse(climber.stow());
-        driverController.y().and(operatorController.leftBumper())
-                .onTrue(climber.climb()
-                        .alongWith(
-                                superStructure.followPositions(() -> Constants.ArmPositions.ELEVATOR_CLIMB_POSITION, () -> Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, () -> Constants.ArmPositions.WRIST_CLIMB_ANGLE)
-                        )
-                        .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
+//        operatorController.leftBumper().whileTrue(climber.arm()
+//                .alongWith(superStructure.goToPositions(Constants.ArmPositions.ELEVATOR_CLIMB_POSITION,
+//                        Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, Constants.ArmPositions.WRIST_CLIMB_ANGLE)));
+//        operatorController.leftBumper().onFalse(climber.stow());
+//        driverController.a().onFalse(climber.stow());
+//        driverController.y().and(operatorController.leftBumper())
+//                .onTrue(climber.climb()
+//                        .alongWith(
+//                                superStructure.followPositions(() -> Constants.ArmPositions.ELEVATOR_CLIMB_POSITION, () -> Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, () -> Constants.ArmPositions.WRIST_CLIMB_ANGLE)
+//                        )
+//                        .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
         new Trigger(groundIntake::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
-        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));
-        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
-        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
-        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
-        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
-
-        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
-        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
-        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
-        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
-
-        operatorController.leftTrigger().onTrue(setCSWithCoral(true));
-        operatorController.leftTrigger().onFalse(setCSWithCoral(false));
+//        operatorController.a().onTrue(setRobotMode(RobotMode.ALGAE_PROCESSOR).ignoringDisable(true));
+//        operatorController.y().onTrue(setRobotMode(RobotMode.ALGAE_NET).ignoringDisable(true));
+//        operatorController.x().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_UPPER));
+//        operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
+//        operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
+//
+//        operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
+//        operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
+//        operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));
+//        operatorController.povDown().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_1));
+//
+//        operatorController.leftTrigger().onTrue(setCSWithCoral(true));
+//        operatorController.leftTrigger().onFalse(setCSWithCoral(false));
 
         // Test code for SysID
 //        driverController.leftStick().onTrue(Commands.runOnce(SignalLogger::start));

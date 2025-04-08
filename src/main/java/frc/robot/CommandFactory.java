@@ -157,12 +157,10 @@ public class CommandFactory {
     }
 
     public Command groundIntakeCoral() {
-        return Commands.run(()-> groundIntake.grabCoral()).alongWith(Commands.print("It got here"));
-//        Commands.run(
-//               deadline(
-//                groundIntake.grabCoral()//,
-//                //groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
-//        );
+        return Commands.deadline(
+                groundIntake.grabCoral()//,
+                //groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
+        );
     }
 
     public Command handoffCoral() {
