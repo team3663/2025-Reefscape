@@ -78,33 +78,29 @@ public class RobotContainer {
         autoChooser = new AutoChooser();
 
         // Add options to the shooter
-        autoChooser.addRoutine("FacePlant:D1", autoPaths::facePlantD1);
-        autoChooser.addRoutine("FacePlant:D2", autoPaths::facePlantD2);
+        autoChooser.addRoutine("FacePlant:D1(L4)", autoPaths::facePlantD1L4);
+        autoChooser.addRoutine("FacePlant:D2(L4)", autoPaths::facePlantD2L4);
 
-        autoChooser.addRoutine("ThreeCoral:C1-B1-B2", autoPaths::threeCoralC1B1B2);
-        autoChooser.addRoutine("ThreeCoral:E2-F2-F1", autoPaths::threeCoralE2F2F1);
+        autoChooser.addRoutine("TwoCoral:C1(L4) B1(L4)", autoPaths::twoCoralC1L4B1L4);
+        autoChooser.addRoutine("TwoCoral:E2(L4) F2(L4)", autoPaths::twoCoralE2L4F2L4);
 
-        autoChooser.addRoutine("FourCoral:C1-B1-B1-B2", autoPaths::fourCoralC1B1B1B2);
-        autoChooser.addRoutine("FourCoral:E2-F2-F2-F1", autoPaths::fourCoralE2F2F2F1);
+        autoChooser.addRoutine("ThreeCoral:C1(L4) B1(L4) B2(L4)", autoPaths::threeCoralC1L4B1L4B2L4);
+        autoChooser.addRoutine("ThreeCoral:E2(L4) F2(L4) F1(L4)", autoPaths::threeCoralE2L4F2L4F1L4);
 
-        autoChooser.addRoutine("FourCoral:C2-B1-B2-C1", autoPaths::fourCoralC2B1B2C1);
-        autoChooser.addRoutine("FourCoral:E1-F2-F1-E2", autoPaths::fourCoralE1F2F1E2);
+        autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) A2(L2)", autoPaths::fourCoralC1L4B1L4B2L4A2L2);
+        autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) A1(L2)", autoPaths::fourCoralE2L4F2L4F1L4A1L2);
+
+        autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC1L4B1L4B2L4C1L2);
+        autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE2L4F2L4F1L4E2L2);
+
+        autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B1(L3) B2(L3)", autoPaths::fourCoralC1L4B1L4B1L3B2L3);
+        autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F2(L3) F1(L3)", autoPaths::fourCoralE2L4F2L4F2L3F1L3);
+
+//        autoChooser.addRoutine("FourCoral:C2(L2) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC2L2B1L4B2L4C1L2);
+//        autoChooser.addRoutine("FourCoral:E1(L2) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE1L2F2L4F1L4E2L2);
 
         // Puts auto chooser on the dashboard
         SmartDashboard.putData("Auto Select", autoChooser);
-
-        SmartDashboard.putString("A1 Branch", Constants.BLUE_BRANCH_A1.toString());
-        SmartDashboard.putString("A2 Branch", Constants.BLUE_BRANCH_A2.toString());
-        SmartDashboard.putString("B1 Branch", Constants.BLUE_BRANCH_B1.toString());
-        SmartDashboard.putString("B2 Branch", Constants.BLUE_BRANCH_B2.toString());
-        SmartDashboard.putString("C1 Branch", Constants.BLUE_BRANCH_C1.toString());
-        SmartDashboard.putString("C2 Branch", Constants.BLUE_BRANCH_C2.toString());
-        SmartDashboard.putString("D1 Branch", Constants.BLUE_BRANCH_D1.toString());
-        SmartDashboard.putString("D2 Branch", Constants.BLUE_BRANCH_D2.toString());
-        SmartDashboard.putString("E1 Branch", Constants.BLUE_BRANCH_E1.toString());
-        SmartDashboard.putString("E2 Branch", Constants.BLUE_BRANCH_E2.toString());
-        SmartDashboard.putString("F1 Branch", Constants.BLUE_BRANCH_F1.toString());
-        SmartDashboard.putString("F2 Branch", Constants.BLUE_BRANCH_F2.toString());
 
 
 
@@ -126,7 +122,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
-                driverController.leftBumper(), this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity,
+                driverController.leftBumper(),this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity,
                 driverController.povUp()));
 
         driverController.leftTrigger().whileTrue(
@@ -138,13 +134,14 @@ public class RobotContainer {
         driverController.b().whileTrue(grabber.eject());
 
         operatorController.leftBumper().whileTrue(climber.arm()
-                .alongWith(superStructure.goToPositions(0.0, 0.0, arm.getConstants().maximumWristAngle())));
+                .alongWith(superStructure.goToPositions(Constants.ArmPositions.ELEVATOR_CLIMB_POSITION,
+                        Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, Constants.ArmPositions.WRIST_CLIMB_ANGLE)));
         operatorController.leftBumper().onFalse(climber.stow());
         driverController.a().onFalse(climber.stow());
         driverController.y().and(operatorController.leftBumper())
                 .onTrue(climber.climb()
                         .alongWith(
-                                superStructure.followPositions(() -> 0.0, () -> 0.0, () -> arm.getConstants().maximumWristAngle())
+                                superStructure.followPositions(() -> Constants.ArmPositions.ELEVATOR_CLIMB_POSITION, () -> Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, () -> Constants.ArmPositions.WRIST_CLIMB_ANGLE)
                         )
                         .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 

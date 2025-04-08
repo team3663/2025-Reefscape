@@ -139,7 +139,7 @@ public class Constants {
     public static final List<Pose2d> RED_CORAL_STATION_POSES = List.of(RED_LEFT_NEAR_SIDE_CORAL_STATION, RED_LEFT_FAR_SIDE_CORAL_STATION,
             RED_RIGHT_NEAR_SIDE_CORAL_STATION, RED_RIGHT_FAR_SIDE_CORAL_STATION);
 
-    public static final double NET_DISTANCE_FROM_CENTER_LINE = 0.9670559999999986;
+    public static final double NET_DISTANCE_FROM_CENTER_LINE = Units.inchesToMeters(36.0730709);
     public static final double BLUE_NET_LINE_X = (FIELD.getFieldLength() / 2.0) - NET_DISTANCE_FROM_CENTER_LINE;
     public static final Rotation2d BLUE_NET_ROTATION = Rotation2d.fromDegrees(0.0);
     public static final double[] BLUE_NET_X_RANGE = {4.65, 7.6};
@@ -188,7 +188,7 @@ public class Constants {
     public static class ArmPositions {
         // Coral Station Positions
         // Normal
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(8.311);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(7.811);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
         // With a Blocking Coral
@@ -215,6 +215,12 @@ public class Constants {
         public static final double SHOULDER_MAX_MOVING_OFFSET = Units.degreesToRadians(10.0);
         public static final double WRIST_MOVING_OFFSET = Units.degreesToRadians(10.0);
 
+        public static final double ELEVATOR_CLIMB_POSITION = 0.0;
+        public static final double SHOULDER_CLIMB_ANGLE = Units.degreesToRadians(0.0);
+        public static final double WRIST_CLIMB_ANGLE = Units.degreesToRadians(90.0);
+
+        // Shoulder angle when we release the algae to go into the net
+        public static final double NET_RELEASE_ANGLE = Units.degreesToRadians(97);
     }
 
     // Arm buffers
@@ -243,8 +249,8 @@ public class Constants {
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(20.0);
-    public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
-    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5625);
+    public static final double BACK_CAMERA_YAW = Units.degreesToRadians(200.0);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 4.625);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
 }

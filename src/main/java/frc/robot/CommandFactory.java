@@ -143,19 +143,21 @@ public class CommandFactory {
                                         () -> robotMode.get().getWristAngle())
                         ),
                         drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
-                                .alongWith(superStructure.followPositions(robotMode)),
+                                .alongWith(superStructure.followPositions(robotMode, readyToPlace)),
                         () -> shouldAlignToReef(robotMode.get())
                 ).beforeStarting(runOnce(() -> targetPose[0] = shiftBranch(getClosestBranch(drivetrain.getPose(), robotMode.get()), shift.getAsBoolean())))
                 .alongWith(
                         Commands.either(Commands.waitUntil(() -> (readyToPlace.getAsBoolean() && superStructure.atPosition(robotMode.get()) &&
-                                        (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)) ||
-                                        (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.ALGAE_NET) ||
-                                        (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.CORAL_LEVEL_1) || override.getAsBoolean()).andThen(
-                                        Commands.either(grabber.placeAlgae(), Commands.either(grabber.placeCoralSlow(),
-                                                Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode.get() == RobotMode.CORAL_LEVEL_4),
-                                                () -> robotMode.get() == RobotMode.CORAL_LEVEL_1), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)),
-                                Commands.either(grabber.grabAlgae(), grabber.grabCoral(), () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE),
-                                () -> robotMode.get().isPlacingMode()));
+                                (drivetrain.atTargetPosition() || !shouldAlignToReef(robotMode.get()) || robotMode.get() == RobotMode.ALGAE_PROCESSOR)) ||
+                                (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.ALGAE_NET) ||
+                                (readyToPlace.getAsBoolean() && robotMode.get() == RobotMode.CORAL_LEVEL_1) || override.getAsBoolean()).andThen(
+                                Commands.either(Commands.either(Commands.waitUntil(() -> arm.getShoulderPosition() <= Constants.ArmPositions.NET_RELEASE_ANGLE)
+                                                .andThen(grabber.placeAlgae()), grabber.placeAlgae(), () -> robotMode.get() == RobotMode.ALGAE_NET),
+                                        Commands.either(grabber.placeCoralSlow(), Commands.either(grabber.placeCoralL4(), grabber.placeCoral(),
+                                                () -> robotMode.get() == RobotMode.CORAL_LEVEL_4), () -> robotMode.get() == RobotMode.CORAL_LEVEL_1),
+                                        () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE)), Commands.either(grabber.grabAlgae(), grabber.grabCoral(),
+                                () -> robotMode.get().getGamepiece() == Gamepiece.ALGAE), () -> robotMode.get().isPlacingMode())
+                );
     }
 
     public Command doneAligning(Supplier<RobotMode> robotMode,

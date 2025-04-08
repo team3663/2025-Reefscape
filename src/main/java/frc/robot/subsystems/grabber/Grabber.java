@@ -92,7 +92,7 @@ public class Grabber extends SubsystemBase {
 
     public Command placeAlgae()
     {
-        return withVoltage(10.0).withDeadline(
+        return withVoltage(12.0).withDeadline(
                 Commands.waitUntil(this::getGamePieceNotDetected)
                         .andThen(Commands.waitSeconds(0.25))
         );
@@ -126,5 +126,10 @@ public class Grabber extends SubsystemBase {
 
     public Command placeCoralSlow() {
         return withVoltage(5.0);
+    }
+
+    public Command grabGamepiece(Gamepiece gamepiece)
+    {
+        return gamepiece == Gamepiece.CORAL ? grabCoral() : grabAlgae();
     }
 }

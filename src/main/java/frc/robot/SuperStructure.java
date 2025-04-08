@@ -213,12 +213,20 @@ public class SuperStructure extends SubsystemBase {
      * @param robotMode A supplier for the current RobotMode so it knows where to go
      * @return The command to follow the current position based on the Robot Mode
      */
-    public Command followPositions(Supplier<RobotMode> robotMode) {
+    public Command followPositions(Supplier<RobotMode> robotMode, BooleanSupplier fire) {
         DoubleSupplier targetElevatorHeight = () -> robotMode.get().getElevatorHeight();
-        DoubleSupplier targetShoulderAngle = () -> robotMode.get().getShoulderAngle();
+        DoubleSupplier targetShoulderAngle = () -> {
+            if (robotMode.get() == RobotMode.ALGAE_NET && fire.getAsBoolean())
+                return RobotMode.ALGAE_NET_FIRING.getShoulderAngle();
+            return robotMode.get().getShoulderAngle();
+        };
         DoubleSupplier targetWristAngle = () -> robotMode.get().getWristAngle();
 
         return this.followPositions(targetElevatorHeight, targetShoulderAngle, targetWristAngle, () -> robotMode.get() == RobotMode.ALGAE_NET);
+    }
+
+    public Command followPositions(Supplier<RobotMode> robotMode) {
+        return followPositions(robotMode, () -> false);
     }
 
     public Command goToPositions(RobotMode robotMode) {
