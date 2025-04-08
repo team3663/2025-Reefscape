@@ -130,10 +130,10 @@ public class RobotContainer {
 
         driverController.leftTrigger().onTrue(
 //                Commands.either(Commands.idle(),
-                        commandFactory.grabCoral());
-//                        , grabber::isGamePieceDetected));
+                        commandFactory.groundIntakeCoral());
+//                        , groundIntake::isGamePieceDetected));
         //driverController.leftBumper().onTrue(commandFactory.handoffCoral());
-        driverController.x().whileTrue(grabber.eject());
+        driverController.x().whileTrue(groundIntake.eject());
 //        driverController.back().onTrue(drivetrain.resetFieldOriented());
 //        driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 //
