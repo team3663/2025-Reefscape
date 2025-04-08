@@ -231,8 +231,8 @@ public class Constants {
     public static final String BACK_CAMERA_NAME = "limelight-back";
     public static final double BACK_CAMERA_ROLL = Units.degreesToRadians(0.0);
     public static final double BACK_CAMERA_PITCH = Units.degreesToRadians(20.0);
-    public static final double BACK_CAMERA_YAW = Units.degreesToRadians(180.0);
-    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
-    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.5625);
+    public static final double BACK_CAMERA_YAW = Units.degreesToRadians(200.0);
+    public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 4.625);
+    public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
 }
