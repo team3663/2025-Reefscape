@@ -154,6 +154,7 @@ public class RobotContainer {
         operatorController.b().onTrue(setRobotMode(RobotMode.ALGAE_REMOVE_LOWER));
         operatorController.rightTrigger().onTrue(setRobotMode(RobotMode.ALGAE_PICKUP_GROUND));
 
+        operatorController.rightBumper().onTrue(setRobotMode(RobotMode.CORAL_GROUND_PICKUP));
         operatorController.povUp().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_4));
         operatorController.povLeft().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_3));
         operatorController.povRight().onTrue(setRobotMode(RobotMode.CORAL_LEVEL_2));

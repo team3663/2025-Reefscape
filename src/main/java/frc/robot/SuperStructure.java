@@ -115,6 +115,21 @@ public class SuperStructure extends SubsystemBase {
         return minimumAllowablePos;
     }
 
+    private double getMaximumAllowableShoulderAngle(double currentElevatorPos, double targetElevatorPos) {
+        double maximumAllowablePos = arm.getConstants().maximumShoulderAngle();
+        if (Math.abs(((currentElevatorPos - Constants.ELEVATOR_BUFFER)- Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            maximumAllowablePos = Math.min(maximumAllowablePos, Units.degreesToRadians(180)- Math.asin(((currentElevatorPos-Constants.ELEVATOR_BUFFER) - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+            System.out.println(maximumAllowablePos);
+        }
+        if (Math.abs(((targetElevatorPos- Constants.ELEVATOR_BUFFER) - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()) <= 1) {
+            maximumAllowablePos = Math.min(maximumAllowablePos, Units.degreesToRadians(180)-Math.asin(((targetElevatorPos - Constants.ELEVATOR_BUFFER) - Constants.SHOULDER_BUFFER) / arm.getConstants().shoulderLength()));
+            System.out.println(maximumAllowablePos);
+        }
+        return maximumAllowablePos ;
+    }
+
+
+
     @Override
     public void periodic() {
         targetElevatorMechanism.setLength(elevator.getTargetPosition());
@@ -152,9 +167,10 @@ public class SuperStructure extends SubsystemBase {
                 arm.followPositions(
                         () -> {
                             double shoulderPos = shoulderHaveAlgaePosition(
-                                    Math.max(shoulderPosition.getAsDouble(),
-                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble())),isNet.getAsBoolean());
-
+                                    MathUtil.clamp(shoulderPosition.getAsDouble(),
+                                            getMinimumAllowableShoulderAngle(elevator.getPosition(), elevatorPosition.getAsDouble()),
+                                            getMaximumAllowableShoulderAngle(elevator.getPosition(),elevatorPosition.getAsDouble())),
+                                    isNet.getAsBoolean());
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
                                 return MathUtil.clamp(shoulderPos,

@@ -209,6 +209,8 @@ public class Constants {
     public static final double SHOULDER_BUFFER = Units.inchesToMeters(0.0);
     public static final double WRIST_BUFFER = Units.inchesToMeters(0.0);
 
+    public static final double ELEVATOR_BUFFER=Units.inchesToMeters(5.0);
+
     // Vision camera constants
     // Roll, pitch & yaw values are in radians
     // X, Y & Z translation values are in meters
