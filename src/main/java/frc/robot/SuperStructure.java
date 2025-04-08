@@ -192,12 +192,6 @@ public class SuperStructure extends SubsystemBase {
                 }));
     }
 
-    public Command followPositions(DoubleSupplier elevatorPosition, DoubleSupplier shoulderPosition,
-                                   DoubleSupplier wristPosition, DoubleSupplier groundIntakePosition) {
-        return followPositions(elevatorPosition, shoulderPosition, wristPosition, () -> false)
-                .alongWith(groundIntake.followPositions(groundIntakePosition));
-    }
-
     public Command goToPositions(double elevatorPosition, double shoulderPosition, double wristPosition) {
         return followPositions(() -> elevatorPosition, () -> shoulderPosition, () -> wristPosition)
                 .until(() -> elevator.atPosition(elevatorPosition) && arm.atPositions(shoulderPosition, wristPosition));
@@ -238,8 +232,7 @@ public class SuperStructure extends SubsystemBase {
 
     public Command goToDefaultPositions() {
         return followPositions(() -> Constants.ArmPositions.ELEVATOR_DEFAULT_POSITION, () -> Constants.ArmPositions.SHOULDER_DEFAULT_ANGLE,
-                () -> haveAlgae.getAsBoolean() ? Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE : Constants.ArmPositions.WRIST_DEFAULT_ANGLE,
-                () -> Constants.GroundIntakePositions.DEFAULT_ANGLE);
+                () -> haveAlgae.getAsBoolean() ? Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE : Constants.ArmPositions.WRIST_DEFAULT_ANGLE);
     }
 
     public Command zero() {

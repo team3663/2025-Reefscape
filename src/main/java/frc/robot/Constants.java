@@ -213,7 +213,7 @@ public class Constants {
     public static class GroundIntakePositions {
         // Ground intake pivot positions
         public static final double DEFAULT_ANGLE = 0.0;
-        public static final double INTAKING_ANGLE = 0.0;
+        public static final double INTAKING_ANGLE = Units.degreesToRadians(165.0);
         public static final double HANDOFF_ANGLE = 0.0;
     }
 

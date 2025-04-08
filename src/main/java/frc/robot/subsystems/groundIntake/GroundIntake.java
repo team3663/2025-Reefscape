@@ -6,6 +6,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import java.util.function.DoubleSupplier;
 
@@ -107,18 +108,29 @@ public class GroundIntake extends SubsystemBase {
     public Command grabCoral() {
         Debouncer[] debouncerHolder = new Debouncer[1];
 
-        return withVoltage(2.0)
-                .withDeadline(
-                        Commands.sequence(
-                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.06)),
-                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
-                        ))
-                .unless(this::isGamePieceDetected);
+        return runIntakeAndPivot(6.0, frc.robot.Constants.GroundIntakePositions.INTAKING_ANGLE);
+//                .withDeadline(
+//                        Commands.sequence(
+//                                Commands.runOnce(() -> debouncerHolder[0] = new Debouncer(0.06)),
+//                                Commands.waitUntil(() -> debouncerHolder[0].calculate(isGamePieceDetected()))
+//                        ))
+//                .unless(this::isGamePieceDetected);
+    }
+
+    public Command runIntakeAndPivot(double voltage, double position) {
+        return runEnd(() -> {
+            targetVoltage = voltage;
+            io.setTargetVoltageIntake(targetVoltage);
+            if (pivotZeroed) {
+                targetPivotPosition = getValidPositionPivot(position);
+                io.setTargetPositionPivot(targetPivotPosition);
+            }
+        }, this::stopIntakeInternal);
     }
 
     public Command zeroPivot() {
         return runEnd(() -> {
-            io.setTargetVoltagePivot(1.5);
+            io.setTargetVoltagePivot(-1.5);
             targetPivotPosition = constants.minimumPivotAngle;
         }, io::stopPivot)
                 .withDeadline(waitUntil(() -> Math.abs(inputs.pivotCurrentVelocity) < 0.01)

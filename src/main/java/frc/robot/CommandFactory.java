@@ -157,10 +157,7 @@ public class CommandFactory {
     }
 
     public Command groundIntakeCoral() {
-        return Commands.deadline(
-                groundIntake.grabCoral()//,
-                //groundIntake.followPositions(() -> Constants.GroundIntakePositions.INTAKING_ANGLE)
-        );
+        return groundIntake.grabCoral();
     }
 
     public Command handoffCoral() {
@@ -168,8 +165,7 @@ public class CommandFactory {
                 grabber.grabCoral(),
                 superStructure.followPositions(() -> Constants.ArmPositions.ELEVATOR_HANDOFF_HEIGHT,
                         () -> Constants.ArmPositions.SHOULDER_HANDOFF_ANGLE,
-                        () -> Constants.ArmPositions.WRIST_HANDOFF_ANGLE,
-                        () -> Constants.GroundIntakePositions.HANDOFF_ANGLE).andThen(
+                        () -> Constants.ArmPositions.WRIST_HANDOFF_ANGLE).andThen(
                         Commands.waitUntil(() -> superStructure.atTargetPositions() && groundIntake.atTargetPosition())
                                 .andThen(groundIntake.eject()))
         );

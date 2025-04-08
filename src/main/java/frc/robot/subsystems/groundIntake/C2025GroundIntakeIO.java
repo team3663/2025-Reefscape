@@ -15,14 +15,14 @@ import edu.wpi.first.math.util.Units;
 public class C2025GroundIntakeIO implements GroundIntakeIO {
     // TODO get minimum and maximum angles for pivot
     private static final GroundIntake.Constants CONSTANTS = new GroundIntake.Constants(
-            Units.degreesToRadians(0.0), Units.degreesToRadians(0.0)
+            Units.degreesToRadians(0.0), Units.degreesToRadians(168.0)
     );
 
     private final double INTAKE_GEAR_RATIO = 10.0;
     private final double PIVOT_GEAR_RATIO = (58.0 / 12.0) * (56.0 / 22.0) * (32.0 / 12.0);
     //TODO figure out actual proximity values
-    private final double PROXIMITY_THRESHOLD = 0.05;
-    private final double PROXIMITY_HYSTERESIS = 1.0;
+    private final double PROXIMITY_THRESHOLD = Units.inchesToMeters(0.0);
+    private final double PROXIMITY_HYSTERESIS = Units.inchesToMeters(0.0);
 
     private final TalonFX pivotMotor;
     private final TalonFX intakeMotor;
@@ -41,31 +41,35 @@ public class C2025GroundIntakeIO implements GroundIntakeIO {
 
         // Proximity Sensor config
         CANrangeConfiguration canRangeConfig = new CANrangeConfiguration();
-        canRangeConfig.ProximityParams.ProximityThreshold = Units.inchesToMeters(PROXIMITY_THRESHOLD);
-        canRangeConfig.ProximityParams.ProximityHysteresis = Units.inchesToMeters(PROXIMITY_HYSTERESIS);
+//        canRangeConfig.ProximityParams.ProximityThreshold = Units.inchesToMeters(PROXIMITY_THRESHOLD);
+//        canRangeConfig.ProximityParams.ProximityHysteresis = Units.inchesToMeters(PROXIMITY_HYSTERESIS);
         gamePieceDetector.getConfigurator().apply(canRangeConfig);
 
         // Pivot motor
         TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
         pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        pivotConfig.Voltage.PeakReverseVoltage = -3.0;
+        pivotConfig.Voltage.PeakForwardVoltage = 3.0;
 
-        pivotConfig.Slot0.kV = 0.0;
-        pivotConfig.Slot0.kP = 0.0;
+        pivotConfig.Slot0.kV = 0.25;
+        pivotConfig.Slot0.kP = 10.0;
         pivotConfig.Slot0.kI = 0.0;
         pivotConfig.Slot0.kD = 0.0;
         pivotConfig.Slot0.kG = 0.0;
         pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-        pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        pivotConfig.Feedback.RotorToSensorRatio = PIVOT_GEAR_RATIO;
+        pivotConfig.MotionMagic.MotionMagicCruiseVelocity = Units.degreesToRotations(1000.0);
+        pivotConfig.MotionMagic.MotionMagicAcceleration = Units.degreesToRotations(250.0);
+
+        pivotConfig.Feedback.SensorToMechanismRatio = PIVOT_GEAR_RATIO;
 
         pivotMotor.getConfigurator().apply(pivotConfig);
 
         // Intake motor
         TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
         intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         intakeConfig.Feedback.SensorToMechanismRatio = INTAKE_GEAR_RATIO;
 
         intakeMotor.getConfigurator().apply(intakeConfig);

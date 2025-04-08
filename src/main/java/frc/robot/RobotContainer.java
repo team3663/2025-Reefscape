@@ -69,6 +69,7 @@ public class RobotContainer {
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
         vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw, () -> robotModeReef).ignoringDisable(true));
+        groundIntake.setDefaultCommand(groundIntake.runIntakeAndPivot(0.0, Units.degreesToRadians(5.0)));
 
         configureBindings();
 
@@ -126,9 +127,9 @@ public class RobotContainer {
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
                 driverController.leftBumper(), this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
-        driverController.leftTrigger().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
-                        grabber::isGamePieceDetected));
+//        driverController.leftTrigger().whileTrue(
+//                Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
+//                        grabber::isGamePieceDetected));
 
         driverController.leftBumper().onTrue(commandFactory.handoffCoral());
         driverController.leftTrigger().whileTrue(Commands.either(Commands.idle(), commandFactory.groundIntakeCoral(),
