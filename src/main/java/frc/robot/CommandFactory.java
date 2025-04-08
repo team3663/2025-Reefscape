@@ -124,16 +124,23 @@ public class CommandFactory {
                                             targetPose[0] = shiftBranch(getClosestBranch(drivetrain.getPose(), robotMode.get()), shift.getAsBoolean());
                                             prevRobotMode[0] = robotMode.get();
                                         }))),
-                                drivetrain.goToPosition(() -> targetPose[0],
-                                                () -> robotMode.get() == RobotMode.ALGAE_NET)
-                                        .until(() -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
+                                drivetrain.goToPosition(() -> targetPose[0], () -> robotMode.get() == RobotMode.ALGAE_NET).until(
+                                        () -> !robotMode.get().isPlacingMode() && grabber.isGamePieceDetected()).andThen(
+                                        doneAligning(robotMode, xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)),
                                 superStructure.followPositions(
-                                                () -> Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT),
-                                                () -> MathUtil.clamp(robotMode.get().getShoulderAngle(),
-                                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
-                                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET),
-                                                () -> robotMode.get().getWristAngle())
-
+                                        () -> {
+                                            if (drivetrain.atTargetPosition())
+                                                return robotMode.get().getElevatorHeight();
+                                            return Math.min(robotMode.get().getElevatorHeight(), Constants.ArmPositions.ELEVATOR_MAX_MOVING_HEIGHT);
+                                        },
+                                        () -> {
+                                            if (drivetrain.atTargetPosition())
+                                                return robotMode.get().getShoulderAngle();
+                                            return MathUtil.clamp(robotMode.get().getShoulderAngle(),
+                                                    Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET,
+                                                    Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_MAX_MOVING_OFFSET);
+                                        },
+                                        () -> robotMode.get().getWristAngle())
                         ),
                         drivetrain.drive(xVelocitySupplier, yVelocitySupplier, angularVelocitySupplier)
                                 .alongWith(superStructure.followPositions(robotMode)),
