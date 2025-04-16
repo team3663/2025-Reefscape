@@ -176,7 +176,7 @@ public class SuperStructure extends SubsystemBase {
 
                 elevator.followPosition(() -> {
                     if (elevator.atPosition(elevatorPosition.getAsDouble()) ||
-                            arm.shoulderAtPosition(Units.degreesToRadians(90.0), Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD) ||
+                            arm.shoulderAtPosition(Units.degreesToRadians(90.0), Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.SHOULDER_POSITION_THRESHOLD) ||
                             haveAlgae.getAsBoolean() && arm.shoulderAtPosition(Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE)) {
                         return Math.max(elevatorPosition.getAsDouble(), getMinimumAllowableElevatorPosition(arm.getShoulderPosition(), arm.getWristPosition()));
                     }
@@ -203,7 +203,7 @@ public class SuperStructure extends SubsystemBase {
     }
 
     private double wristHaveAlgaePosition(double position) {
-        return haveAlgae.getAsBoolean() && arm.getShoulderPosition() >= Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE - Arm.POSITION_THRESHOLD &&
+        return haveAlgae.getAsBoolean() && arm.getShoulderPosition() >= Constants.ArmPositions.SHOULDER_ALGAE_MAX_ANGLE - Arm.SHOULDER_POSITION_THRESHOLD &&
                 elevator.getPosition() <= Constants.ArmPositions.ELEVATOR_ALGAE_SAFE_HEIGHT ? Math.min(position, Constants.ArmPositions.WRIST_ALGAE_MAX_ANGLE) : position;
     }
 
