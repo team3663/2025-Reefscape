@@ -17,7 +17,8 @@ import static edu.wpi.first.wpilibj2.command.Commands.waitUntil;
 
 @Logged
 public class Arm extends SubsystemBase {
-    public static final double POSITION_THRESHOLD = Units.degreesToRadians(2.0);
+    public static final double SHOULDER_POSITION_THRESHOLD = Units.degreesToRadians(2.0);
+    public static final double WRIST_POSITION_THRESHOLD = Units.degreesToRadians(3.0);
     private final ArmIO io;
     private final ArmInputs inputs = new ArmInputs();
     private final Constants constants;
@@ -111,7 +112,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atPositions(double shoulderPosition, double wristPosition) {
-        return this.shoulderAtPosition(shoulderPosition, POSITION_THRESHOLD) && this.wristAtPosition(wristPosition, POSITION_THRESHOLD);
+        return this.shoulderAtPosition(shoulderPosition, SHOULDER_POSITION_THRESHOLD) && this.wristAtPosition(wristPosition, WRIST_POSITION_THRESHOLD);
     }
 
     public Command goToPositions(double shoulderPosition, double wristPosition) {
@@ -155,7 +156,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atShoulderTargetPosition() {
-        return shoulderAtPosition(targetShoulderPosition, POSITION_THRESHOLD);
+        return shoulderAtPosition(targetShoulderPosition, SHOULDER_POSITION_THRESHOLD);
     }
 
     public boolean shoulderAtPosition(double position, double threshold) {
@@ -163,7 +164,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean shoulderAtPosition(double position) {
-        return shoulderAtPosition(position, POSITION_THRESHOLD);
+        return shoulderAtPosition(position, SHOULDER_POSITION_THRESHOLD);
     }
 
     public double getWristPosition() {
@@ -171,7 +172,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean atWristTargetPosition() {
-        return wristAtPosition(targetWristPosition, POSITION_THRESHOLD);
+        return wristAtPosition(targetWristPosition, WRIST_POSITION_THRESHOLD);
     }
 
     public boolean wristAtPosition(double position, double threshold) {
