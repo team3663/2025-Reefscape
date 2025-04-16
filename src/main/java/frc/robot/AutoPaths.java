@@ -2,12 +2,14 @@ package frc.robot;
 
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.arm.Arm;
@@ -18,6 +20,7 @@ import frc.robot.subsystems.grabber.Grabber;
 import java.util.Set;
 import java.util.function.Supplier;
 
+@Logged(strategy = Logged.Strategy.OPT_IN)
 public class AutoPaths {
     /**
      * The maximum velocity of the robot when the elevator is extended.
@@ -52,6 +55,7 @@ public class AutoPaths {
      * Smaller distances will result in a sharper curve.
      */
     private static final double PICKUP_AROUND_REEF_INTERMEDIATE_POSE_DISTANCE = Units.feetToMeters(5.0);
+    private static final double PICKUP_ALGAE_REEF_INTERMEDIATE_POSE_DISTANCE = Units.inchesToMeters(4.0);
     /**
      * The distance at which the robot will switch to the target pose when placing around the reef.
      * Smaller distances will result in a sharper curve.
@@ -61,7 +65,9 @@ public class AutoPaths {
     /**
      * The offset from a center reef position used to make sure algae is fully removed from the reef.
      */
-    private static final Transform2d REMOVE_ALGAE_OFFSET = new Transform2d(-Units.feetToMeters(1.0), 0.0, Rotation2d.kZero);
+    private static final Transform2d REMOVE_ALGAE_OFFSET = new Transform2d(-Units.feetToMeters(2.0), 0.0, Rotation2d.kZero);
+
+    private static final Transform2d PLACE_NET_OFFSET = new Transform2d(-Units.feetToMeters(4.0), 0.0, Rotation2d.kZero);
 
     private final Drivetrain drivetrain;
     private final Grabber grabber;
@@ -69,6 +75,9 @@ public class AutoPaths {
     private final Elevator elevator;
     private final SuperStructure superStructure;
     private final AutoFactory autoFactory;
+
+    @Logged
+    private Pose2d goToPositionTarget = new Pose2d();
 
     public AutoPaths(
             Drivetrain drivetrain, Grabber grabber,
@@ -139,10 +148,13 @@ public class AutoPaths {
         Pose2d[] intermediateHolder = new Pose2d[]{null};
 
         return drivetrain.goToPosition(() -> {
+                    Pose2d target;
                     if (intermediateHolder[0] != null && (intermediateHolder[0] = intermediatePoseSupplier.get()) != null)
-                        return intermediateHolder[0];
-
-                    return targetPose;
+                        target = intermediateHolder[0];
+                    else
+                        target = targetPose;
+                    goToPositionTarget = target;
+                    return target;
                 },
                 () -> false,
                 // Limit the drive speed based on the elevator position
@@ -244,6 +256,24 @@ public class AutoPaths {
                 .andThen(Commands.either(grabber.placeCoralL4(), grabber.placeCoral(), () -> robotMode == RobotMode.CORAL_LEVEL_4)
                         .withDeadline(Commands.waitUntil(grabber::getGamePieceNotDetected)))
                 .beforeStarting(() -> targetPoseHolder[0] = alliancePose(blueAllianceTargetPose, redAllianceTargetPose));
+    }
+
+    private Command placeNet(Pose2d blueAllianceTargetPose, Pose2d redAllianceTargetPose, Pose2d blueAllianceIntermediatePose, Pose2d redAllianceIntermediatePose) {
+        Pose2d[] targetPoseHolder = new Pose2d[]{null};
+        Pose2d[] intermediatePoseHolder = new Pose2d[]{null};
+
+        return Commands.defer(() -> goToPosition(targetPoseHolder[0], () -> drivetrain.atPosition(intermediatePoseHolder[0].getTranslation(), PICKUP_ALGAE_REEF_INTERMEDIATE_POSE_DISTANCE) ? null : intermediatePoseHolder[0]), Set.of(drivetrain))
+                .withDeadline(Commands.sequence(
+                        limitedArm(RobotMode.ALGAE_NET).until(() -> drivetrain.atPosition(targetPoseHolder[0].getTranslation(), PLACE_LIMITED_ARM_DISTANCE)),
+                        superStructure.goToPositions(RobotMode.ALGAE_NET),
+                        Commands.waitUntil(() -> drivetrain.atPosition(targetPoseHolder[0].getTranslation(), PLACE_DISTANCE_THRESHOLD))))
+                .andThen(Commands.parallel(superStructure.goToPositions(RobotMode.ALGAE_NET_FIRING),
+                        Commands.waitUntil((()->arm.getShoulderPosition() <= Constants.ArmPositions.NET_RELEASE_ANGLE)).andThen(grabber.placeAlgae())))
+                .andThen(superStructure.goToDefaultPositions().until(() -> elevator.getPosition() < RobotMode.CORAL_LEVEL_3.getElevatorHeight()))
+                .beforeStarting(() -> {
+                    targetPoseHolder[0] = alliancePose(blueAllianceTargetPose, redAllianceTargetPose);
+                    intermediatePoseHolder[0]= alliancePose(blueAllianceIntermediatePose,redAllianceIntermediatePose);
+                });
     }
 
     /**
@@ -525,6 +555,28 @@ public class AutoPaths {
                 goToPosition(
                         Constants.BLUE_CENTER_B.plus(REMOVE_ALGAE_OFFSET),
                         Constants.RED_CENTER_B.plus(REMOVE_ALGAE_OFFSET)
+                ).alongWith(superStructure.goToDefaultPositions())
+        ));
+
+        return routine;
+    }
+
+    public AutoRoutine oneCoralTwoAlgaeD2L4DEA() {
+        AutoRoutine routine = autoFactory.newRoutine("FourCoral:E2(L4) F2(L4) F2(L3) F1(L3)");
+
+        routine.active().onTrue(Commands.sequence(
+                resetOdometry(Constants.BLUE_AUTO_CENTER_STARTING_POSITION, Constants.RED_AUTO_CENTER_STARTING_POSITION),
+                // Place first piece E2-L4
+                zeroAndPlace(Constants.BLUE_BRANCH_D2, Constants.RED_BRANCH_D2, RobotMode.CORAL_LEVEL_4),
+                // Place second piece F2-L4
+                pickup(Constants.BLUE_CENTER_D, Constants.RED_CENTER_D, RobotMode.ALGAE_REMOVE_LOWER),
+                placeNet(Constants.BLUE_NET_POSE, Constants.RED_NET_POSE, Constants.BLUE_CENTER_D.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_D.plus(REMOVE_ALGAE_OFFSET)),
+
+                pickup(Constants.BLUE_CENTER_E, Constants.RED_CENTER_E, RobotMode.ALGAE_REMOVE_UPPER),
+                placeNet(Constants.BLUE_NET_POSE, Constants.RED_NET_POSE, Constants.BLUE_CENTER_E.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_E.plus(REMOVE_ALGAE_OFFSET)),
+                goToPosition(
+                        Constants.BLUE_NET_POSE.plus(PLACE_NET_OFFSET),
+                        Constants.RED_NET_POSE.plus(PLACE_NET_OFFSET)
                 ).alongWith(superStructure.goToDefaultPositions())
         ));
 

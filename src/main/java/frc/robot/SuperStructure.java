@@ -158,8 +158,8 @@ public class SuperStructure extends SubsystemBase {
 
                             if (!elevator.atPosition(elevatorPosition.getAsDouble(), Units.inchesToMeters(4.0)) && !haveAlgae.getAsBoolean())
                                 return MathUtil.clamp(shoulderPos,
-                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL - Arm.POSITION_THRESHOLD,
-                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL + Arm.POSITION_THRESHOLD);
+                                        Units.degreesToRadians(90.0) - Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL,
+                                        Units.degreesToRadians(90.0) + Constants.ArmPositions.SHOULDER_REEF_ANGLE_CORAL);
 
                             return shoulderPos;
                         },

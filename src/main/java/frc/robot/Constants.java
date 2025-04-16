@@ -126,10 +126,10 @@ public class Constants {
     public static final double NET_DISTANCE_FROM_CENTER_LINE = Units.inchesToMeters(36.0730709);
     public static final double BLUE_NET_LINE_X = (FIELD.getFieldLength() / 2.0) - NET_DISTANCE_FROM_CENTER_LINE;
     public static final Rotation2d BLUE_NET_ROTATION = Rotation2d.fromDegrees(0.0);
-    public static final double[] BLUE_NET_X_RANGE = {4.65, 7.6};
+    public static final double[] BLUE_NET_Y_RANGE = {4.65, 7.6};
     public static final double RED_NET_LINE_X = (FIELD.getFieldLength() / 2.0) + NET_DISTANCE_FROM_CENTER_LINE;
     public static final Rotation2d RED_NET_ROTATION = Rotation2d.fromDegrees(180.0);
-    public static final double[] RED_NET_X_RANGE = {0.5, 3.43};
+    public static final double[] RED_NET_Y_RANGE = {0.5, 3.43};
 
     public static final double NET_MAX_SPEED = Units.inchesToMeters(10.0);
 
@@ -154,6 +154,9 @@ public class Constants {
             Units.inchesToMeters(316 - 84), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(316 - 48), Rotation2d.fromDegrees(-90));
+
+    public static final Pose2d BLUE_NET_POSE= new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_NET_POSE= new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(180.0));
 
     public static final Transform2d RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
     public static final Transform2d LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));

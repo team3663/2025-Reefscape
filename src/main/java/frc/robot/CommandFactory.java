@@ -53,7 +53,7 @@ public class CommandFactory {
             if (robotMode == RobotMode.ALGAE_NET) {
                 var blue_line_x = Constants.BLUE_NET_LINE_X;
                 var red_line_x = Constants.RED_NET_LINE_X;
-                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.RED_NET_X_RANGE[0], Constants.RED_NET_X_RANGE[1]);
+                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.RED_NET_Y_RANGE[0], Constants.RED_NET_Y_RANGE[1]);
                 if (Math.abs(robotPose.getX() - blue_line_x) < Math.abs(robotPose.getX() - red_line_x))
                     return new Pose2d(blue_line_x, nearestY, Constants.BLUE_NET_ROTATION);
                 return new Pose2d(red_line_x, nearestY, Constants.RED_NET_ROTATION);
@@ -67,7 +67,7 @@ public class CommandFactory {
             if (robotMode == RobotMode.ALGAE_NET) {
                 var blue_line_x = Constants.BLUE_NET_LINE_X;
                 var red_line_x = Constants.RED_NET_LINE_X;
-                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.BLUE_NET_X_RANGE[0], Constants.BLUE_NET_X_RANGE[1]);
+                var nearestY = MathUtil.clamp(robotPose.getY(), Constants.BLUE_NET_Y_RANGE[0], Constants.BLUE_NET_Y_RANGE[1]);
                 if (Math.abs(robotPose.getX() - blue_line_x) < Math.abs(robotPose.getX() - red_line_x))
                     return new Pose2d(blue_line_x, nearestY, Constants.BLUE_NET_ROTATION);
                 return new Pose2d(red_line_x, nearestY, Constants.RED_NET_ROTATION);

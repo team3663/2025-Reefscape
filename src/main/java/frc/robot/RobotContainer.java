@@ -90,6 +90,8 @@ public class RobotContainer {
         autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) A2(L2)", autoPaths::fourCoralC1L4B1L4B2L4A2L2);
         autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) A1(L2)", autoPaths::fourCoralE2L4F2L4F1L4A1L2);
 
+        autoChooser.addRoutine("OneCoralTwoAlgae:D2(L4) D(A) E)(A)", autoPaths::oneCoralTwoAlgaeD2L4DEA);
+
         autoChooser.addRoutine("FourCoral:C1(L4) B1(L4) B2(L4) C1(L2)", autoPaths::fourCoralC1L4B1L4B2L4C1L2);
         autoChooser.addRoutine("FourCoral:E2(L4) F2(L4) F1(L4) E2(L2)", autoPaths::fourCoralE2L4F2L4F1L4E2L2);
 
