@@ -7,8 +7,8 @@ import frc.robot.utility.Gamepiece;
 public enum RobotMode {
     // TODO: get the actual values of these variables!!
     CORAL_LEVEL_1(Units.inchesToMeters(0.53), Units.degreesToRadians(28.48), Units.degreesToRadians(76.29), Gamepiece.CORAL, true),
-    CORAL_LEVEL_2(Units.inchesToMeters(4.458), Units.degreesToRadians(44.121), Units.degreesToRadians(36.211), Gamepiece.CORAL, true),
-    CORAL_LEVEL_3(Units.inchesToMeters(22.037), Units.degreesToRadians(40.166), Units.degreesToRadians(31.377), Gamepiece.CORAL, true),
+    CORAL_LEVEL_2(Units.inchesToMeters(5.458), Units.degreesToRadians(44.121), Units.degreesToRadians(36.211), Gamepiece.CORAL, true),
+    CORAL_LEVEL_3(Units.inchesToMeters(23.037), Units.degreesToRadians(40.166), Units.degreesToRadians(31.377), Gamepiece.CORAL, true),
     CORAL_LEVEL_4(Units.inchesToMeters(51.522), Units.degreesToRadians(47.109), Units.degreesToRadians(-9.580), Gamepiece.CORAL, true),
     CORAL_LEVEL_4_LIMIT(Units.inchesToMeters(51.522), Units.degreesToRadians(47.109), Units.degreesToRadians(1.580), Gamepiece.CORAL, true),
     ALGAE_PROCESSOR(0, Units.degreesToRadians(7.0), Units.degreesToRadians(70.0), Gamepiece.ALGAE, true),
