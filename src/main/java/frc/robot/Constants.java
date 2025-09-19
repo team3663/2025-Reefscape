@@ -31,7 +31,7 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
-    public static final boolean IS_ANDYMARK = false;
+    public static final boolean IS_ANDYMARK = true;
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
@@ -61,7 +61,8 @@ public class Constants {
     public static final Pose2d RED_BRANCH_A1 = FIELD.getTagPose(7).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_A2 = FIELD.getTagPose(7).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_B1 = FIELD.getTagPose(8).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
-    public static final Pose2d RED_BRANCH_B2 = FIELD.getTagPose(8).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
+    public static final Pose2d RED_BRANCH_B2 = FIELD.getTagPose(8).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
+            .plus(new Transform2d(0, Units.inchesToMeters(2), Rotation2d.kZero));
     public static final Pose2d RED_BRANCH_C1 = FIELD.getTagPose(9).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_C2 = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_D1 = FIELD.getTagPose(10).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
@@ -84,7 +85,7 @@ public class Constants {
     public static final Pose2d BLUE_BRANCH_A2 = FIELD.getTagPose(18).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d BLUE_BRANCH_B1 = FIELD.getTagPose(17).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d BLUE_BRANCH_B2 = FIELD.getTagPose(17).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
-            .plus(new Transform2d(0,Units.inchesToMeters(1.0), Rotation2d.kZero));
+            .plus(new Transform2d(0,Units.inchesToMeters(2.0), Rotation2d.kZero));
     public static final Pose2d BLUE_BRANCH_C1 = FIELD.getTagPose(22).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d BLUE_BRANCH_C2 = FIELD.getTagPose(22).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d BLUE_BRANCH_D1 = FIELD.getTagPose(21).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
@@ -177,7 +178,7 @@ public class Constants {
     public static class ArmPositions {
         // Coral Station Positions
         // Normal
-        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(6.311);
+        public static final double CORAL_STATION_ELEVATOR_HEIGHT = Units.inchesToMeters(6.06);
         public static final double CORAL_STATION_SHOULDER_ANGLE = Units.degreesToRadians(137.0);
         public static final double CORAL_STATION_WRIST_ANGLE = Units.degreesToRadians(-70.0);
         // With a Blocking Coral
