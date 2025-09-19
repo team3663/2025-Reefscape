@@ -69,7 +69,7 @@ public class Constants {
     public static final Pose2d RED_BRANCH_D2 = FIELD.getTagPose(10).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_E1 = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_E2 = FIELD.getTagPose(11).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
-            .plus(new Transform2d(0,Units.inchesToMeters(1.0), Rotation2d.kZero));;
+            .plus(new Transform2d(0,Units.inchesToMeters(2.0), Rotation2d.kZero));;
     public static final Pose2d RED_BRANCH_F1 = FIELD.getTagPose(6).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_F2 = FIELD.getTagPose(6).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
 
