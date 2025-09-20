@@ -41,6 +41,7 @@ public class Drivetrain extends SubsystemBase {
 
     private Pose2d targetAutoPose = new Pose2d();
     private Pose2d targetTelePose = new Pose2d();
+    private boolean zeroed = false;
 
     public Drivetrain(DrivetrainIO io) {
         this.io = io;
@@ -101,6 +102,10 @@ public class Drivetrain extends SubsystemBase {
         return inputs.pose;
     }
 
+    public boolean isZeroed(){
+        return zeroed;
+    }
+
     public Rotation2d getYaw() {
         return inputs.yaw;
     }
@@ -126,7 +131,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Command resetFieldOriented() {
-        return runOnce(io::resetFieldOriented);
+        return runOnce(() -> {
+            io.resetFieldOriented();
+            zeroed = true;
+        });
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -202,7 +210,10 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Command resetOdometry(Pose2d targetPose) {
-        return runOnce(()-> io.resetOdometry(targetPose));
+        return runOnce(()-> {
+            io.resetOdometry(targetPose);
+            zeroed = true;
+        });
     }
     public boolean atTargetPosition() {
         return atPosition(targetTelePose.getTranslation());

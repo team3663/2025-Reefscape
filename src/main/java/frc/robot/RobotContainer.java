@@ -9,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.epilogue.NotLogged;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,8 @@ import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utility.ControllerHelper;
+
+import java.util.Optional;
 
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
@@ -64,7 +67,20 @@ public class RobotContainer {
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, superStructure);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
-        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, drivetrain::getYaw,()-> robotModeReef).ignoringDisable(true));
+        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, () -> {
+            Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+
+            if (alliance.isPresent() && !drivetrain.isZeroed() && DriverStation.isDisabled()) {
+                if (alliance.get() == DriverStation.Alliance.Red) {
+                    return Constants.RED_STARTING_ROTATION;
+                }
+                else
+                    return Constants.BLUE_STARTING_ROTATION;
+            }
+            else {
+                return drivetrain.getYaw();
+            }
+        },()-> robotModeReef).ignoringDisable(true));
 
         configureBindings();
 

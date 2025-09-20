@@ -57,7 +57,6 @@ public class Constants {
     public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_NEAR_CORAL_STATION_OFFSET);
     public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_FAR_CORAL_STATION_OFFSET);
 
-
     public static final Pose2d RED_BRANCH_A1 = FIELD.getTagPose(7).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_A2 = FIELD.getTagPose(7).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_B1 = FIELD.getTagPose(8).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
@@ -157,6 +156,9 @@ public class Constants {
             Units.inchesToMeters(316 - 72), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(316 - 48), Rotation2d.fromDegrees(-90));
+
+    public static final Rotation2d RED_STARTING_ROTATION = RED_AUTO_CENTER_STARTING_POSITION.getRotation();
+    public static final Rotation2d BLUE_STARTING_ROTATION = BLUE_AUTO_CENTER_STARTING_POSITION.getRotation();
 
     public static final Pose2d BLUE_NET_POSE= new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_NET_POSE= new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(180.0));

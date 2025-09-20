@@ -37,7 +37,7 @@ public class AutoPaths {
      * <p>
      * This is used to limit the extension of the superstructure at the beginning of a path.
      */
-    private static final double PICKUP_LIMITED_ARM_DISTANCE = Units.feetToMeters(4.0);
+    private static final double PICKUP_LIMITED_ARM_DISTANCE = Units.feetToMeters(3.0);
     /**
      * The distance away from the target placement position at which the arm will no longer be limited in motion.
      * <p>
