@@ -37,7 +37,7 @@ public class AutoPaths {
      * <p>
      * This is used to limit the extension of the superstructure at the beginning of a path.
      */
-    private static final double PICKUP_LIMITED_ARM_DISTANCE = Units.feetToMeters(3.0);
+    private static final double PICKUP_LIMITED_ARM_DISTANCE = Units.feetToMeters(4.0);
     /**
      * The distance away from the target placement position at which the arm will no longer be limited in motion.
      * <p>
@@ -494,7 +494,7 @@ public class AutoPaths {
                 // Place fourth piece C1-L2
                 place(Constants.BLUE_BRANCH_C1, Constants.RED_BRANCH_C1, RobotMode.CORAL_LEVEL_2),
                 // Pickup fifth piece
-                pickup(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION),
+                pickupAroundReef(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION, Constants.BLUE_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE),
                 superStructure.goToDefaultPositions()
         ));
 
@@ -521,7 +521,7 @@ public class AutoPaths {
                 // Place fourth piece E2-L2
                 place(Constants.BLUE_BRANCH_E2, Constants.RED_BRANCH_E2, RobotMode.CORAL_LEVEL_2),
                 // Pickup fifth piece
-                pickup(Constants.BLUE_RIGHT_FAR_SIDE_CORAL_STATION, Constants.RED_RIGHT_FAR_SIDE_CORAL_STATION),
+                pickupAroundReef(Constants.BLUE_LEFT_FAR_SIDE_CORAL_STATION, Constants.RED_LEFT_FAR_SIDE_CORAL_STATION, Constants.BLUE_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE, Constants.RED_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE),
                 superStructure.goToDefaultPositions()
         ));
 
