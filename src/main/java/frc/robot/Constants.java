@@ -40,11 +40,11 @@ public class Constants {
 
     private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(16.5), 0.0, Rotation2d.fromDegrees(180));
 
-    public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(14.5), Rotation2d.kZero);
-    public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(19.0), Rotation2d.kZero);
+    public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), Units.inchesToMeters(14.5), Rotation2d.kZero);
+    public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), -Units.inchesToMeters(19.0), Rotation2d.kZero);
 
-    public static final Transform2d RIGHT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(17.5), Rotation2d.kZero);
-    public static final Transform2d RIGHT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(16.5), Rotation2d.kZero);
+    public static final Transform2d RIGHT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), -Units.inchesToMeters(17.5), Rotation2d.kZero);
+    public static final Transform2d RIGHT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), Units.inchesToMeters(16.5), Rotation2d.kZero);
 
     public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_FAR_CORAL_STATION_OFFSET);
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_NEAR_CORAL_STATION_OFFSET);
