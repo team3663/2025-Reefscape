@@ -40,11 +40,11 @@ public class Constants {
 
     private static final Transform2d CENTER_OFFSET = new Transform2d(Units.inchesToMeters(16.5), 0.0, Rotation2d.fromDegrees(180));
 
-    public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(14.5), Rotation2d.kZero);
-    public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(19.0), Rotation2d.kZero);
+    public static final Transform2d LEFT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), Units.inchesToMeters(14.5), Rotation2d.kZero);
+    public static final Transform2d LEFT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), -Units.inchesToMeters(19.0), Rotation2d.kZero);
 
-    public static final Transform2d RIGHT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), -Units.inchesToMeters(17.5), Rotation2d.kZero);
-    public static final Transform2d RIGHT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(15.0), Units.inchesToMeters(16.5), Rotation2d.kZero);
+    public static final Transform2d RIGHT_FAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), -Units.inchesToMeters(17.5), Rotation2d.kZero);
+    public static final Transform2d RIGHT_NEAR_CORAL_STATION_OFFSET = new Transform2d(Units.inchesToMeters(11.5), Units.inchesToMeters(16.5), Rotation2d.kZero);
 
     public static final Pose2d BLUE_LEFT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_FAR_CORAL_STATION_OFFSET);
     public static final Pose2d BLUE_LEFT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(13).get().toPose2d().plus(LEFT_NEAR_CORAL_STATION_OFFSET);
@@ -57,19 +57,18 @@ public class Constants {
     public static final Pose2d RED_RIGHT_NEAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_NEAR_CORAL_STATION_OFFSET);
     public static final Pose2d RED_RIGHT_FAR_SIDE_CORAL_STATION = FIELD.getTagPose(2).get().toPose2d().plus(RIGHT_FAR_CORAL_STATION_OFFSET);
 
-
     public static final Pose2d RED_BRANCH_A1 = FIELD.getTagPose(7).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_A2 = FIELD.getTagPose(7).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_B1 = FIELD.getTagPose(8).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_B2 = FIELD.getTagPose(8).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
-            .plus(new Transform2d(0, Units.inchesToMeters(2), Rotation2d.kZero));
+            .plus(new Transform2d(0, Units.inchesToMeters(2.0), Rotation2d.kZero));
     public static final Pose2d RED_BRANCH_C1 = FIELD.getTagPose(9).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_C2 = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_D1 = FIELD.getTagPose(10).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_D2 = FIELD.getTagPose(10).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_E1 = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_E2 = FIELD.getTagPose(11).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
-            .plus(new Transform2d(0,Units.inchesToMeters(1.0), Rotation2d.kZero));;
+            .plus(new Transform2d(0,Units.inchesToMeters(2.0), Rotation2d.kZero));;
     public static final Pose2d RED_BRANCH_F1 = FIELD.getTagPose(6).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_F2 = FIELD.getTagPose(6).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
 
@@ -136,33 +135,36 @@ public class Constants {
 
     public static final double NET_MAX_SPEED = Units.inchesToMeters(10.0);
 
-    public static final Pose2d BLUE_AUTO_RIGHT_STARTING_POSITION_7FT = new Pose2d(Units.inchesToMeters(300 - 14),
-            Units.inchesToMeters(16.5 + 84), Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_AUTO_RIGHT_STARTING_POSITION_6FT = new Pose2d(Units.inchesToMeters(300 - 14),
+            Units.inchesToMeters(16.5 + 72), Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d(Units.inchesToMeters(300 - 14),
             Units.inchesToMeters(16.5 + 48), Rotation2d.fromDegrees(90));
     public static final Pose2d BLUE_AUTO_CENTER_STARTING_POSITION = new Pose2d(7.244603633880615, 4.07481050491333,
             Rotation2d.fromDegrees(180));
-    public static final Pose2d BLUE_AUTO_LEFT_STARTING_POSITION_7FT = new Pose2d(Units.inchesToMeters(300 - 14),
-            Units.inchesToMeters(316 - 84), Rotation2d.fromDegrees(180));
+    public static final Pose2d BLUE_AUTO_LEFT_STARTING_POSITION_6FT = new Pose2d(Units.inchesToMeters(300 - 14),
+            Units.inchesToMeters(316 - 72), Rotation2d.fromDegrees(180));
     public static final Pose2d BLUE_AUTO_LEFT_STARTING_POSITION_4FT = new Pose2d(Units.inchesToMeters(300 - 14),
             Units.inchesToMeters(316 - 48), Rotation2d.fromDegrees(-90));
 
-    public static final Pose2d RED_AUTO_LEFT_STARTING_POSITION_7FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
-            Units.inchesToMeters(16.5 + 84), Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_AUTO_LEFT_STARTING_POSITION_6FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
+            Units.inchesToMeters(16.5 + 72), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_LEFT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(16.5 + 48), Rotation2d.fromDegrees(90));
     public static final Pose2d RED_AUTO_CENTER_STARTING_POSITION = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             4.07481050491333, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_7FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
-            Units.inchesToMeters(316 - 84), Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_6FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
+            Units.inchesToMeters(316 - 72), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_AUTO_RIGHT_STARTING_POSITION_4FT = new Pose2d((FIELD.getFieldLength() - Units.inchesToMeters(300 - 14)),
             Units.inchesToMeters(316 - 48), Rotation2d.fromDegrees(-90));
+
+    public static final Rotation2d RED_STARTING_ROTATION = RED_AUTO_CENTER_STARTING_POSITION.getRotation();
+    public static final Rotation2d BLUE_STARTING_ROTATION = BLUE_AUTO_CENTER_STARTING_POSITION.getRotation();
 
     public static final Pose2d BLUE_NET_POSE= new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_NET_POSE= new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(180.0));
 
-    public static final Transform2d RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
-    public static final Transform2d LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(0.0, -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
+    public static final Transform2d RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(Units.inchesToMeters(-4.0), Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
+    public static final Transform2d LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(Units.inchesToMeters(-4.0), -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
     public static final Pose2d RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
     public static final Pose2d RED_LEFT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(11).get().toPose2d().plus(LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);
     public static final Pose2d BLUE_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(22).get().toPose2d().plus(RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);

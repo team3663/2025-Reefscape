@@ -56,7 +56,7 @@ public class C2025ClimberIO implements ClimberIO {
 
         CANcoderConfiguration CANcoderConfig = new CANcoderConfiguration();
         CANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint=0.6;
-        CANcoderConfig.MagnetSensor.MagnetOffset= -0.32177734375;
+        CANcoderConfig.MagnetSensor.MagnetOffset= -0.315673828125;
         CANcoderConfig.MagnetSensor.SensorDirection= SensorDirectionValue.Clockwise_Positive;
         coder.getConfigurator().apply(CANcoderConfig);
     }
