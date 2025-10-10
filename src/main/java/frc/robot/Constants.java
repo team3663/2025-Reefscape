@@ -163,6 +163,11 @@ public class Constants {
     public static final Pose2d BLUE_NET_POSE= new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(0));
     public static final Pose2d RED_NET_POSE= new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(180.0));
 
+    // Rotating the robot slightly left for the first algae piece placed in auto
+    public static final Pose2d BLUE_NET_POSE_AUTO = new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(15));
+    // Rotating the robot slightly left for the first algae piece placed in auto
+    public static final Pose2d RED_NET_POSE_AUTO = new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(195.0));
+
     public static final Transform2d RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(Units.inchesToMeters(-4.0), Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
     public static final Transform2d LEFT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET = CENTER_OFFSET.plus(new Transform2d(Units.inchesToMeters(-4.0), -Units.feetToMeters(9.0), Rotation2d.fromDegrees(0.0)));
     public static final Pose2d RED_RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_PICKUP_AROUND_REEF_INTERMEDIATE_POSE_OFFSET);

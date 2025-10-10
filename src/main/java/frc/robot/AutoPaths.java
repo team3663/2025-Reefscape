@@ -568,10 +568,10 @@ public class AutoPaths {
                 zeroAndPlace(Constants.BLUE_BRANCH_D2, Constants.RED_BRANCH_D2, RobotMode.CORAL_LEVEL_4),
                 // Place second piece F2-L4
                 pickup(Constants.BLUE_CENTER_D, Constants.RED_CENTER_D, RobotMode.ALGAE_REMOVE_LOWER),
-                placeNet(Constants.BLUE_NET_POSE, Constants.RED_NET_POSE, Constants.BLUE_CENTER_D.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_D.plus(REMOVE_ALGAE_OFFSET)),
+                placeNet(Constants.BLUE_NET_POSE_AUTO, Constants.RED_NET_POSE_AUTO, Constants.BLUE_CENTER_D.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_D.plus(REMOVE_ALGAE_OFFSET)),
                 superStructure.goToDefaultPositions().until(() -> elevator.getPosition() < RobotMode.CORAL_LEVEL_3.getElevatorHeight()),
                 pickup(Constants.BLUE_CENTER_E, Constants.RED_CENTER_E, RobotMode.ALGAE_REMOVE_UPPER),
-                placeNet(Constants.BLUE_NET_POSE, Constants.RED_NET_POSE, Constants.BLUE_CENTER_E.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_E.plus(REMOVE_ALGAE_OFFSET)),
+                placeNet(Constants.BLUE_NET_POSE_AUTO, Constants.RED_NET_POSE_AUTO, Constants.BLUE_CENTER_E.plus(REMOVE_ALGAE_OFFSET), Constants.RED_CENTER_E.plus(REMOVE_ALGAE_OFFSET)),
                 goToPosition(
                         Constants.BLUE_NET_POSE.plus(PLACE_NET_OFFSET),
                         Constants.RED_NET_POSE.plus(PLACE_NET_OFFSET)
