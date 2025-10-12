@@ -31,7 +31,7 @@ public class Constants {
             .withKP(50);
 
     public static final double DEBOUNCE_TIME = 0.5;
-    public static final boolean IS_ANDYMARK = true;
+    public static final boolean IS_ANDYMARK = false;
     public static final AprilTagFieldLayout FIELD =
             AprilTagFieldLayout.loadField(IS_ANDYMARK ? AprilTagFields.k2025ReefscapeAndyMark : AprilTagFields.k2025ReefscapeWelded);
 
@@ -62,7 +62,8 @@ public class Constants {
     public static final Pose2d RED_BRANCH_B1 = FIELD.getTagPose(8).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_B2 = FIELD.getTagPose(8).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET)
             .plus(new Transform2d(0, Units.inchesToMeters(2.0), Rotation2d.kZero));
-    public static final Pose2d RED_BRANCH_C1 = FIELD.getTagPose(9).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
+    public static final Pose2d RED_BRANCH_C1 = FIELD.getTagPose(9).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET)
+            .plus(new Transform2d(0, Units.inchesToMeters(-1.0), Rotation2d.kZero));
     public static final Pose2d RED_BRANCH_C2 = FIELD.getTagPose(9).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_D1 = FIELD.getTagPose(10).get().toPose2d().plus(LEFT_BRANCH_ARM_OFFSET);
     public static final Pose2d RED_BRANCH_D2 = FIELD.getTagPose(10).get().toPose2d().plus(RIGHT_BRANCH_ARM_OFFSET);
@@ -164,7 +165,7 @@ public class Constants {
     public static final Pose2d RED_NET_POSE= new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(180.0));
 
     // Rotating the robot slightly left for the first algae piece placed in auto
-    public static final Pose2d BLUE_NET_POSE_AUTO = new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(15));
+    public static final Pose2d BLUE_NET_POSE_AUTO = new Pose2d(BLUE_NET_LINE_X,BLUE_NET_Y_RANGE[0]+ Units.feetToMeters(1.5), Rotation2d.fromDegrees(15.0));
     // Rotating the robot slightly left for the first algae piece placed in auto
     public static final Pose2d RED_NET_POSE_AUTO = new Pose2d(RED_NET_LINE_X,RED_NET_Y_RANGE[1]- Units.feetToMeters(1.5), Rotation2d.fromDegrees(195.0));
 
