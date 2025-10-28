@@ -1,9 +1,9 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
 @Logged
@@ -14,6 +14,8 @@ public class LimelightIO implements VisionIO {
 
     private final String cameraName;
     private boolean isIgnoredNet;
+    private VisionInputs visionInputs;
+    private final String objectDetectionCamera = Constants.FRONT_LEFT_CAMERA_NAME;
 
     public LimelightIO(String name, Transform3d transform, boolean isIgnored) {
         this.cameraName = name;
@@ -39,6 +41,7 @@ public class LimelightIO implements VisionIO {
     }
 
     public void updateInputs(VisionInputs visionInputs, double currentYaw) {
+        this.visionInputs = visionInputs;
         // Assume pose will not be updated.
         visionInputs.poseUpdated = false;
 
@@ -80,6 +83,72 @@ public class LimelightIO implements VisionIO {
         double filterEnd = System.currentTimeMillis();
         visionInputs.filterDuration = filterEnd - filterStart;
 
+        LimelightHelpers.RawDetection[] detections = LimelightHelpers.getRawDetections(objectDetectionCamera);
+        for (LimelightHelpers.RawDetection detection : detections){
+            int classId = detection.classId;
+            double txnc = detection.txnc;
+            double tync = detection.tync;
+            double ta = detection.ta;
+            // add corners here if needed
+        }
+
+    }
+
+    Pose2d coralFieldPose = new Pose2d();
+
+    public Pose2d getCoralPose() {
+        Translation2d coralTranslationFromRobot;
+        Pose2d nextCoralFieldPose = coralFieldPose;
+        if (coralInVision()) {
+            Translation2d coralTranslationFromCamera = new Translation2d(
+                    //TODO - I don't think this gives me what I want, add the math aspect
+                    LimelightHelpers.getTXNC(objectDetectionCamera),
+                    -LimelightHelpers.getTYNC(objectDetectionCamera)
+            );
+
+            coralTranslationFromRobot = coralTranslationFromCamera
+                    .plus(new Translation2d(Constants.FRONT_LEFT_CAMERA_X, Constants.FRONT_LEFT_CAMERA_Y))
+                    .rotateBy(new Rotation3d(Constants.FRONT_LEFT_CAMERA_ROLL, Constants.FRONT_LEFT_CAMERA_PITCH, Constants.FRONT_LEFT_CAMERA_YAW).toRotation2d());
+
+            nextCoralFieldPose = visionInputs.estimatedPose.plus(new Transform2d(coralTranslationFromRobot, new Rotation2d()));
+        }
+
+//        Rotation2d slopeAngle = new Rotation2d(
+//                coralTranslationFromRobot.getX(),
+//                coralTranslationFromRobot.getY())
+//                .plus(Rotation2d.fromDegrees(180.0));
+
+        // TODO - Write the Code that add's an offset from point to robot "intake"
+        return nextCoralFieldPose;
+    }
+
+    public Boolean coralInVision(){
+//        return (inputs.validResult
+//                && inputs.targetTxs.length > 0
+//                && inputs.limelightTA > 0.5
+//                && inputs.targetTxs[0] != 0
+//                && inputs.targetTys[0] != 0);
+        // TODO - Understand this and rewrite it to fit our code
+    }
+
+    public double estimateObjectDistance(){
+        // TODO - figure out what ty is and if I need to give something to access this
+        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+
+        // how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightMountAngleDegrees = Constants.FRONT_LEFT_CAMERA_PITCH;
+
+        // distance from the center of the Limelight lens to the floor
+        double limelightLensHeightInches = Constants.FRONT_LEFT_CAMERA_Y;
+
+        // distance from the target to the floor
+        double goalHeightInches = 0.0;
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        //calculate distance
+        return (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
     }
 
     public void robotStateChanged() {
