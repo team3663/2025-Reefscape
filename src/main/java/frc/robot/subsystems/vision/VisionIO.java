@@ -1,10 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import frc.robot.RobotMode;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 public interface VisionIO {
 
     /**
@@ -14,7 +9,7 @@ public interface VisionIO {
     default void updateInputs(VisionInputs inputs, double currentYaw) {}
     default void robotStateChanged() {}
 
-    default boolean isIgnoredIfNotNet(){ return false;}
-
-
+    default boolean isIgnoredIfNotNet() {
+        return false;
+    }
 }
