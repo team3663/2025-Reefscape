@@ -139,17 +139,23 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // Aligning and Placing
         driverController.rightBumper().whileTrue(commandFactory.alignToReef(() -> robotModeReef, driverController.rightTrigger(),
                 driverController.leftBumper(),this::getDrivetrainXVelocity, this::getDrivetrainYVelocity, this::getDrivetrainAngularVelocity));
 
+        // Intaking
         driverController.leftTrigger().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToCoralStation(() -> isCSWithCoral),
                         grabber::isGamePieceDetected));
+
+        // Zeroing
         driverController.back().onTrue(drivetrain.resetFieldOriented());
         driverController.start().onTrue(superStructure.zero().alongWith(climber.zero()));
 
+        // Eject
         driverController.b().whileTrue(grabber.eject());
 
+        // Climbing
         operatorController.leftBumper().whileTrue(climber.arm()
                 .alongWith(superStructure.goToPositions(Constants.ArmPositions.ELEVATOR_CLIMB_POSITION,
                         Constants.ArmPositions.SHOULDER_CLIMB_ANGLE, Constants.ArmPositions.WRIST_CLIMB_ANGLE)));
@@ -162,6 +168,7 @@ public class RobotContainer {
                         )
                         .until(driverController.a()).withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming));
 
+        // Intake LED Flashing
         new Trigger(grabber::isGamePieceDetected).debounce(Constants.DEBOUNCE_TIME).onTrue(led.intakeFlash());
 
         // Operator Controller Robot Mode
