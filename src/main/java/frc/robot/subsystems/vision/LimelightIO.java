@@ -89,7 +89,7 @@ public class LimelightIO implements VisionIO {
             double txnc = detection.txnc;
             double tync = detection.tync;
             double ta = detection.ta;
-            // add corners here if needed
+            // add corners of the object here if needed
         }
 
     }
@@ -123,17 +123,16 @@ public class LimelightIO implements VisionIO {
     }
 
     public Boolean coralInVision(){
-//        return (inputs.validResult
-//                && inputs.targetTxs.length > 0
-//                && inputs.limelightTA > 0.5
-//                && inputs.targetTxs[0] != 0
-//                && inputs.targetTys[0] != 0);
+        return (inputs.validResult
+                && inputs.targetTxs.length > 0
+                && inputs.limelightTA > 0.5
+                && inputs.targetTxs[0] != 0
+                && inputs.targetTys[0] != 0);
         // TODO - Understand this and rewrite it to fit our code
     }
 
     public double estimateObjectDistance(){
-        // TODO - figure out what ty is and if I need to give something to access this
-        double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+        double targetOffsetAngle_Vertical = LimelightHelpers.getTY(objectDetectionCamera);
 
         // how many degrees back is your limelight rotated from perfectly vertical?
         double limelightMountAngleDegrees = Constants.FRONT_LEFT_CAMERA_PITCH;

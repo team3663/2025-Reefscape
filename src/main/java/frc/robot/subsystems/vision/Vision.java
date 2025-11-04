@@ -165,11 +165,11 @@ public class Vision extends SubsystemBase {
         });
     }
 
-    public Command getObjectDistance(){
-
-        return runOnce(()->{
-            // TODO - write this
-        }).
-    }
+//    public Command getObjectDistance(){
+//
+//        return runOnce(()->{
+//            // TODO - write this
+//        })
+//    }
 }
 
