@@ -5,7 +5,7 @@ import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 @Logged
@@ -31,10 +30,10 @@ public class Vision2 extends SubsystemBase {
     private final VisionInputs2 rightInputs;
     private final VisionInputs2 backInputs;
 
-    // current yaw of robot as provided by the pigeon
-    private Rotation2d currentYaw = new Rotation2d();
+    // Current pose of the robot as provided by RobotContainer
+    private Pose2d robotPose = new Pose2d();
     @NotLogged
-    private final List<VisionMeasurement2> acceptedMeasurements = new ArrayList<>();
+    private final ArrayList<VisionMeasurement2> acceptedMeasurements = new ArrayList<>();
     private final double[] ioUpdateDurations;
     private final double[] processingDurations;
 
@@ -78,7 +77,7 @@ public class Vision2 extends SubsystemBase {
     public void periodic() {
         for (int i = 0; i < ios.length; i++) {
             double start = System.currentTimeMillis();
-            ios[i].updateInputs(visionInputs[i], currentYaw.getRadians());
+            ios[i].updateInputs(visionInputs[i], robotPose.getRotation().getRadians());
             double end = System.currentTimeMillis();
             double duration = end - start;
             ioUpdateDurations[i] = duration;
@@ -89,32 +88,32 @@ public class Vision2 extends SubsystemBase {
             VisionInputs2 visionInput = visionInputs[i];
 
             // Skip inputs that haven't updated
-            if (!visionInput.poseUpdated[i]) continue;
+            if (!visionInput.translationUpdated[i]) continue;
 
             double start = System.currentTimeMillis();
-            Translation2d pose = visionInput.poses[i];
+            Translation2d translation = visionInput.translations[i];
             int id = visionInput.ids[i];
 
-            Matrix<N3, N1> stdDev = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(pose.getNorm());
+            Matrix<N3, N1> stdDev = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(translation.getNorm());
 
-            acceptedMeasurements.add(new VisionMeasurement2(pose, id, stdDev));
+            acceptedMeasurements.add(new VisionMeasurement2(translation, id, stdDev));
             double duration = System.currentTimeMillis() - start;
             processingDurations[i] = duration;
         }
     }
 
     /**
-     * @return List of updated vision measurements to be passed to drivetrain.
+     * @return ArrayList of updated vision measurements to be passed to drivetrain.
      */
-    public List<VisionMeasurement2> getVisionMeasurements() {
+    public ArrayList<VisionMeasurement2> getVisionMeasurements() {
         return acceptedMeasurements;
     }
 
     /**
      * @return Command that consumes vision measurements
      */
-    public Command updateValues(Supplier<Rotation2d> yawSupplier) {
-        return run(() -> currentYaw = yawSupplier.get());
+    public Command updateValues(Supplier<Pose2d> robotPose) {
+        return run(() -> this.robotPose = robotPose.get());
     }
 
     /**

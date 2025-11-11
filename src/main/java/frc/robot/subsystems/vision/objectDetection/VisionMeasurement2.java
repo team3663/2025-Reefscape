@@ -14,8 +14,8 @@ public class VisionMeasurement2 {
     @NotLogged
     public Matrix<N3, N1> stdDev;
 
-    public VisionMeasurement2(Translation2d pose, int id, Matrix<N3, N1> stdDev) {
-        this.estimatedTranslation = pose;
+    public VisionMeasurement2(Translation2d translation, int id, Matrix<N3, N1> stdDev) {
+        this.estimatedTranslation = translation;
         this.id = id;
         this.stdDev = stdDev;
     }

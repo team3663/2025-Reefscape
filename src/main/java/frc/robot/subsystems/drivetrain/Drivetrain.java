@@ -209,6 +209,10 @@ public class Drivetrain extends SubsystemBase {
         return goToPosition(targetPose, slowAccel, ()-> io.getConstants().maxLinearVelocity);
     }
 
+    public Command goToPosition(Supplier<Pose2d> targetPose) {
+        return goToPosition(targetPose, () -> false);
+    }
+
     public Command resetOdometry(Pose2d targetPose) {
         return runOnce(()-> {
             io.resetOdometry(targetPose);

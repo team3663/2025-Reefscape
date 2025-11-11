@@ -7,6 +7,7 @@ import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.grabber.GrabberIO;
 import frc.robot.subsystems.led.LedIo;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.objectDetection.VisionIO2;
 
 public interface RobotFactory {
     default DrivetrainIO createDrivetrainIo() {
@@ -41,6 +42,11 @@ public interface RobotFactory {
 
     default VisionIO[] createVisionIo() {
         return new VisionIO[] {
+        };
+    }
+
+    default VisionIO2[] createVisionIo2() {
+        return new VisionIO2[]{
         };
     }
 }

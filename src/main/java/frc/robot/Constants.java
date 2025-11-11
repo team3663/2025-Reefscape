@@ -251,4 +251,10 @@ public class Constants {
     public static final double BACK_CAMERA_X = -Units.inchesToMeters(27.0 / 2.0 - 4.625);
     public static final double BACK_CAMERA_Y = -Units.inchesToMeters(27.0 / 2.0 - 5.125);
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
+
+    public static class ObjectDetection {
+        // TODO: GET ACTUAL VALUES FOR THIS
+        public static final int CORAL = 1;
+        public static final int ALGAE = 0;
+    }
 }

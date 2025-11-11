@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,8 +14,11 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
+import frc.robot.subsystems.vision.objectDetection.Vision2;
+import frc.robot.subsystems.vision.objectDetection.VisionMeasurement2;
 import frc.robot.utility.Gamepiece;
 
+import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -26,6 +30,7 @@ public class CommandFactory {
     private final Grabber grabber;
     private final Climber climber;
     private final Led led;
+    private final Vision2 vision;
     private final SuperStructure superStructure;
 
     public CommandFactory(
@@ -35,6 +40,7 @@ public class CommandFactory {
             Grabber grabber,
             Climber climber,
             Led led,
+            Vision2 vision,
             SuperStructure superStructure
     ) {
         this.drivetrain = drivetrain;
@@ -43,6 +49,7 @@ public class CommandFactory {
         this.grabber = grabber;
         this.climber = climber;
         this.led = led;
+        this.vision = vision;
         this.superStructure = superStructure;
     }
 
@@ -151,6 +158,30 @@ public class CommandFactory {
                                 getClosestCoralStationPosition(drivetrain.getPose()), () -> false)),
                         Commands.none(),
                         () -> SmartDashboard.getBoolean("Auto Coral Station", true)
+                ));
+    }
+
+    public Command alignToNearestGamePiece(Supplier<Integer> id) {
+        Pose2d[] goalPose = new Pose2d[]{null};
+        return Commands.deadline(
+                grabber.grabCoral(),
+                Commands.run(() -> {
+                    ArrayList<VisionMeasurement2> measurements = vision.getVisionMeasurements();
+                    boolean success = false;
+                    for (int i = measurements.size() - 1; i >= 0; i--) {
+                        VisionMeasurement2 m = measurements.get(i);
+                        if (m.id == id.get()) {
+                            Rotation2d rotation = drivetrain.getPose().getTranslation().minus(m.estimatedTranslation).getAngle();
+                            goalPose[0] = new Pose2d(m.estimatedTranslation, rotation);
+                            success = true;
+                            break;
+                        }
+                    }
+                    if (!success) goalPose[0] = null;
+                }).andThen(Commands.either(
+                        Commands.none(),
+                        drivetrain.goToPosition(() -> goalPose[0]),
+                        () -> goalPose[0] == null)
                 ));
     }
 }

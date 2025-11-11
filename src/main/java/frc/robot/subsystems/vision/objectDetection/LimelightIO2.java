@@ -1,16 +1,12 @@
 package frc.robot.subsystems.vision.objectDetection;
 
 import edu.wpi.first.epilogue.Logged;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.vision.VisionIO;
 
 @Logged
-public class LimelightIO2 implements VisionIO {
+public class LimelightIO2 implements VisionIO2 {
     private static final int LIMELIGHT_IMU_EXTERNAL = 0;
     private static final int LIMELIGHT_IMU_FUSED = 1;
     private static final int LIMELIGHT_IMU_INTERNAL = 2;
@@ -19,7 +15,6 @@ public class LimelightIO2 implements VisionIO {
 
     public LimelightIO2(String name, Transform3d transform) {
         this.cameraName = name;
-
 
         // Initially the Limelight IMU should be in FUSED mode, it will change when robot is enabled.
         // NOPE THE ABOVE IS NOT HAPPENING AT ALL
@@ -36,13 +31,13 @@ public class LimelightIO2 implements VisionIO {
                 Units.radiansToDegrees(rotation.getZ()));
     }
 
-    public void updateInputs(VisionInputs2 visionInputs, double currentYaw) {
+    public void updateInputs(VisionInputs2 visionInputs, Pose2d robotPose) {
         // Assume pose will not be updated.
-        visionInputs.poseUpdated = new boolean[]{};
+        visionInputs.translationUpdated = new boolean[]{};
 
         // Give the Limelight our current robot yaw as provided by the Pigeon.
         double orientationStart = System.currentTimeMillis();
-        LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(currentYaw), 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(robotPose.getRotation().getRadians()), 0, 0, 0, 0, 0);
         double orientationEnd = System.currentTimeMillis();
         visionInputs.orientationDuration = orientationEnd - orientationStart;
 
@@ -59,26 +54,26 @@ public class LimelightIO2 implements VisionIO {
         // processed if valid estimate.
         double filterStart = System.currentTimeMillis();
         if (detections.length > 0) {
-            Translation2d[] poses = new Translation2d[detections.length];
+            Translation2d[] translations = new Translation2d[detections.length];
             int[] ids = new int[detections.length];
             boolean[] updated = new boolean[detections.length];
             for (int i = 0; i < detections.length; i++) {
                 LimelightHelpers.RawDetection detection = detections[i];
 
-                double rotation = imuData.robotYaw + Units.degreesToRadians(detection.txnc);
+                double rotation = robotPose.getRotation().getRadians() + Units.degreesToRadians(detection.txnc);
                 Pose3d cameraPose = LimelightHelpers.getCameraPose3d_RobotSpace(cameraName);
                 double r = cameraPose.getZ() * Math.tan(Units.degreesToRadians(detection.tync) + cameraPose.getRotation().getX());
                 double x = r * Math.cos(rotation);
                 double y = r * Math.sin(rotation);
-                Translation2d pose = new Translation2d(x, y);
+                Translation2d translation = robotPose.getTranslation().plus(new Translation2d(x, y));
 
-                poses[i] = pose;
+                translations[i] = translation;
                 ids[i] = detection.classId;
                 updated[i] = true;
             }
-            visionInputs.poses = poses;
+            visionInputs.translations = translations;
             visionInputs.ids = ids;
-            visionInputs.poseUpdated = updated;
+            visionInputs.translationUpdated = updated;
         }
         double filterEnd = System.currentTimeMillis();
         visionInputs.filterDuration = filterEnd - filterStart;
