@@ -19,4 +19,9 @@ public class VisionMeasurement2 {
         this.id = id;
         this.stdDev = stdDev;
     }
+
+    @Override
+    public String toString() {
+        return "#" + id + " @ (" + estimatedTranslation.getX() + ", " + estimatedTranslation.getY() + ") ± " + stdDev;
+    }
 }
