@@ -70,14 +70,6 @@ public class Drivetrain extends SubsystemBase {
                         io::driveSysIdTranslation,
                         null,
                         this));
-        RobotConfig config;
-        try {
-            config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            // Handle exception as needed
-            e.printStackTrace();
-        }
-
         // Configure AutoBuilder last
         AutoBuilder.configure(
                 () -> inputs.pose, // Robot pose supplier

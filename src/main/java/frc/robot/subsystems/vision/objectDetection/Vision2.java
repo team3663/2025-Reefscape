@@ -22,52 +22,26 @@ public class Vision2 extends SubsystemBase {
     private static final InterpolatingMatrixTreeMap<Double, N3, N1> MEASUREMENT_STD_DEV_DISTANCE_MAP = new InterpolatingMatrixTreeMap<>();
 
     @NotLogged
-    private final VisionIO2[] ios;
+    private final VisionIO2 io;
     @NotLogged
-    private final VisionInputs2[] visionInputs;
-
-    private final VisionInputs2 leftInputs;
-    private final VisionInputs2 rightInputs;
-    private final VisionInputs2 backInputs;
+    private final VisionInputs2 visionInput;
 
     // Current pose of the robot as provided by RobotContainer
     private Pose2d robotPose = new Pose2d();
     @NotLogged
     private final ArrayList<VisionMeasurement2> acceptedMeasurements = new ArrayList<>();
-    private final double[] ioUpdateDurations;
-    private final double[] processingDurations;
+    private double ioUpdateDuration;
+    private double[] processingDurations;
 
     static {
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(0.1, VecBuilder.fill(0.05, 0.05, 0.05));
         MEASUREMENT_STD_DEV_DISTANCE_MAP.put(8.0, VecBuilder.fill(3.0, 3.0, 3.0));
     }
 
-    public Vision2(VisionIO2... ios) {
-        this.ios = ios;
+    public Vision2(VisionIO2 io) {
+        this.io = io;
 
-        this.ioUpdateDurations = new double[ios.length];
-        this.processingDurations = new double[ios.length];
-
-        visionInputs = new VisionInputs2[ios.length];
-        for (int i = 0; i < visionInputs.length; i++) {
-            visionInputs[i] = new VisionInputs2();
-        }
-        if (visionInputs.length > 0) {
-            leftInputs = visionInputs[0];
-        } else {
-            leftInputs = new VisionInputs2();
-        }
-        if (visionInputs.length > 1) {
-            rightInputs = visionInputs[1];
-        } else {
-            rightInputs = new VisionInputs2();
-        }
-
-        if (visionInputs.length > 2) {
-            backInputs = visionInputs[2];
-        } else {
-            backInputs = new VisionInputs2();
-        }
+        visionInput = new VisionInputs2();
 
         // Register the command we use to detect when the robot is enabled/disabled.
         RobotModeTriggers.disabled().onChange(updateRobotState());
@@ -75,31 +49,26 @@ public class Vision2 extends SubsystemBase {
 
     @Override
     public void periodic() {
-        for (int i = 0; i < ios.length; i++) {
-            double start = System.currentTimeMillis();
-            ios[i].updateInputs(visionInputs[i], robotPose.getRotation().getRadians());
-            double end = System.currentTimeMillis();
-            double duration = end - start;
-            ioUpdateDurations[i] = duration;
-        }
+        double start = System.currentTimeMillis();
+        io.updateInputs(visionInput, robotPose);
+        double end = System.currentTimeMillis();
+        double duration = end - start;
+        ioUpdateDuration = duration;
 
         acceptedMeasurements.clear();
-        for (int i = 0; i < visionInputs.length; i++) {
-            VisionInputs2 visionInput = visionInputs[i];
-
-            // Skip inputs that haven't updated
-            if (!visionInput.translationUpdated[i]) continue;
-
-            double start = System.currentTimeMillis();
+        // Loop through each of the detected pieces
+        double[] durations = new double[visionInput.ids.length];
+        for (int i = 0; i < visionInput.ids.length; i++) {
+            start = System.currentTimeMillis();
             Translation2d translation = visionInput.translations[i];
             int id = visionInput.ids[i];
 
             Matrix<N3, N1> stdDev = MEASUREMENT_STD_DEV_DISTANCE_MAP.get(translation.getNorm());
 
             acceptedMeasurements.add(new VisionMeasurement2(translation, id, stdDev));
-            double duration = System.currentTimeMillis() - start;
-            processingDurations[i] = duration;
+            durations[i] = System.currentTimeMillis() - start;
         }
+        processingDurations = durations;
     }
 
     /**
@@ -113,7 +82,7 @@ public class Vision2 extends SubsystemBase {
      * @return Command that consumes vision measurements
      */
     public Command updateValues(Supplier<Pose2d> robotPose) {
-        return run(() -> this.robotPose = robotPose.get());
+        return runOnce(() -> this.robotPose = robotPose.get());
     }
 
     /**
@@ -121,10 +90,6 @@ public class Vision2 extends SubsystemBase {
      */
     public Command updateRobotState() {
         // Let all of our IOs know that there has been a change in the robot state.
-        return runOnce(() -> {
-            for (VisionIO2 io : ios) {
-                io.robotStateChanged();
-            }
-        });
+        return runOnce(io::robotStateChanged);
     }
 }

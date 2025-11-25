@@ -22,8 +22,10 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.objectDetection.Vision2;
+import frc.robot.subsystems.vision.objectDetection.VisionMeasurement2;
 import frc.robot.utility.ControllerHelper;
 
+import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 
 @Logged
@@ -62,7 +64,13 @@ public class RobotContainer {
         commandFactory = new CommandFactory(drivetrain, elevator, arm, grabber, climber, led, vision, superStructure);
         autoPaths = new AutoPaths(drivetrain, grabber, superStructure, drivetrain.getAutoFactory(), arm, elevator);
 
-        vision.setDefaultCommand(vision.updateValues(() -> drivetrain.getPose()));
+//        vision.setDefaultCommand(vision.updateValues(() -> drivetrain.getPose()));
+        vision.setDefaultCommand(vision.updateValues(() -> drivetrain.getPose()).alongWith(run(() -> {
+            System.out.println("Measurments = {");
+            for (VisionMeasurement2 measurment : vision.getVisionMeasurements())
+                System.out.println("Vision Measurement = " + measurment);
+            System.out.println("}");
+        })).ignoringDisable(true));
 
 //        vision.setDefaultCommand(vision.consumeVisionMeasurements(drivetrain::addVisionMeasurements, () -> {
 //            Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
@@ -146,7 +154,7 @@ public class RobotContainer {
                         grabber::isGamePieceDetected));
         // Intaking w/ Object Detection
         driverController.x().whileTrue(
-                Commands.either(Commands.idle(), commandFactory.alignToNearestGamePiece(() -> Constants.ObjectDetection.CORAL),
+                Commands.either(Commands.idle(), commandFactory.alignToGamePiece(() -> Constants.ObjectDetection.CORAL),
                         grabber::isGamePieceDetected));
 
         // Zeroing

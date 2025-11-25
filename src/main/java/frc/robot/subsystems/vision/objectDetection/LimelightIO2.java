@@ -31,10 +31,8 @@ public class LimelightIO2 implements VisionIO2 {
                 Units.radiansToDegrees(rotation.getZ()));
     }
 
+    @Override
     public void updateInputs(VisionInputs2 visionInputs, Pose2d robotPose) {
-        // Assume pose will not be updated.
-        visionInputs.translationUpdated = new boolean[]{};
-
         // Give the Limelight our current robot yaw as provided by the Pigeon.
         double orientationStart = System.currentTimeMillis();
         LimelightHelpers.SetRobotOrientation(cameraName, Units.radiansToDegrees(robotPose.getRotation().getRadians()), 0, 0, 0, 0, 0);
@@ -51,29 +49,35 @@ public class LimelightIO2 implements VisionIO2 {
         // Get raw neural detector results
         LimelightHelpers.RawDetection[] detections = LimelightHelpers.getRawDetections(cameraName);
 
+        // Clear out any old data
+        visionInputs.translations = new Translation2d[0];
+        visionInputs.ids = new int[0];
+
         // processed if valid estimate.
         double filterStart = System.currentTimeMillis();
         if (detections.length > 0) {
             Translation2d[] translations = new Translation2d[detections.length];
             int[] ids = new int[detections.length];
-            boolean[] updated = new boolean[detections.length];
             for (int i = 0; i < detections.length; i++) {
                 LimelightHelpers.RawDetection detection = detections[i];
 
+                // TODO: Validate this math
+                // The rotation of the game piece compared to the robot, but relative to the field
                 double rotation = robotPose.getRotation().getRadians() + Units.degreesToRadians(detection.txnc);
                 Pose3d cameraPose = LimelightHelpers.getCameraPose3d_RobotSpace(cameraName);
-                double r = cameraPose.getZ() * Math.tan(Units.degreesToRadians(detection.tync) + cameraPose.getRotation().getX());
+                // The distance away the game piece is from the robot
+                double r = cameraPose.getZ() * (Math.tan(Units.degreesToRadians(detection.tync) + cameraPose.getRotation().getX()));
+                // The x and y position of the game piece, relative to the robot
                 double x = r * Math.cos(rotation);
                 double y = r * Math.sin(rotation);
+                // The absolute position of the game piece
                 Translation2d translation = robotPose.getTranslation().plus(new Translation2d(x, y));
 
                 translations[i] = translation;
                 ids[i] = detection.classId;
-                updated[i] = true;
             }
             visionInputs.translations = translations;
             visionInputs.ids = ids;
-            visionInputs.translationUpdated = updated;
         }
         double filterEnd = System.currentTimeMillis();
         visionInputs.filterDuration = filterEnd - filterStart;

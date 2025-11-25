@@ -45,8 +45,7 @@ public interface RobotFactory {
         };
     }
 
-    default VisionIO2[] createVisionIo2() {
-        return new VisionIO2[]{
-        };
+    default VisionIO2 createVisionIo2() {
+        return null;
     }
 }

@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -161,27 +162,19 @@ public class CommandFactory {
                 ));
     }
 
-    public Command alignToNearestGamePiece(Supplier<Integer> id) {
-        Pose2d[] goalPose = new Pose2d[]{null};
-        return Commands.deadline(
-                grabber.grabCoral(),
-                Commands.run(() -> {
-                    ArrayList<VisionMeasurement2> measurements = vision.getVisionMeasurements();
-                    boolean success = false;
-                    for (int i = measurements.size() - 1; i >= 0; i--) {
-                        VisionMeasurement2 m = measurements.get(i);
-                        if (m.id == id.get()) {
-                            Rotation2d rotation = drivetrain.getPose().getTranslation().minus(m.estimatedTranslation).getAngle();
-                            goalPose[0] = new Pose2d(m.estimatedTranslation, rotation);
-                            success = true;
-                            break;
-                        }
-                    }
-                    if (!success) goalPose[0] = null;
-                }).andThen(Commands.either(
+    public Command alignToGamePiece(Supplier<Integer> id) {
+        return Commands.either(
                         Commands.none(),
-                        drivetrain.goToPosition(() -> goalPose[0]),
-                        () -> goalPose[0] == null)
-                ));
+                drivetrain.goToPosition(this::getTargetForClosestGamePiece),
+                () -> getTargetForClosestGamePiece() == null);
+    }
+
+    private Pose2d getTargetForClosestGamePiece() {
+        ArrayList<VisionMeasurement2> pieceMeasurements = vision.getVisionMeasurements();
+        if (pieceMeasurements.isEmpty()) return null;
+        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
+        Rotation2d rotation = pieceTranslation.minus(drivetrain.getPose().getTranslation()).getAngle();
+        Translation2d offset = new Translation2d(Constants.ObjectDetection.PICKUP_DISTANCE, rotation);
+        return new Pose2d(pieceTranslation.minus(offset), rotation);
     }
 }

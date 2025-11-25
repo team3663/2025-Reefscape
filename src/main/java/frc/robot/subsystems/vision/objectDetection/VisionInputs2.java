@@ -5,9 +5,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 @Logged
 public class VisionInputs2 {
-    public Translation2d[] translations;
-    public int[] ids;
-    public boolean[] translationUpdated;
+    public Translation2d[] translations = new Translation2d[0];
+    public int[] ids = new int[0];
     public double IMUYaw;
     public double orientationDuration;
     public double imuDataDuration;

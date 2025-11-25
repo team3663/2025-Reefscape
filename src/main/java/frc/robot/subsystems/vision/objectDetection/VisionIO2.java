@@ -1,12 +1,14 @@
 package frc.robot.subsystems.vision.objectDetection;
 
+import edu.wpi.first.math.geometry.Pose2d;
+
 public interface VisionIO2 {
 
     /**
-     * @param inputs     - VisionInputs object to update
-     * @param currentYaw - Robot's current yaw in radians.
+     * @param visionInputs     - VisionInputs object to update
+     * @param robotPose - Robot's current position.
      */
-    default void updateInputs(VisionInputs2 inputs, double currentYaw) {
+    default void updateInputs(VisionInputs2 visionInputs, Pose2d robotPose) {
     }
 
     default void robotStateChanged() {

@@ -253,8 +253,9 @@ public class Constants {
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
 
     public static class ObjectDetection {
-        // TODO: GET ACTUAL VALUES FOR THIS
         public static final int CORAL = 1;
         public static final int ALGAE = 0;
+
+        public static final double PICKUP_DISTANCE = Units.feetToMeters(1.25);
     }
 }
