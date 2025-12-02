@@ -169,7 +169,16 @@ public class CommandFactory {
                 () -> getTargetForClosestGamePiece() == null);
     }
 
-    private Pose2d getTargetForClosestGamePiece() {
+    @Logged
+    public Pose2d getClosestGamePiece() {
+        ArrayList<VisionMeasurement2> pieceMeasurements = vision.getVisionMeasurements();
+        if (pieceMeasurements.isEmpty()) return null;
+        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
+        return new Pose2d(pieceTranslation, Rotation2d.kZero);
+    }
+
+    @Logged
+    public Pose2d getTargetForClosestGamePiece() {
         ArrayList<VisionMeasurement2> pieceMeasurements = vision.getVisionMeasurements();
         if (pieceMeasurements.isEmpty()) return null;
         Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
