@@ -1,10 +1,7 @@
 package frc.robot;
 
-import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,10 +14,8 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.grabber.Grabber;
 import frc.robot.subsystems.led.Led;
 import frc.robot.subsystems.vision.objectDetection.Vision2;
-import frc.robot.subsystems.vision.objectDetection.VisionMeasurement2;
 import frc.robot.utility.Gamepiece;
 
-import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -166,25 +161,7 @@ public class CommandFactory {
     public Command alignToGamePiece(Supplier<Integer> id) {
         return Commands.either(
                         Commands.none(),
-                drivetrain.goToPosition(this::getTargetForClosestGamePiece),
-                () -> getTargetForClosestGamePiece() == null);
-    }
-
-    @Logged
-    public Pose2d getClosestGamePiece() {
-        ArrayList<VisionMeasurement2> pieceMeasurements = vision.getVisionMeasurements();
-        if (pieceMeasurements.isEmpty()) return null;
-        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
-        return new Pose2d(pieceTranslation, Rotation2d.kZero);
-    }
-
-    @Logged
-    public Pose2d getTargetForClosestGamePiece() {
-        ArrayList<VisionMeasurement2> pieceMeasurements = vision.getVisionMeasurements();
-        if (pieceMeasurements.isEmpty()) return null;
-        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
-        Rotation2d rotation = pieceTranslation.minus(drivetrain.getPose().getTranslation()).getAngle();
-        Translation2d offset = new Translation2d(Constants.ObjectDetection.PICKUP_DISTANCE, rotation);
-        return new Pose2d(pieceTranslation.minus(offset), rotation);
+                drivetrain.goToPosition(vision::getTargetForClosestGamePiece),
+                () -> vision.getTargetForClosestGamePiece() == null);
     }
 }

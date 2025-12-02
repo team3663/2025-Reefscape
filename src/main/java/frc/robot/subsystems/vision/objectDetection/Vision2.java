@@ -6,6 +6,7 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -81,6 +82,30 @@ public class Vision2 extends SubsystemBase {
      */
     public ArrayList<VisionMeasurement2> getVisionMeasurements() {
         return acceptedMeasurements;
+    }
+
+    public Pose2d[] getGamePieces() {
+        ArrayList<VisionMeasurement2> pieceMeasurements = getVisionMeasurements();
+        Pose2d[] poses = new Pose2d[pieceMeasurements.size()];
+        for (int i = 0; i < pieceMeasurements.size(); i++)
+            poses[i] = new Pose2d(pieceMeasurements.get(i).estimatedTranslation, Rotation2d.kZero);
+        return poses;
+    }
+
+    public Pose2d getClosestGamePiece() {
+        ArrayList<VisionMeasurement2> pieceMeasurements = getVisionMeasurements();
+        if (pieceMeasurements.isEmpty()) return null;
+        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
+        return new Pose2d(pieceTranslation, Rotation2d.kZero);
+    }
+
+    public Pose2d getTargetForClosestGamePiece() {
+        ArrayList<VisionMeasurement2> pieceMeasurements = getVisionMeasurements();
+        if (pieceMeasurements.isEmpty()) return null;
+        Translation2d pieceTranslation = pieceMeasurements.get(0).estimatedTranslation;
+        Rotation2d rotation = pieceTranslation.minus(robotPose.getTranslation()).getAngle();
+        Translation2d offset = new Translation2d(Constants.ObjectDetection.PICKUP_DISTANCE, rotation);
+        return new Pose2d(pieceTranslation.minus(offset), rotation);
     }
 
     /**
