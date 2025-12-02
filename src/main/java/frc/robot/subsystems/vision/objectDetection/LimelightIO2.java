@@ -63,16 +63,12 @@ public class LimelightIO2 implements VisionIO2 {
 
                 // The rotation of the game piece compared to the robot, but relative to the field
                 double rotation = robotPose.getRotation().getRadians() + Units.degreesToRadians(detection.txnc);
-                System.out.println("rotation = " + rotation);
                 Pose3d cameraPose = LimelightHelpers.getCameraPose3d_RobotSpace(cameraName);
                 // The distance away the game piece is from the robot
-                double r = cameraPose.getZ() * Math.tan(Units.degreesToRadians(90) + (Units.degreesToRadians(detection.tync) + cameraPose.getRotation().getY()));
-                System.out.println("r = " + r);
+                double r = cameraPose.getZ() * Math.tan(Units.degreesToRadians(90) + (Units.degreesToRadians(detection.tync) - cameraPose.getRotation().getY()));
                 // The x and y position of the game piece, relative to the robot
                 double x = r * Math.cos(rotation);
                 double y = r * Math.sin(rotation);
-                System.out.println("x = " + x);
-                System.out.println("y = " + y);
                 // The absolute position of the game piece
                 Translation2d translation = robotPose.getTranslation().plus(new Translation2d(x, y));
 

@@ -253,9 +253,10 @@ public class Constants {
     public static final double BACK_CAMERA_Z = Units.inchesToMeters(8.375);
 
     public static class ObjectDetection {
-        public static final int CORAL = 1;
-        public static final int ALGAE = 0;
+        public static final int CORAL_ID = 1;
+        public static final int ALGAE_ID = 0;
 
         public static final double PICKUP_DISTANCE = Units.feetToMeters(1.25);
+        public static final long MEASUREMENT_TIMEOUT = 5 * 1000; // Seconds to millis
     }
 }

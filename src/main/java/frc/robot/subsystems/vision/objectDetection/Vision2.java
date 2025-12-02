@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.Constants;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
@@ -30,6 +31,8 @@ public class Vision2 extends SubsystemBase {
     private Pose2d robotPose = new Pose2d();
     @NotLogged
     private final ArrayList<VisionMeasurement2> acceptedMeasurements = new ArrayList<>();
+    private long measurmentsLastUpdated = 0;
+
     private double ioUpdateDuration;
     private double[] processingDurations;
 
@@ -55,7 +58,8 @@ public class Vision2 extends SubsystemBase {
         double duration = end - start;
         ioUpdateDuration = duration;
 
-        acceptedMeasurements.clear();
+        if (visionInput.ids.length > 0 || System.currentTimeMillis() - measurmentsLastUpdated >= Constants.ObjectDetection.MEASUREMENT_TIMEOUT)
+            acceptedMeasurements.clear();
         // Loop through each of the detected pieces
         double[] durations = new double[visionInput.ids.length];
         for (int i = 0; i < visionInput.ids.length; i++) {
@@ -67,6 +71,7 @@ public class Vision2 extends SubsystemBase {
 
             acceptedMeasurements.add(new VisionMeasurement2(translation, id, stdDev));
             durations[i] = System.currentTimeMillis() - start;
+            measurmentsLastUpdated = System.currentTimeMillis();
         }
         processingDurations = durations;
     }
