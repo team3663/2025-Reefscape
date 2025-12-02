@@ -148,6 +148,7 @@ public class RobotContainer {
         driverController.x().whileTrue(
                 Commands.either(Commands.idle(), commandFactory.alignToGamePiece(() -> Constants.ObjectDetection.CORAL_ID),
                         grabber::isGamePieceDetected));
+        driverController.rightStick().whileTrue(commandFactory.togglePipelineIndex());
 
         // Zeroing
         driverController.back().onTrue(drivetrain.resetFieldOriented());

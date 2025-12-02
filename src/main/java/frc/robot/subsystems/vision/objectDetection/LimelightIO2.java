@@ -82,6 +82,10 @@ public class LimelightIO2 implements VisionIO2 {
         visionInputs.filterDuration = filterEnd - filterStart;
     }
 
+    public void setPipelineIndex(int index) {
+        LimelightHelpers.setPipelineIndex(cameraName, index);
+    }
+
     public void robotStateChanged() {
         // When the robot is disabled then seed the limelight's IMU with data from the Pigeon but once
         // the robot is enabled then switch to the Limelight's internal IMU.

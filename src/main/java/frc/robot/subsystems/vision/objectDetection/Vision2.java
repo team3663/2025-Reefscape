@@ -28,6 +28,8 @@ public class Vision2 extends SubsystemBase {
     @NotLogged
     private final VisionInputs2 visionInput;
 
+    private int pipelineIndex = 1;
+
     // Current pose of the robot as provided by RobotContainer
     private Pose2d robotPose = new Pose2d();
     @NotLogged
@@ -49,6 +51,8 @@ public class Vision2 extends SubsystemBase {
 
         // Register the command we use to detect when the robot is enabled/disabled.
         RobotModeTriggers.disabled().onChange(updateRobotState());
+
+        setPipelineIndex(1);
     }
 
     @Override
@@ -106,6 +110,20 @@ public class Vision2 extends SubsystemBase {
         Rotation2d rotation = pieceTranslation.minus(robotPose.getTranslation()).getAngle();
         Translation2d offset = new Translation2d(Constants.ObjectDetection.PICKUP_DISTANCE, rotation);
         return new Pose2d(pieceTranslation.minus(offset), rotation);
+    }
+
+    /**
+     * Sets the pipeline index
+     *
+     * @param index The index of the new pipeline
+     */
+    public void setPipelineIndex(int index) {
+        io.setPipelineIndex(index);
+        pipelineIndex = index;
+    }
+
+    public int getPipelineIndex() {
+        return pipelineIndex;
     }
 
     /**

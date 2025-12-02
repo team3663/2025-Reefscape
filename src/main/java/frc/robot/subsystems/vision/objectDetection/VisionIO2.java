@@ -14,6 +14,9 @@ public interface VisionIO2 {
     default void robotStateChanged() {
     }
 
+    default void setPipelineIndex(int index) {
+    }
+
     default boolean isIgnoredIfNotNet() {
         return false;
     }

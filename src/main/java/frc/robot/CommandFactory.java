@@ -158,10 +158,20 @@ public class CommandFactory {
                 ));
     }
 
+    // OBJECT DETECTION
     public Command alignToGamePiece(Supplier<Integer> id) {
         return Commands.either(
                         Commands.none(),
                 drivetrain.goToPosition(vision::getTargetForClosestGamePiece),
                 () -> vision.getTargetForClosestGamePiece() == null);
+    }
+
+    public Command togglePipelineIndex() {
+        return Commands.runOnce(() -> {
+            // 0 is obj detection
+            // 1 is april tags
+            int i = vision.getPipelineIndex() == 1 ? 0 : 1;
+            vision.setPipelineIndex(i);
+        });
     }
 }
